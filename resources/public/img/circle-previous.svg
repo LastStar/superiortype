@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="26px" height="26px" viewBox="0 0 26 26" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.3.3 (12072) - http://www.bohemiancoding.com/sketch -->
+    <title>left-circle-arrow</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Buttons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="left-circle-arrow" sketch:type="MSArtboardGroup">
+            <path d="M25.9964,12.793952 C25.9964,19.9744912 20.1759844,25.794 12.996352,25.794 C5.81671962,25.794 -0.0036,19.9744912 -0.0036,12.793952 C-0.0036,5.61341281 5.81671962,-0.206 12.996352,-0.206 C20.1759844,-0.206 25.9964,5.61341281 25.9964,12.793952 L25.9964,12.793952 Z" id="Shape" fill="#FFFFFF" sketch:type="MSShapeGroup"></path>
+            <path d="M14.4853531,19.3654286 L7.42497143,12.8663602 L14.4853531,6.36542857 L14.8535429,6.70434117 L8.16135095,12.8663602 L14.8535429,19.0245492 L14.4853531,19.3654286 Z" id="Shape" fill="#1D1D1B" sketch:type="MSShapeGroup"></path>
+        </g>
+    </g>
+</svg>

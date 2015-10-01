@@ -1,5 +1,5 @@
 (ns superiortype.events
-  (:require [cljs.core.async :refer [<! put! chan]]
+  (:require [cljs.core.async :refer [put! chan]]
             [goog.events :as events]
             [goog.events.EventType :as EventType]
             [goog.dom :as dom]))

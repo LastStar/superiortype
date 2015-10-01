@@ -54,11 +54,14 @@
    :current-page :home
    :header-class "normal"
    :menu-visible false
-   :section "styles"
-   :listening false
-   :shopping false
-   :edited ()
+   :current-section "styles"
+   :listening {}
+   :wishing false
+   :edited []
    :counter 0
    :size {}
    :visible-styles {}
-   :all-sections ["styles", "glyphs", "details", "inuse"]})
+   :selected-charset nil
+   :step 0
+   :show-controlls false
+   :address-class "hidden"})

@@ -13,7 +13,7 @@
             [lein-garden "0.2.6"] ]
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"
-                                    "resources/public/css/compiled"]
+                                    "resources/public/css/compiled/site.css"]
 
   :garden {:builds [{:id "screen"
                      :source-paths ["src/clj"]

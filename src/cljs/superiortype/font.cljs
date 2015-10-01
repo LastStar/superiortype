@@ -3,7 +3,8 @@
   (:require
     [superiortype.events :refer [scroll-chan-events]]
     [superiortype.utils :refer [element get-bottom get-top header-bottom
-                           section-range scroll-to no-scroll-body scroll-body modular]]
+                                section-range scroll-to no-scroll-body
+                                scroll-body modular]]
     [re-frame.core :refer [dispatch subscribe]]
     [cljs.core.async :refer [<!]]
     [clojure.string :refer [replace split lower-case capitalize join]]))
@@ -11,8 +12,10 @@
 ;; -------------------------
 ;; Scrolling
 ;; FIXME name
+(def all-sections ["styles", "glyphs", "details", "inuse"])
+
 (defn update-sections-ranges []
-  (def sections-ranges (mapv section-range (:all-sections @app-state))))
+  (def sections-ranges (mapv section-range all-sections)))
 
 (defn section-at [y]
   (when (not sections-ranges)
@@ -26,17 +29,17 @@
 
 (defn listen! []
   (let [chan (scroll-chan-events)]
-    (dispatch [:listening true])
+    (dispatch [:listening :font])
     (go-loop []
        (let [new-y (<! chan)
              new-section (section-at new-y)
-             header-class (:header-class @app-state)]
+             header-class (subscribe [:header-class])]
          (if (< new-y 64)
-           (when-not (= header-class "normal")
+           (when-not (= @header-class "normal")
              (dispatch [:header-class-changed "normal"]))
-           (when-not (= header-class "small")
+           (when-not (= @header-class "small")
              (dispatch [:header-class-changed "small"])))
-         (when-not (= (:section @app-state) new-section)
+         (when-not (= (deref (subscribe [:current-section])) new-section)
            (dispatch [:section-changed new-section])))
          (recur))))
 
@@ -48,20 +51,28 @@
       (let [current-font (subscribe [:current-font])
             font-name (:name @current-font)
             style-name (str font-name " " style)
-            style-id (replace (lower-case (style-name) #" " "-"))
+            style-id (replace (lower-case style-name) #" " "-")
             wishing-one (subscribe [:wishing])
             i-am-wishing (= @wishing-one style-id)
             someother-is-wishing (and @wishing-one (not i-am-wishing) "fade")
             all-edited (subscribe [:edited])
-            i-was-edited (some #{style-id} all-edited)
-            size (subscribe [:size-query style-name])]
+            i-was-edited (some #{style-id} @all-edited)
+            size (subscribe [:size-query style-id 52])
+            smaller-size (/ @size modular)
+            bigger-size (* @size modular)]
         [:li {:class someother-is-wishing}
           [:div.tools
-           [:button.smaller {:on-click  #(dispatch [:size-changed style-id (/ size modular)])} "smaller"]
-           [:span (str (Math/floor size) "px")]
-           [:button.bigger {:on-click #(dispatch [:size-changed style-id (* size modular)])} "BIGGER"]
+           (when-not i-am-wishing
+             [:div
+              [:button.smaller {:on-click  #(do
+                                              (update-sections-ranges)
+                                              (dispatch [:size-changed style-id smaller-size]))} "smaller"]
+              [:span (str (Math/floor @size) "px")]
+              [:button.bigger {:on-click #(do
+                                            (update-sections-ranges)
+                                            (dispatch [:size-changed style-id bigger-size]))} "BIGGER"]])
            (when i-was-edited
-             [:span (str font-name " " style)])
+             [:span.name (str font-name " " style)])
            (if i-am-wishing
              [:button.wish
               {:on-click #(do
@@ -73,18 +84,18 @@
                 {:on-click #(do
                               (no-scroll-body)
                               (scroll-to (get-top (-> % .-target)))
-                              (dispatch [:wishing-changed style-name]))}
+                              (dispatch [:wishing-changed style-id]))}
                 "Wish"]))]
-          [:div {:style {:font-size (str size "px")} :class weight}
+          [:div {:style {:font-size (str @size "px")} :class weight}
               [:input
                {:on-change
                 (fn [e]
                   (let [value (-> e .-target .-value)]
                    (if (= value "")
-                     (dispatch [:add-edited  style-id])
-                     (dispatch [:remove-edited  style-id]))))
+                     (dispatch [:remove-edited  style-id])
+                     (dispatch [:add-edited  style-id]))))
                 :placeholder style-name
-                :style {:font-size size}}]]
+                :style {:font-size @size}}]]
            (when i-am-wishing
             [:div.wish-box
              [:div.demo
@@ -112,18 +123,18 @@
 
 (defn font-header []
   (fn []
-    (let [current-section (subscribe [:section])
+    (let [current-section (deref (subscribe [:current-section]))
           current-font (subscribe [:current-font])
           id (:id @current-font)
           name (:name @current-font)
           wishing-one (subscribe [:wishing])
           i-am-wishing (= @wishing-one id)
           someother-is-wishing (and @wishing-one (not i-am-wishing) "fade")
-          header-class (str (:header-class @app-state)
+          header-class (str (deref (subscribe [:header-class]))
                             " " (or (and i-am-wishing "hover")
                                     (and someother-is-wishing "fade")))
-          previous (get current-font "previous")
-          next (get current-font "next")]
+          previous (:previous @current-font)
+          next (:next @current-font)]
       [:div
        [:header#font
         {:on-click #(scroll-to (get-top (element "font")))
@@ -133,7 +144,7 @@
          [:h2 name]
          [:a.next {:href (str "#/font/" next "/" current-section)} next]]
         [:nav.sections
-         (for [sec (:all-sections @app-state)]
+         (for [sec all-sections]
            ^{:key sec}
            [:a
             {:href (str "#/font/" id "/" sec)
@@ -147,7 +158,7 @@
          [:button.wish
           {:on-click #(do
                         (scroll-body)
-                        (swap! app-state assoc  :wishing nil)
+                        (dispatch [:wishing-canceled])
                         (.preventDefault %))}
           "No thank you"]
          (when-not someother-is-wishing
@@ -155,7 +166,7 @@
             {:on-click #(do
                           (no-scroll-body)
                           (scroll-to (get-top (-> % .-target)))
-                          (swap! app-state assoc :wishing name))}
+                          (dispatch [:wishing-started name]))}
             "Wish whole family"]))]
         (when i-am-wishing
            [:div.wish-box
@@ -184,9 +195,9 @@
 
 (defn styles-section []
   (fn []
-    (let [current-font (get (:fonts @app-state) (:font-id @app-state))
-          styles (get current-font "styles")
-          name (get current-font "name")]
+    (let [current-font (subscribe [:current-font])
+          styles (:styles @current-font)
+          name (:name @current-font)]
       [:section#styles {:style {:font-family (replace name #" " "")}}
          [:ul.styles
           (for [style styles]
@@ -194,28 +205,28 @@
             [style-line style])]])))
 
 (defn glyphs-section []
-  (let [selected (atom nil)]
     (fn []
-      (let [id (:font-id @app-state)
-            current-font (get (:fonts @app-state) id)
-            charsets (get current-font "charsets")]
+      (let [current-font (subscribe [:current-font])
+            id (:id @current-font)
+            charsets (:charsets @current-font)
+            selected-charset (deref (subscribe [:selected-charset]))]
         [:section#glyphs
          [:select
-          {:defaultValue @selected
+          {:defaultValue (and selected-charset (first charsets))
            :on-change #(let [value (-> % .-target .-value)]
-                         (reset! selected value))}
-         (for [image charsets]
-           ^{:key image}
-           [:option
-            {:value image}
-            (join ", " (mapv capitalize (split image #"-")))])]
-           [:img {:size "1600x1087" :src (str "/img/glyphs/" id "/" (or @selected (first charsets)) ".svg")}]]))))
+                         (dispatch [:charset-selected value]))}
+          (for [charset charsets]
+            ^{:key charset}
+            [:option
+             {:value charset}
+             (join ", " (mapv capitalize (split charset #"-")))])]
+         [:img {:size "1600x1087" :src (str "/img/glyphs/" id "/" (or selected-charset (first charsets)) ".svg")}]])))
 
 (defn details-section [current-font]
-  (let [id (get current-font "id")
-        details (split (get current-font "details") #"\n")
-        styles (count (get current-font "styles"))
-        glyphs (get current-font "glyphs")]
+  (let [id (:id current-font)
+        details (split (current-font :details) #"\n")
+        styles (count (current-font :styles))
+        glyphs (current-font :glyphs)]
     [:section#details
      [:div.description
       (for [p details]
@@ -248,51 +259,48 @@
         {:src (str "/img/" id "-opentype.svg")}]]]))
 
 (defn inuse-section []
-  (let [step (atom 0)
-        show-controls (atom false)]
-    (fn []
-      (let [current-font (get (:fonts @app-state) (:font-id @app-state))
-            inuses (get current-font "inuse")
-            inuses-count (count inuses)]
-        [:section#inuse
-         (when @show-controls
-          [:nav
-           {:on-mouse-enter #(reset! show-controls true)}
-           [:a.previous
-            {:on-click #(reset! step (dec @step))}
-            "Previous"]
-           [:a.next
-            {:on-click #(reset! step (if (< @step (- inuses-count 2)) (inc @step) 0))}
-            "Next"]])
-        [:div.figure-wrapper
-         {:on-mouse-enter #(reset! show-controls true)
-          :on-mouse-leave #(reset! show-controls false)
-          :style
-          {:width (str inuses-count "00%")
-           :transform (str "translateX(-" @step "00vw)")}}
-         (doall (for [inuse inuses]
-           (let [img (get inuse "img")]
-           ^{:key img}
-           [:figure
-            {:style
-             {:width (str (/ 100 inuses-count) "%")}}
-            [:img {:src (str "/img/" img)}]
-            (when @show-controls
-             [:figcaption
-              [:ul
-               (for [p (split (get inuse "text") #"\n")]
-                 ^{:key (hash p)}
-                 [:li p])]])])))]]))))
+  (fn []
+    (let [current-font (subscribe [:current-font])
+          inuses (@current-font :inuse)
+          inuses-count (count inuses)
+          step (subscribe [:step])
+          show-controlls (deref (subscribe [:show-controlls]))]
+      [:section#inuse
+       (when show-controlls
+        [:nav
+         {:on-mouse-enter #(dispatch [:show-controlls-changed true])}
+         [:a.previous
+          {:on-click #(dispatch [:step-changed (dec @step) inuses-count])}
+          "Previous"]
+         [:a.next
+          {:on-click #(dispatch [:step-changed (inc @step) inuses-count])}
+          "Next"]])
+      [:div.figure-wrapper
+       {:on-mouse-enter #(dispatch [:show-controlls-changed true])
+        :on-mouse-leave #(dispatch [:show-controlls-changed false])
+        :style
+        {:width (str inuses-count "00vw")
+         :transform (str "translateX(-" @step "00vw)")}}
+       (doall (for [inuse inuses]
+         (let [img (inuse :img)]
+         ^{:key img}
+         [:figure
+          {:style
+           {:width (str (/ 100 inuses-count) "%")}}
+          [:img {:src (str "/img/" img)}]
+          (when show-controlls
+           [:figcaption
+            [:ul
+             (for [p (split (inuse :text) #"\n")]
+               ^{:key (hash p)}
+               [:li p])]])])))]])))
 
 (defn page []
-  (when-not (:listening @app-state) (listen!))
-  (fn []
-    (when (:fonts @app-state)
-      (let [id (:font-id @app-state)
-            current-font (get (:fonts @app-state) (:font-id @app-state))]
-        [:div
-         [font-header]
-         [styles-section]
-         [glyphs-section]
-         [details-section current-font]
-         [inuse-section]]))))
+  (when-not (deref (subscribe [:listening :font])) (listen!))
+  (let [current-font (subscribe [:current-font])]
+    [:div
+     [font-header]
+     [styles-section]
+     [glyphs-section]
+     [details-section @current-font]
+     [inuse-section]]))

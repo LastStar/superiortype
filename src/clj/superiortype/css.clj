@@ -15,6 +15,7 @@
 (def white "#fff")
 (def light-blue "#00ffff")
 (def green "#00ffa0")
+(def light-green "#00ffa0")
 (def blue "#0ff")
 (def dark-blue "#5F00FF")
 (def clear "rgba(0, 0, 0, 0)")
@@ -67,7 +68,8 @@
   ["::-webkit-input-placeholder" {:color black}]
   ["::-moz-placeholder" {:color black}]
   [":-ms-input-placeholder" {:color black}]
-  [:input:-moz-placeholder {:color black}])
+  [:input:-moz-placeholder {:color black}]
+  [:p {:margin 0}])
 
 (defstyles fonts
   ;; FIXME dynamic font styles for all like this
@@ -126,6 +128,8 @@
    {:font-size "1.618rem"}]
   )
 
+;; Keyframes
+;; FIXME move to its own file animation
 (defkeyframes header-slide-up
   [:0% {:height "8rem"}]
   [:80% {:height "7rem"}]
@@ -145,7 +149,7 @@
 
 (defkeyframes slide-up
   [:0% {:transform "translateY(10rem)"}]
-  [:to {:transform "translateY(0)"}])
+  [:100% {:transform "translateY(0rem)"}])
 
 (defkeyframes bounce-top
   [:0% {:transform "translate(50vw, -10vh) scale(0.5)"}]
@@ -167,6 +171,12 @@
          :fill white}]
   [:100% {:transform "translate(50vw, 40vh) scale(3)"
           :fill white}])
+
+(defkeyframes address-slide
+  [:0% {:transform "translateX(55rem)"}]
+  [:85% {:transform "translateX(-1rem)"}]
+  [:90% {:transform "translateX(1rem)"}]
+  [:100% {:transform "translateX(0rem)"}])
 
 (defkeyframes rainbow
 [:0% {:fill red :transform "translate(3vw, 93vh) scale(1.2)"}]
@@ -190,8 +200,7 @@
     :border-radius "1rem"
     :cursor "pointer"
     :transform "translateY(30rem)"
-    :animation [["slide-up" "750ms" :ease-out]]
-    :animation-fill-mode "forwards"}
+    :animation [["slide-up" "750ms" :forwards :ease-out]]}
    [:h5
     (font bigger-size)
     {:float "left"
@@ -265,6 +274,7 @@
   bounce-bottom-left
   bounce-bottom-right
   rainbow
+  address-slide
   ;; Partials
   basic
   fonts
@@ -451,10 +461,11 @@
       [:li
        {:border-bottom (thin-border grey)
         :padding-top "1rem"}
-       [:&.fade {:opacity "0.4"}]
+       [:&.fade {:opacity "0.1"}]
        [:&.false {:background-color "#fffffe"}]
        [:div.tools
         {:font-family "VeganSans !important"}
+        [:&>div {:float "left"}]
         [:button
          (font smaller-size)
          {:background-position-x "0"
@@ -478,7 +489,12 @@
         [:span
          {:display "inline-block"
           :text-align "center"
-          :width "4rem"}]]
+          :width "4rem"}
+         [:&.name
+          (font smaller-size)
+          {:width "20rem"
+           :text-align "left"
+           :padding-left "1rem"}]]]
        [:a
         {:display "block"
          :padding "2rem 0"
@@ -522,10 +538,12 @@
         :padding-left "8%"}]
       [:div.opentype
        [:img
-        {:width "100%"}]]]
+        {:width "100%"
+         :float "left"}]]]
      [:section#inuse
       {:overflow "hidden"
-       :float "left"}
+       :float "left"
+       :width "100%"}
       [:nav
        {:transform "translate(2vw, 32vw)"
         :position "absolute"
@@ -549,7 +567,7 @@
            {:background-image "url(/img/circle-next.svg)"
             :background-position "100%"}]]]
       [:div.figure-wrapper
-       {:transition "transform 500ms"
+       {:transition "transform cubic-bezier(0.4, 0, 0.2, 1) 1s"
         :z-index 1}
        [:figure
         {:margin 0
@@ -584,17 +602,19 @@
         :display "flex"}
        [:div.text
         (font bigger-size)
-        {:flex "3"
+        {:flex 6
          :margin-left "10%"
-         :padding-top (rem 2)
-         :float "left"}
+         :padding-top (rem 4)}
         ]]
       [:div.contact
-       {:flex "2"
+       {:flex 8
         :overflow "hidden"}
        [:address
-        (font big-size)
-        {:margin-left "10%"
+        (font larger-size)
+        {:transition-property "transform"
+         :transition-duration "1750ms"
+         :transition-timing-function "cubic-bezier(0.18, 0.89, 0.32, 1.28)"
+         :margin-left "10%"
          :width "70%"
          :padding (rem 3)
          :font-style "normal"
@@ -602,8 +622,10 @@
          :margin-top (rem 3)
          :margin-bottom (rem 1)
          :border-radius (rem 2)}
+        [:&.visible {:transform "translateX(0rem)"}]
+        [:&.hidden {:transform "translateX(50rem)"}]
         [:a
-         (font default-size)
+         (font bigger-size)
          {:border-radius (rem 3)
           :padding "0.5rem 1rem"}
          [:&:hover
@@ -612,15 +634,16 @@
         [:div.email
           {:margin-top (rem 1)}
          [:a
+          (font bigger-size)
           {:color "white"
            :background-color dark-grey}]]
         [:nav.social
          {:margin-top (rem 3)
-          :line-height 1}
+          :line-height 1
+          :display "flex"
+          :justify-content "space-between"}
          [:a
-          {:margin "2rem 3rem 0 0"
-           :color "white"}
-
+          {:color "white"}
           [:&.facebook
            {:background-color "#0060ff"}]
           [:&.twitter
@@ -628,9 +651,44 @@
           [:&.instagram
            {:background-color "#a04aff"}]]]]]
       [:.lost
-       {:width "80%"}
+       {:background-color green
+        :width "100%"}
        [:p
+        (font bigger-size)
         {:margin-left "10%"
-         :width "40%"}]]
-      ]]])
+         :padding-top large-size
+         :width "40%"}]
+       [:.fonts
+        {:width "90%"
+         :margin-left "10%"}
+        [:span
+         {:padding "0 2rem 0 0"
+          :display "inline-block"
+          :line-height 1.5}
+          [:a
+           {:font-size "6vw"
+            :color white
+            :padding "0 1rem 0 0"
+            :font-family "inherit"}
+           [:&:hover
+            {:color black}]]]]]
+      [:.people
+       {:background-color light-green
+        :display "flex"}
+       [:.person
+          {:width "48%"
+           :margin-top "3rem"
+           :padding "2rem"}
+        [:.photo
+         [:img
+          {:border-radius "50%"
+           :width "100%"}
+         [:p
+           (font bigger-size)]]]]]
+       [:.studio
+        [:img
+         {:border "none"
+          :padding 0
+          :margin 0
+          :width "100%"}]]]]])
 
