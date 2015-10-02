@@ -7,16 +7,14 @@
   (fn []
     (let [menu-visible (subscribe [:menu-visible])]
       [:div
-       {:class (str "menu" (when @menu-visible " opaque"))}
+       {:on-mouse-enter #(dispatch [:menu-visibility-changed true])
+        :on-mouse-leave #(dispatch [:menu-visibility-changed false])
+        :class (str "menu" (when @menu-visible " opaque"))}
        [:h1 [:a
-             {:href "#/"
-              :on-mouse-enter #(dispatch [:menu-visibility-changed true])
-              :on-mouse-leave #(dispatch [:menu-visibility-changed false])}
+             {:href "#/"}
              "Superior Type"]]
         [:nav
-         {:class (when @menu-visible "visible")
-          :on-mouse-enter #(dispatch [:menu-visibility-changed true])
-          :on-mouse-leave #(dispatch [:menu-visibility-changed false])}
+         {:class (when @menu-visible "visible")}
          [:a {:href "#/custom"} "Custom"]
          [:a {:href "#/foundry"} "Foundry"]]])))
 

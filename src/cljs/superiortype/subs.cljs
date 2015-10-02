@@ -30,7 +30,7 @@
 (register-sub
  :visible-styles-query
   (fn [db [_ id]]
-    (reaction (get-in @db [:visible-styles id] false))))
+    (reaction (get-in @db [:visible-styles id]))))
 
 (register-sub
  :current-font

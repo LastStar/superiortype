@@ -143,7 +143,7 @@
 
 (defkeyframes slide-left
   [:0% {:transform "translateX(0rem)" :opacity 1}]
-  [:30% {:transform "translateX(0rem)" :opacity 1}]
+  [:30% {:transform "translateX(0rem)" :opacity 0.6}]
   [:80% {:transform "translateX(0rem)" :opacity 0.1}]
   [:100% {:transform "translateX(-40rem)" :opacity 0}])
 
@@ -167,21 +167,22 @@
 
 (defkeyframes bounce-bottom-right
   [:0% {:transform "translate(110vw, 110vh) scale(2.5)"}]
-  [:93% {:transform "translate(50vw, 40vh) scale(3)"
+  [:93% {:transform "translate(50vw, 40vh) scale(2.9)"
          :fill white}]
+  [:97% {:transform "translate(50vw, 40vh) scale(3)"}]
   [:100% {:transform "translate(50vw, 40vh) scale(3)"
           :fill white}])
 
 (defkeyframes address-slide
   [:0% {:transform "translateX(55rem)"}]
-  [:85% {:transform "translateX(-1rem)"}]
-  [:90% {:transform "translateX(1rem)"}]
+  [:85% {:transform "translateX(-2rem)"}]
+  [:90% {:transform "translateX(1.5rem)"}]
   [:100% {:transform "translateX(0rem)"}])
 
 (defkeyframes rainbow
-[:0% {:fill red :transform "translate(3vw, 93vh) scale(1.2)"}]
-  [:33% {:fill yellow :transform "translate(3vw, 93vh) scale(1.4)"}]
-  [:66% {:fill dark-blue :transform "translate(3vw, 95vh) scale(1)"}]
+  [:0% {:fill dark-blue :transform "translate(3vw, 95vh) scale(1)"}]
+  [:33% {:fill red :transform "translate(3vw, 93vh) scale(1.2)"}]
+  [:67% {:fill yellow :transform "translate(3vw, 93vh) scale(1.4)"}]
   [:100% {:fill white :transform "translate(3vw, 95vh)"}])
 
 (defstyles wish-box
@@ -288,13 +289,15 @@
      {:display "flex"
       :flex-direction "row"
       :position "fixed"
+      :left "-1rem"
       :background-color clear
       :z-index 10
       :padding "1rem 2rem 0"
       :height (rem 2)}
-     [:div
-      {:padding "0 1rem 1rem 0"}
-      [:&.opaque {:background-color white}]
+     [:div.menu
+      {:padding "0.25rem 1rem 1rem 1rem"
+       :border-radius "1rem"}
+      [:&.opaque {:background-color "rgba(255, 255, 255, 0.9)"}]
       [:h1
        {:display "inline-block"
         :margin "0 0 1rem 0"}
@@ -323,7 +326,7 @@
          :fill yellow}]
        [:circle
         {:stroke yellow
-         :stroke-width "1.314rem"
+         :stroke-width "24"
         :fill "none"}]]
       [:g.bottom-right
        {:animation [[bounce-bottom-right "2s" :infinite :alternate :ease-out]]}
@@ -348,7 +351,7 @@
         :animation [["rainbow" "4s" :infinite]]}]
       ]
      [:header#font
-      {:transition-property "opacity background-color"
+      {:transition-property "opacity, background-color"
        :transition-duration "500ms"
        :transition-delay "100ms"
        :opacity "1"
@@ -378,7 +381,7 @@
          :transition-delay "100ms"
         :background-color white}
         [:&.fade
-         {:transition-delay "0"
+         {:display "none"
           :opacity 0}]]
        [:nav.fonts
          [:h2 (font larger-size)]
@@ -387,7 +390,7 @@
        [:button
         {:background-color clear}]]
       [:&.fade
-       {:transition-delay "0"
+       {:display "none"
         :opacity 0}]
       [:nav.fonts
         {:display "flex"
@@ -402,7 +405,7 @@
           :margin 0
           :font-family "inherit"}]
          [:a
-          {:transition-property "height margin-bottom"
+          {:transition-property "height, margin-bottom"
            :background-position-y "0"
            :background-position-x "50%"
            :background-repeat "no-repeat"
@@ -472,6 +475,7 @@
           :background-position-y "50%"
           :background-repeat "no-repeat"
           :background-color "rgba(0, 0, 0, 0)"
+          :display "inline-block"
           :margin 0
           :border "none"
           :cursor "pointer"}
@@ -484,8 +488,17 @@
            :height "auto"
            :float "right"
            :display "block"
-           :transform "translateY(4rem)"}]]
-         [:a (font smaller-size)]
+           :transform "translateY(4rem)"}]
+          [:&.smaller:hover
+           {:transform "scale(0.8)"
+            :transition "transform 250ms"}]
+          [:&.list:hover
+           {:transform "translateY(0.3rem)"
+            :transition "transform 250ms"}]
+         [:&.bigger:hover
+           {:transform "scale(1.2)"
+            :transition "transform 250ms"}] ]
+         [:a (font smaller-size) ]
         [:span
          {:display "inline-block"
           :text-align "center"
@@ -666,12 +679,16 @@
           :display "inline-block"
           :line-height 1.5}
           [:a
-           {:font-size "6vw"
+           {:display "inline-block"
+            :transition-property "transform"
+            :transition-duration "250ms"
+            :font-size "6vw"
             :color white
             :padding "0 1rem 0 0"
             :font-family "inherit"}
            [:&:hover
-            {:color black}]]]]]
+            {:transform "scale(1.10) rotateZ(2deg)"
+             :color black}]]]]]
       [:.people
        {:background-color light-green
         :display "flex"}

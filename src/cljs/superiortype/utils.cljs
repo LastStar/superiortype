@@ -7,17 +7,19 @@
 
 (defn header-bottom []
   (if-let [header (element "font")]
-     (.-bottom (.getBoundingClientRect header)) 0))
+     (-> header .getBoundingClientRect .-bottom) 0))
 
 (defn get-top [element]
   (if element
-    (- (.-offsetTop element) (header-bottom))
+    (do
+    (.log js/console (.-offsetTop element))
+    (- (.-offsetTop element) (header-bottom)))
     0))
 
 (defn get-bottom [element]
   (if element
     (- (+ (.-offsetTop element) (.-offsetHeight element))
-       (+ (header-bottom) 10))
+       (* (header-bottom) 1.1))
     0))
 
 (defn scroll-to [top]

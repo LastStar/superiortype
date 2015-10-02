@@ -11,17 +11,17 @@
         styles (:styles current-font)]
     (fn []
       (let [size (subscribe [:size-query id 128])
-            visible-styles (subscribe [:visible-styles-query id])]
+            visible-styles (deref (subscribe [:visible-styles-query id]))]
       [:li
        {:style
         {:font-family (replace name #" " "")}}
        [:div.tools
-        [:button.minus {:on-click #(dispatch [:size-changed id (/ @size modular)])} "smaller"]
-        [:button.list {:on-click #(dispatch [:styles-visibility-changed id (not @visible-styles)])}
+        [:button.smaller {:on-click #(dispatch [:size-changed id (/ @size modular)])} "smaller"]
+        [:button.list {:on-click #(dispatch [:styles-visibility-changed id (not visible-styles)])}
          "Styles"]
-        [:button.plus {:on-click #(dispatch [:size-changed id (* @size modular)])} "BIGGER"]]
+        [:button.bigger {:on-click #(dispatch [:size-changed id (* @size modular)])} "BIGGER"]]
        [:a {:style {:font-size @size} :href (str "#/font/" id)} name]
-       (if @visible-styles
+       (if visible-styles
          [:div {:style {:font-family (replace name #" " "")}}
            [:ul.styles
             (for [style styles]
@@ -32,13 +32,14 @@
                  style]])]])]))))
 
 (defn show-case-svg []
-  (let [content ["a" "b" "C" "D" "E" "ff" "gg" "HhH" "IiiiIiiiii" "jJjJjJ"
-                  "kKKKk" "llllL lll" "Mmmm" "nnNnNN" "OooOoo" "Pp" "QQqQQ"
-                  "rrrRrrRrrrR" "SssssssS" "TTtTtTTTT" "UuUUUuUUU" "VVvVVvVV"
-                  "WwwWwwW" "XXX" "yyyyYYYY" "Zzzzzzzzzzzzzz"]]
+  (let [content [10 3 8 7 6 5 4 9 2 1 "a" "b" "C" "D" "E" "ff" "gg" "HhH"
+                 "IiiiIiiiii" "jJjJjJ" "kKKKk" "llLlll" "Mmmm" "NnNnN"
+                 "ooOoo" "Pp" "QqQQ" "rRrrRrR" "SssSsS" "TtTtT"
+                 "UUUu" "VvVvV" "WWW" "XxXxX" "yyyyYYYY"
+                 "ZZZzzzzzz"]]
     (fn []
       (let [counter (subscribe [:counter])
-            font-size (str (/ 144 (* @counter)) "px")
+            font-size (str (/ 96 (/ @counter 3)) "px")
             current-content (get content @counter "END")]
         (when (> @counter 42) (dispatch [:counter-changed 0]))
         [:svg

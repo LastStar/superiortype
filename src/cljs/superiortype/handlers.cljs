@@ -23,6 +23,11 @@
     (assoc app-state :menu-visible visibility)))
 
 (register-handler
+ :styles-visibility-changed
+  (fn [app-state [_ id visibility]]
+    (assoc-in app-state [:visible-styles id] visibility)))
+
+(register-handler
  :counter-changed
   (fn [app-state [_ new-value]]
     (assoc app-state :counter new-value)))

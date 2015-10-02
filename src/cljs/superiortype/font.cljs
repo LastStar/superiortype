@@ -62,7 +62,8 @@
             bigger-size (* @size modular)]
         [:li {:class someother-is-wishing}
           [:div.tools
-           (when-not i-am-wishing
+            (if @wishing-one
+             [:span " "]
              [:div
               [:button.smaller {:on-click  #(do
                                               (update-sections-ranges)
@@ -81,9 +82,10 @@
               "No thanks"]
              (when-not someother-is-wishing
                [:button.wish
-                {:on-click #(do
+                {:on-click #(let [style-top (get-top (-> % .-target .-parentElement .-parentElement))]
+                              (.log js/console style-top)
+                              (scroll-to style-top)
                               (no-scroll-body)
-                              (scroll-to (get-top (-> % .-target)))
                               (dispatch [:wishing-changed style-id]))}
                 "Wish"]))]
           [:div {:style {:font-size (str @size "px")} :class weight}
@@ -137,12 +139,13 @@
           next (:next @current-font)]
       [:div
        [:header#font
-        {:on-click #(scroll-to (get-top (element "font")))
+        {:on-click #(when-not someother-is-wishing (scroll-to (get-top (element "font"))))
          :class header-class}
         [:nav.fonts {:class id}
          [:a.previous {:href (str "#/font/" previous "/" current-section)} previous]
          [:h2 name]
          [:a.next {:href (str "#/font/" next "/" current-section)} next]]
+      (when-not i-am-wishing
         [:nav.sections
          (for [sec all-sections]
            ^{:key sec}
@@ -153,12 +156,12 @@
                          (scroll-to (get-top (element sec)))
                          (.stopPropagation e))}
             (capitalize sec)])
-         [:a.specimen {:href (str "/pdf/superior-type-" id ".pdf")} "Specimen"]]
+         [:a.specimen {:href (str "/pdf/superior-type-" id ".pdf")} "Specimen"]])
         (if i-am-wishing
          [:button.wish
           {:on-click #(do
                         (scroll-body)
-                        (dispatch [:wishing-canceled])
+                        (dispatch [:wishing-changed nil])
                         (.preventDefault %))}
           "No thank you"]
          (when-not someother-is-wishing
@@ -166,7 +169,7 @@
             {:on-click #(do
                           (no-scroll-body)
                           (scroll-to (get-top (-> % .-target)))
-                          (dispatch [:wishing-started name]))}
+                          (dispatch [:wishing-changed id]))}
             "Wish whole family"]))]
         (when i-am-wishing
            [:div.wish-box
@@ -297,10 +300,14 @@
 
 (defn page []
   (when-not (deref (subscribe [:listening :font])) (listen!))
-  (let [current-font (subscribe [:current-font])]
+  (update-sections-ranges)
+  (let [current-font (subscribe [:current-font])
+        wishing-one (subscribe [:wishing])]
     [:div
      [font-header]
      [styles-section]
-     [glyphs-section]
-     [details-section @current-font]
-     [inuse-section]]))
+     (when-not @wishing-one
+       [:div
+         [glyphs-section]
+         [details-section @current-font]
+         [inuse-section]])]))
