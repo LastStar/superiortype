@@ -3,8 +3,7 @@
   (:require
     [superiortype.events :refer [scroll-chan-events]]
     [superiortype.utils :refer [element get-bottom get-top header-bottom
-                                section-range scroll-to no-scroll-body
-                                scroll-body modular]]
+                                section-range scroll-to modular]]
     [re-frame.core :refer [dispatch subscribe]]
     [cljs.core.async :refer [<!]]
     [clojure.string :refer [replace split lower-case capitalize join]]))
@@ -17,15 +16,17 @@
 (defn update-sections-ranges []
   (def sections-ranges (mapv section-range all-sections)))
 
+(defn invalidate-sections-ranges []
+  (set! sections-ranges false))
+
 (defn section-at [y]
   (when (not sections-ranges)
     (update-sections-ranges))
   (ffirst (filterv
     (fn [vec]
-      (let [top (get vec 1)
-            bottom (get vec 2)]
-      (and (<= top y) (>= bottom y))))
-    sections-ranges)))
+      (let [[_ top bottom] vec]
+        (and (<= top y) (>= bottom y))))
+      sections-ranges)))
 
 (defn listen! []
   (let [chan (scroll-chan-events)]
@@ -45,6 +46,35 @@
 
 ;; -------------------------
 ;; Components
+(defn wish-box [wishing-one]
+  [:div.wish-box
+   [:div.demo
+    {:on-click #(dispatch [:add-to-wishlist wishing-one :demo])}
+    [:h5 "Demo"]
+    [:div.price "Free"]]
+   [:div.basic
+    {:on-click #(dispatch [:add-to-wishlist wishing-one :basic])}
+    [:h5 "Basic"]
+    [:div.price "From $30"]
+    [:div.description
+     [:h6 "Standart font encoding"]
+     [:p "Uppercase, Lowercase, Ligatures, Currency, Numerals, Fractions, Mathematical, Punctuations"]]]
+   [:div.premium
+    {:on-click #(dispatch [:add-to-wishlist wishing-one :premium])}
+    [:h5 "Premium"]
+    [:div.price "From $50"]
+    [:div.description
+     [:h6 "Extended font encoding"]
+     [:p "Uppercase, Lowercase, Smallcaps, Extended Ligatures, Superscript, Subscript, Extend Currency, Extended Numerals, Extended Fractions, Mathematical, Punctuations, Arrows"]]]
+   [:div.superior
+    {:on-click #(dispatch [:add-to-wishlist :superior])}
+    [:h5 "Superior"]
+    [:div.price "$1920"]
+    [:div.description
+     [:p "All three typefaces in the Premium package: Hrot, Kunda Book, Vegan Sans"]
+     [:p "+ Our next two released typefaces for free."]]]
+   [:a.help "What?"]])
+
 (defn style-line [style]
   (let [weight (lower-case style)]
     (fn []
@@ -57,7 +87,7 @@
             someother-is-wishing (and @wishing-one (not i-am-wishing) "fade")
             all-edited (subscribe [:edited])
             i-was-edited (some #{style-id} @all-edited)
-            size (subscribe [:size-query style-id 52])
+            size (subscribe [:size-query style-id 123])
             smaller-size (/ @size modular)
             bigger-size (* @size modular)]
         [:li {:class someother-is-wishing}
@@ -65,28 +95,21 @@
             (if @wishing-one
              [:span " "]
              [:div
-              [:button.smaller {:on-click  #(do
-                                              (update-sections-ranges)
-                                              (dispatch [:size-changed style-id smaller-size]))} "smaller"]
+              [:button.smaller {:on-click  #(dispatch [:size-changed style-id smaller-size])} "smaller"]
               [:span (str (Math/floor @size) "px")]
-              [:button.bigger {:on-click #(do
-                                            (update-sections-ranges)
-                                            (dispatch [:size-changed style-id bigger-size]))} "BIGGER"]])
+              [:button.bigger {:on-click #(dispatch [:size-changed style-id bigger-size])} "BIGGER"]])
            (when i-was-edited
              [:span.name (str font-name " " style)])
            (if i-am-wishing
              [:button.wish
-              {:on-click #(do
-                            (scroll-body)
-                            (dispatch [:wishing-changed nil]))}
+              {:on-click #(dispatch [:wishing-canceled])}
               "No thanks"]
              (when-not someother-is-wishing
                [:button.wish
+                ; FIXME move to handler
                 {:on-click #(let [style-top (get-top (-> % .-target .-parentElement .-parentElement))]
-                              (.log js/console style-top)
                               (scroll-to style-top)
-                              (no-scroll-body)
-                              (dispatch [:wishing-changed style-id]))}
+                              (dispatch [:wishing-started style-id]))}
                 "Wish"]))]
           [:div {:style {:font-size (str @size "px")} :class weight}
               [:input
@@ -94,34 +117,13 @@
                 (fn [e]
                   (let [value (-> e .-target .-value)]
                    (if (= value "")
-                     (dispatch [:remove-edited  style-id])
-                     (dispatch [:add-edited  style-id]))))
+                     (dispatch [:remove-edited style-id])
+                     (dispatch [:add-edited style-id]))))
                 :placeholder style-name
                 :style {:font-size @size}}]]
            (when i-am-wishing
-            [:div.wish-box
-             [:div.demo
-              [:h5 "Demo"]
-              [:div.price "Free"]]
-             [:div.basic
-              [:h5 "Basic"]
-              [:div.price "From $30"]
-              [:div.description
-               [:h6 "Standart font encoding"]
-               [:p "Uppercase, Lowercase, Ligatures, Currency, Numerals, Fractions, Mathematical, Punctuations"]]]
-             [:div.premium
-              [:h5 "Premium"]
-              [:div.price "From $50"]
-              [:div.description
-               [:h6 "Extended font encoding"]
-               [:p "Uppercase, Lowercase, Smallcaps, Extended Ligatures, Superscript, Subscript, Extend Currency, Extended Numerals, Extended Fractions, Mathematical, Punctuations, Arrows"]]]
-             [:div.superior
-              [:h5 "Superior"]
-              [:div.price "$1920"]
-              [:div.description
-               [:p "All three typefaces in the Premium package: Hrot, Kunda Book, Vegan Sans"]
-               [:p "+ Our next two released typefaces for free."]]]
-             [:a.help "What?"]])]))))
+             [wish-box style-id]
+            )]))))
 
 (defn font-header []
   (fn []
@@ -151,7 +153,7 @@
            ^{:key sec}
            [:a
             {:href (str "#/font/" id "/" sec)
-             :class (str sec (if (= sec current-section) " active" ""))
+             :class (str sec (when (= sec current-section) " active"))
              :on-click (fn [e]
                          (scroll-to (get-top (element sec)))
                          (.stopPropagation e))}
@@ -160,41 +162,17 @@
         (if i-am-wishing
          [:button.wish
           {:on-click #(do
-                        (scroll-body)
-                        (dispatch [:wishing-changed nil])
+                        (dispatch [:wishing-canceled])
                         (.preventDefault %))}
           "No thank you"]
          (when-not someother-is-wishing
            [:button.wish
             {:on-click #(do
-                          (no-scroll-body)
                           (scroll-to (get-top (-> % .-target)))
-                          (dispatch [:wishing-changed id]))}
+                          (dispatch [:wishing-started id]))}
             "Wish whole family"]))]
         (when i-am-wishing
-           [:div.wish-box
-            [:div.demo
-             [:h5 "Demo"]
-             [:div.price "Free"]]
-            [:div.basic
-             [:h5 "Basic"]
-             [:div.price "From $130"]
-             [:div.description
-              [:h6 "Standart font encoding"]
-              [:p "Uppercase, Lowercase, Ligatures, Currency, Numerals, Fractions, Mathematical, Punctuations"]]]
-            [:div.premium
-             [:h5 "Premium"]
-             [:div.price "From $250"]
-             [:div.description
-              [:h6 "Extended font encoding"]
-              [:p "Uppercase, Lowercase, Smallcaps, Extended Ligatures, Superscript, Subscript, Extend Currency, Extended Numerals, Extended Fractions, Mathematical, Punctuations, Arrows"]]]
-            [:div.superior
-             [:h5 "Superior"]
-             [:div.price "$1920"]
-             [:div.description
-              [:p "All three typefaces in the Premium package: Hrot, Kunda Book, Vegan Sans"]
-              [:p "+ Our next two released typefaces for free."]]]
-            [:a.help "What?"]])])))
+           [wish-box id])])))
 
 (defn styles-section []
   (fn []
@@ -212,10 +190,12 @@
       (let [current-font (subscribe [:current-font])
             id (:id @current-font)
             charsets (:charsets @current-font)
-            selected-charset (deref (subscribe [:selected-charset]))]
+            selected-charset (deref (subscribe [:selected-charset]))
+            charset-position (subscribe [:charset-position])]
         [:section#glyphs
          [:select
-          {:defaultValue (and selected-charset (first charsets))
+          {:class @charset-position
+           :defaultValue (and selected-charset (first charsets))
            :on-change #(let [value (-> % .-target .-value)]
                          (dispatch [:charset-selected value]))}
           (for [charset charsets]
@@ -225,8 +205,9 @@
              (join ", " (mapv capitalize (split charset #"-")))])]
          [:img {:size "1600x1087" :src (str "/img/glyphs/" id "/" (or selected-charset (first charsets)) ".svg")}]])))
 
-(defn details-section [current-font]
-  (let [id (:id current-font)
+(defn details-section []
+  (let [current-font (deref (subscribe [:current-font]))
+        id (:id current-font)
         details (split (current-font :details) #"\n")
         styles (count (current-font :styles))
         glyphs (current-font :glyphs)]
@@ -300,14 +281,12 @@
 
 (defn page []
   (when-not (deref (subscribe [:listening :font])) (listen!))
-  (update-sections-ranges)
-  (let [current-font (subscribe [:current-font])
-        wishing-one (subscribe [:wishing])]
+  (let [wishing-one (subscribe [:wishing])]
     [:div
      [font-header]
      [styles-section]
      (when-not @wishing-one
        [:div
          [glyphs-section]
-         [details-section @current-font]
+         [details-section]
          [inuse-section]])]))

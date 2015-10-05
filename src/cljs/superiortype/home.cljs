@@ -10,7 +10,7 @@
         id (:id current-font)
         styles (:styles current-font)]
     (fn []
-      (let [size (subscribe [:size-query id 128])
+      (let [size (subscribe [:size-query id 123])
             visible-styles (deref (subscribe [:visible-styles-query id]))]
       [:li
        {:style
@@ -23,13 +23,14 @@
        [:a {:style {:font-size @size} :href (str "#/font/" id)} name]
        (if visible-styles
          [:div {:style {:font-family (replace name #" " "")}}
-           [:ul.styles
-            (for [style styles]
-              ^{:key style}
-              [:li
-                [:div
-                 {:style {:font-size (str @size "px")} :class (lower-case style)}
-                 style]])]])]))))
+           [:a {:href (str "#/font/" id)}
+            [:ul.styles
+             (for [style styles]
+               ^{:key style}
+               [:li
+                 [:div
+                  {:style {:font-size (str @size "px")} :class (lower-case style)}
+                  style]])]]])]))))
 
 (defn show-case-svg []
   (let [content [10 3 8 7 6 5 4 9 2 1 "a" "b" "C" "D" "E" "ff" "gg" "HhH"

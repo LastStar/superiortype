@@ -64,4 +64,6 @@
    :selected-charset nil
    :step 0
    :show-controlls false
-   :address-class "hidden"})
+   :address-class "hidden"
+   :charset-position "relative"
+   :wishlist #{}})

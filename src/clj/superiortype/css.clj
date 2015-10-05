@@ -181,9 +181,9 @@
 
 (defkeyframes rainbow
   [:0% {:fill dark-blue :transform "translate(3vw, 95vh) scale(1)"}]
-  [:33% {:fill red :transform "translate(3vw, 93vh) scale(1.2)"}]
-  [:67% {:fill yellow :transform "translate(3vw, 93vh) scale(1.4)"}]
-  [:100% {:fill white :transform "translate(3vw, 95vh)"}])
+  [:40% {:fill red :transform "translate(3vw, 93vh) scale(1.2)"}]
+  [:80% {:fill yellow :transform "translate(3vw, 93vh) scale(1.4)"}]
+  [:100% {:fill white :transform "translate(3vw, 96vh)"}])
 
 (defstyles wish-box
  [:div.wish-box
@@ -286,31 +286,38 @@
     :margin "auto"
     :line-height 1.5}
     [:header#header
-     {:display "flex"
-      :flex-direction "row"
+     {:width "100%"
       :position "fixed"
       :left "-1rem"
       :background-color clear
       :z-index 10
       :padding "1rem 2rem 0"
       :height (rem 2)}
-     [:div.menu
-      {:padding "0.25rem 1rem 1rem 1rem"
-       :border-radius "1rem"}
-      [:&.opaque {:background-color "rgba(255, 255, 255, 0.9)"}]
-      [:h1
-       {:display "inline-block"
-        :margin "0 0 1rem 0"}
-       (font bigger-size)
-       [:a
-        {:font-weight "bold"}]]
-      [:nav
-       {:animation [[slide-left "2500ms" :ease :forwards]] :display "inline-block"}
-       [:a
-          {:display "inline-block"
-           :padding-left "1rem"}
-          [:&:first-child {:padding-left "3rem"}]]
-       [:&.visible {:animation [[slide-right "250ms" :ease :forwards]]}]]]]
+     [:div.wrap
+      {:width "100%"
+       :display :flex
+       :flex-direction "row"
+       :justify-content "space-between"}
+      [:div.menu
+       {:padding "0.25rem 1rem 0.25rem 1rem"
+        :border-radius "1rem"}
+       [:&.opaque {:background-color "rgba(255, 255, 255, 0.9)"}]
+       [:h1
+        {:display "inline-block"
+         :margin 0}
+        (font bigger-size)
+        [:a
+         {:font-weight "bold"}]]
+       [:nav
+        {:animation [[slide-left "2500ms" :ease :forwards]] :display "inline-block"}
+        [:a
+           {:display "inline-block"
+            :padding-left "1rem"}
+           [:&:first-child {:padding-left "3rem"}]]
+        [:&.visible {:animation [[slide-right "250ms" :ease :forwards]]}]]]
+      [:div#wishlist
+       {:margin-right "3rem"}
+       [:button wish-button]]]]
     [:main#app
      [:svg
       {:width "100vw"
@@ -458,6 +465,8 @@
        :overflow "hidden"
        :margin 0
        } ]
+     [:ul#fonts
+      [:li {:cursor "pointer"}]]
      [:ul#fonts :ul.styles
       {:padding 0
        :margin "0 2rem"}
@@ -529,10 +538,18 @@
       bigger-margin
       [:select
        ^:prefix {:appearance "none"}
-       {:border-radius (rem 1)
-        :padding "0.35rem 1rem"
-        :margin [[(rem 2) 0]]}
-       (font default-size)]
+       {:top "8rem"
+        :position "fixed"
+        :border-radius (rem 1)
+        :padding "0.75rem 1rem"
+        :margin [[(rem 2) 0]]
+        :left "-30rem"
+        :z-index 10
+        :opacity 0}
+       [:&.fixed
+        {:opacity 0.9
+         :left "1rem"}
+       (font default-size)]]
       [:img
        {:padding [[(rem 3) 0]]
         :width "100%"}]]
@@ -621,7 +638,7 @@
         ]]
       [:div.contact
        {:flex 8
-        :overflow "hidden"}
+        :overflow "visible"}
        [:address
         (font larger-size)
         {:transition-property "transform"

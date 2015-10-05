@@ -5,7 +5,7 @@
             [secretary.core :as secretary]
             [goog.events :as events]
             [goog.history.EventType :as EventType]
-            [superiortype.utils :refer [scroll-body scroll-to]]
+            [superiortype.utils :refer [scroll-body]]
             [superiortype.views :refer [header error]]
             [superiortype.foundry :as foundry]
             [superiortype.font :as font]
@@ -56,14 +56,12 @@
 
   (defroute "/font/:id" [id]
     (do
-      (dispatch [:font-changed id])
-      (dispatch [:page-changed :font])))
+      (dispatch [:font-changed id])))
 
   (defroute "/font/:id/:section" [id section]
     (do
       (dispatch [:section-changed section])
-      (dispatch [:font-changed id])
-      (dispatch [:page-changed :font])))
+      (dispatch [:font-changed id])))
 
   (hook-browser-navigation!))
 
@@ -80,7 +78,4 @@
   (re-frame/dispatch-sync [:initialize-db])
   (app-routes)
   (mount-header)
-  (mount-root)
-  )
-
-
+  (mount-root))

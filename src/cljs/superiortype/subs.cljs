@@ -86,3 +86,13 @@
  :address-class
   (fn [db [_]]
     (reaction (@db :address-class))))
+
+(register-sub
+  :charset-position
+  (fn [db [_]]
+    (reaction (@db :charset-position))))
+
+(register-sub
+ :wishlist-count
+  (fn [db [_]]
+    (reaction (count (@db :wishlist)))))

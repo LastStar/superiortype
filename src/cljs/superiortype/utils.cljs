@@ -12,7 +12,6 @@
 (defn get-top [element]
   (if element
     (do
-    (.log js/console (.-offsetTop element))
     (- (.-offsetTop element) (header-bottom)))
     0))
 
@@ -25,7 +24,7 @@
 (defn scroll-to [top]
    (.scrollTo js/window 0 top))
 
-(defn section-range [sec]
+(defn- section-range [sec]
   (let [element (element sec)]
     [sec (get-top element) (get-bottom element)]))
 
@@ -34,3 +33,6 @@
 
 (defn scroll-body []
   (-> js/document (.querySelector "body") .-style (aset "overflow" "scroll")))
+
+(defn scroll-top []
+  (scroll-to 0))
