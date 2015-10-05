@@ -44,7 +44,7 @@
      ]
     [:div.contact
      [:address#address {:class @address-class}
-      [:div.street "Myslíkova 9"]
+      [:div.street "Náplavní 1"]
       [:div.city "Prague, Czech Republic"]
       [:div.phone "+420 724 158 383"]
       [:div.email
