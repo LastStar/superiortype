@@ -19,9 +19,9 @@
          {:class (when @menu-visible "visible")}
          [:a {:href "#/custom"} "Custom"]
          [:a {:href "#/foundry"} "Foundry"]]]
-       (when-not (empty? @wishlist-count)
+       (when (> @wishlist-count 0)
         [:div#wishlist
-         [:button (str "You have " (count @wishlist-count) " wish" (when (> (count @wishlist-count) 1) "es"))]])])))
+         [:button (str "You have " @wishlist-count " wish" (when (> @wishlist-count 1) "es"))]])])))
 
 (defn error []
   [:div.error

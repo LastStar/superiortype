@@ -21,6 +21,7 @@
 (def clear "rgba(0, 0, 0, 0)")
 (def yellow "#fffd38")
 (def red "#f00")
+(def violet "#4600a0")
 
 (def default-margin
   {:margin (rem 2)})
@@ -43,7 +44,8 @@
   ([] thin-border black)
   ([color] (str "thin solid " color)))
 (def wish-button
-  (merge {:padding "0.35rem 1rem"
+  (merge
+   {:padding "0.35rem 1rem"
    :color black
    :background-color "white"
    :border-radius "1rem"
@@ -58,12 +60,16 @@
   [:h1 :h2 :h3 :h4 :h5 :a :a:hover :select :input
    {:font-family "VeganSans"
     :border "none"
+    :padding 0
+    :margin 0
     :line-height 1.2}]
   [:a
    {:color "black"
     :text-decoration "none"
     :font-weight "normal"}]
-  [:ul {:list-style-type "none"}]
+  [:ul
+   {:list-style-type "none"
+    :-webkit-padding-start 0}]
   [:input:focus :button:focus :select:focus {:outline "none"}]
   ["::-webkit-input-placeholder" {:color black}]
   ["::-moz-placeholder" {:color black}]
@@ -173,12 +179,6 @@
   [:100% {:transform "translate(50vw, 40vh) scale(3)"
           :fill white}])
 
-(defkeyframes address-slide
-  [:0% {:transform "translateX(55rem)"}]
-  [:85% {:transform "translateX(-2rem)"}]
-  [:90% {:transform "translateX(1.5rem)"}]
-  [:100% {:transform "translateX(0rem)"}])
-
 (defkeyframes rainbow
   [:0% {:fill dark-blue :transform "translate(3vw, 95vh) scale(1)"}]
   [:40% {:fill red :transform "translate(3vw, 93vh) scale(1.2)"}]
@@ -275,7 +275,6 @@
   bounce-bottom-left
   bounce-bottom-right
   rainbow
-  address-slide
   ;; Partials
   basic
   fonts
@@ -724,5 +723,62 @@
          {:border "none"
           :padding 0
           :margin 0
-          :width "100%"}]]]]])
+          :width "100%"}]]]
+      [:section#custom
+       {:background-color dark-grey
+        :float "left"}
+       [:header
+        [:h2
+         (font larger-size)
+         {:color violet
+          :width "80%"
+          :margin "0 10%"
+          :padding-top (rem 6)
+          :padding-bottom (rem 2)
+          :font-weight "normal"}]]
+       [:div.text
+        {:width "40%"
+         :margin "0 10% 0 10%"
+         :float "left"}
+        [:p (font bigger-size)
+         [:span.email
+          {:margin-top "1rem"}
+          [:a
+           {:padding "0.35rem 1rem"
+            :display "inline-block"
+            :color white
+            :border-radius "1rem"
+            :background-color "black"}
+           [:&:hover
+            {:background-color "white !important"
+             :color "black !important"}]]]]]
+       [:ul.advantages
+        {:width "30%"
+         :margin "0 10% 0 0"
+         :float "left"}
+        [:li {:margin "0 0 2rem 0"}
+         [:&:before
+          (font bigger-size)
+          {:content "\"• \""}]
+         [:&.red:before {:color red}]
+         [:&.yellow:before {:color yellow}]]]
+       [:div.cases
+        {:clear "both"
+         :font-family "VeganSans"}
+        [:&>div
+         {          :margin-bottom "4rem"}
+         [:&.fade {:opacity 0.4}]
+         [:h3
+          (font monster-size)
+          {:margin 0
+           :padding 0}]
+         [:div.details
+          {:width "80%"
+           :margin "0 10% 0 10%"
+           :display "flex"
+           :justify-content "space-between"}
+          [:&>div
+           {:margin "2rem 1rem"
+            :font-family "VeganSans"}]]
+         [:img {:width "100%"}]]]]]])
 

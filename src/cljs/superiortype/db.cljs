@@ -48,6 +48,28 @@
     :glyphs 848
     :details "The inspiration source for the Vegan was the Vega type drawn by the Czech typographer and font designer Stanislav Maršo. The original design used highl y shaded character design with a lightly extended duct.\nAs the type needs to be used both for displays and texts, some radical changes in the drawing design and structure were necessary; I achieved this by optical thinning and darker sha ding of individual characters.\nThe result is a type that saves space when longer texts are being set and, thanks to the shading, is perfectly legible even in smaller sizes and, in caption sizes, unmistakable in appearance."}})
 
+(def customs
+  {:negramot
+    {:id "negramot"
+     :name "Negramot"
+     :release "2014"
+     :description ""}
+   :signer
+    {:id "signer"
+     :name "Signer"
+     :release "2012-2013"
+     :description "Type family with six weights for Czech Design.cz"}
+   :kendo
+    {:id "kendo"
+     :name "Kendo"
+     :release "2014"
+     :description ""}
+   :tungsten
+    {:id "tungsten"
+     :name "TUNGSTEN"
+     :release "2014"
+     :description ""}})
+
 (def default-db
   {:fonts fonts
    :font-id nil
@@ -66,4 +88,6 @@
    :show-controlls false
    :address-class "hidden"
    :charset-position "relative"
-   :wishlist #{}})
+   :wishlist #{}
+   :customs customs
+   :selected-custom nil})

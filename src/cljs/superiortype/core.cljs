@@ -8,6 +8,7 @@
             [superiortype.utils :refer [scroll-body]]
             [superiortype.views :refer [header error]]
             [superiortype.foundry :as foundry]
+            [superiortype.custom :as custom]
             [superiortype.font :as font]
             [superiortype.home :as home]
             [superiortype.handlers]
@@ -25,6 +26,10 @@
 (defmethod current-page :foundry []
   (scroll-body)
   [foundry/page])
+
+(defmethod current-page :custom []
+  (scroll-body)
+  [custom/page])
 
 (defmethod current-page :font []
   [font/page])
@@ -53,6 +58,9 @@
 
   (defroute "/foundry" []
     (dispatch [:page-changed :foundry]))
+
+  (defroute "/custom" []
+    (dispatch [:page-changed :custom]))
 
   (defroute "/font/:id" [id]
     (do

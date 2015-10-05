@@ -126,3 +126,13 @@
  :address-class-changed
   (fn [app-state [_ new-value]]
     (assoc app-state :address-class new-value)))
+
+(register-handler
+ :custom-selected
+  (fn [app-state [_ custom]]
+    (assoc app-state :selected-custom custom)))
+
+(register-handler
+ :custom-deselected
+  (fn [app-state [_]]
+    (assoc app-state :selected-custom nil)))

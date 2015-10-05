@@ -96,3 +96,14 @@
  :wishlist-count
   (fn [db [_]]
     (reaction (count (@db :wishlist)))))
+
+(register-sub
+ :customs
+  (fn [db [_]]
+    (reaction (@db :customs))))
+
+(register-sub
+ :selected-custom
+  (fn [db [_]]
+    (reaction (@db :selected-custom))))
+
