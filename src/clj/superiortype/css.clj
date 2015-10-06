@@ -585,7 +585,7 @@
        wish-box]
      [:section#styles
       [:ul.styles
-       {:padding-top (rem 11)}]]
+       {:padding-top (rem 8)}]]
      [:section#glyphs
       bigger-margin
       [:select
