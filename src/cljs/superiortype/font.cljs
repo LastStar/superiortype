@@ -49,25 +49,25 @@
 (defn wish-box [wishing-one]
   [:div.wish-box
    [:div.demo
-    {:on-click #(dispatch [:add-to-wishlist wishing-one :demo])}
+    {:on-click #(dispatch [:add-to-wish-list wishing-one :demo])}
     [:h5 "Demo"]
     [:div.price "Free"]]
    [:div.basic
-    {:on-click #(dispatch [:add-to-wishlist wishing-one :basic])}
+    {:on-click #(dispatch [:add-to-wish-list wishing-one :basic])}
     [:h5 "Basic"]
     [:div.price "From $30"]
     [:div.description
      [:h6 "Standart font encoding"]
      [:p "Uppercase, Lowercase, Ligatures, Currency, Numerals, Fractions, Mathematical, Punctuations"]]]
    [:div.premium
-    {:on-click #(dispatch [:add-to-wishlist wishing-one :premium])}
+    {:on-click #(dispatch [:add-to-wish-list wishing-one :premium])}
     [:h5 "Premium"]
     [:div.price "From $50"]
     [:div.description
      [:h6 "Extended font encoding"]
      [:p "Uppercase, Lowercase, Smallcaps, Extended Ligatures, Superscript, Subscript, Extend Currency, Extended Numerals, Extended Fractions, Mathematical, Punctuations, Arrows"]]]
    [:div.superior
-    {:on-click #(dispatch [:add-to-wishlist :superior])}
+    {:on-click #(dispatch [:add-to-wish-list :superior])}
     [:h5 "Superior"]
     [:div.price "$1920"]
     [:div.description
@@ -281,8 +281,9 @@
 
 (defn page []
   (when-not (deref (subscribe [:listening :font])) (listen!))
-  (let [wishing-one (subscribe [:wishing])]
-    [:div
+  (let [showing-wist-list (subscribe [:showing-wish-list])
+        wishing-one (subscribe [:wishing])]
+    [:div {:class (and @showing-wist-list "fade")}
      [font-header]
      [styles-section]
      (when-not @wishing-one

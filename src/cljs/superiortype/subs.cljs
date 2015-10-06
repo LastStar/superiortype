@@ -88,14 +88,19 @@
     (reaction (@db :address-class))))
 
 (register-sub
-  :charset-position
+ :charset-position
   (fn [db [_]]
     (reaction (@db :charset-position))))
 
 (register-sub
- :wishlist-count
+ :wish-list
   (fn [db [_]]
-    (reaction (count (@db :wishlist)))))
+    (reaction (@db :wish-list))))
+
+(register-sub
+ :showing-wish-list
+  (fn [db [_]]
+    (reaction (@db :showing-wish-list))))
 
 (register-sub
  :customs

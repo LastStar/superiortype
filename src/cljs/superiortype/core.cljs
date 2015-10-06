@@ -6,7 +6,7 @@
             [goog.events :as events]
             [goog.history.EventType :as EventType]
             [superiortype.utils :refer [scroll-body]]
-            [superiortype.views :refer [header error]]
+            [superiortype.views :refer [header cart error]]
             [superiortype.foundry :as foundry]
             [superiortype.custom :as custom]
             [superiortype.font :as font]
@@ -79,11 +79,18 @@
 (defn mount-header []
   (reagent/render [header] (.getElementById js/document "header")))
 
-(defn mount-root []
+(defn mount-cart []
+  (reagent/render [cart] (.getElementById js/document "cart")))
+
+(defn mount-app []
   (reagent/render [current-page] (.getElementById js/document "app")))
+
+(defn mount-root []
+  (mount-header)
+  (mount-cart)
+  (mount-app))
 
 (defn ^:export main []
   (re-frame/dispatch-sync [:initialize-db])
   (app-routes)
-  (mount-header)
   (mount-root))

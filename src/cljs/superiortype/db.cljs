@@ -70,6 +70,20 @@
      :release "2014"
      :description ""}})
 
+(def lsk "superior-wish-list")     ;; localstore key
+
+(defn ls->wish-list
+  "Read in wish list from LS, and process into a map we can merge into app-db."
+  []
+  (some->> (.getItem js/localStorage lsk)
+           (cljs.reader/read-string)   ;; stored as an EDN map.
+           (hash-map :wish-list)))         ;; access via the :wish-list key
+
+(defn wish-list->ls!
+  "Puts wish list into localStorage"
+  [wish-list]
+  (.setItem js/localStorage lsk (str wish-list)))   ;; sorted-map writen as an EDN map
+
 (def default-db
   {:fonts fonts
    :font-id nil
@@ -88,6 +102,7 @@
    :show-controlls false
    :address-class "hidden"
    :charset-position "relative"
-   :wishlist #{}
+   :wish-list {}
+   :showing-wish-list false
    :customs customs
    :selected-custom nil})

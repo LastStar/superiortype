@@ -14,12 +14,14 @@
 (def black "#000")
 (def white "#fff")
 (def light-blue "#00ffff")
+(def lightest-blue "#dcffff")
 (def green "#00ffa0")
 (def light-green "#00ffa0")
 (def blue "#0ff")
 (def dark-blue "#5F00FF")
 (def clear "rgba(0, 0, 0, 0)")
 (def yellow "#fffd38")
+(def light-yellow "#ffff96")
 (def red "#f00")
 (def violet "#4600a0")
 
@@ -287,16 +289,14 @@
     [:header#header
      {:width "100%"
       :position "fixed"
-      :left "-1rem"
+      :top 0
       :background-color clear
       :z-index 10
+      :height (rem 2)
       :padding "1rem 2rem 0"
-      :height (rem 2)}
-     [:div.wrap
-      {:width "100%"
-       :display :flex
-       :flex-direction "row"
-       :justify-content "space-between"}
+      :display :flex
+      :flex-direction "row"
+      :justify-content "space-between"}
       [:div.menu
        {:padding "0.25rem 1rem 0.25rem 1rem"
         :border-radius "1rem"}
@@ -313,11 +313,64 @@
            {:display "inline-block"
             :padding-left "1rem"}
            [:&:first-child {:padding-left "3rem"}]]
-        [:&.visible {:animation [[slide-right "250ms" :ease :forwards]]}]]]
-      [:div#wishlist
-       {:margin-right "3rem"}
-       [:button wish-button]]]]
+        [:&.visible {:animation [[slide-right "250ms" :ease :forwards]]}]]]]
+    [:section#cart
+     {:margin-top "3rem"}
+     [:button.wish-list-button
+       wish-button
+       {:position "fixed"
+        :right "2rem"
+        :top "1rem"
+        :z-index 20}]
+     [:div.wish-list
+      {:background-color lightest-blue
+       :box-shadow "rgba(0,0,0,0.4) 0px 0.125rem 1rem -0.5rem"
+       :position "fixed"
+       :z-index 20
+       :width "100%"}
+      [:h2
+       {:margin "3rem 3rem 1rem"}]
+      [:button.back-button
+       wish-button
+       {:margin "3rem 2rem"
+        :float "right"}]
+      [:table
+       {:border-collapse "collapse"
+        :margin "2rem 2rem 2rem 3rem"
+        :width "80%"}
+       [:tbody>tr:last-child
+        [:th :td {:border-bottom "none"}]]
+       [:th :td
+        {:font-weight "normal"
+         :text-align "left"
+         :padding "1rem"
+         :border-bottom "thin solid black"}
+        [:&.name (font bigger-size)]
+        [:&.price :&.remove {:text-align "right"}]
+        [:&.total
+         (font bigger-size)
+         {:text-align "right"}]
+        [:&.checkout
+         {:text-align "right"}
+         [:button
+          (font bigger-size)
+          {:border-radius "1rem"
+           :padding "0.55rem 1rem"
+           :background white}
+          [:&:hover {:background light-yellow}]]]
+        [:button
+         (font default-size)
+         {:border "none"
+          :background "none"
+          :cursor "pointer"
+          :font-family "VeganSans"}]
+        [:select
+         ^:prefix {:appearance "none"}
+         (font default-size)
+         {:padding "0.5rem 2rem 0.5rem 1rem"
+          :background "url('/img/down-arrow.svg') #fff no-repeat center right 0.5rem"}]]]]]
     [:main#app
+     [:&>.fade {:display "none"}]
      [:svg
       {:width "100vw"
        :height "100vh"}

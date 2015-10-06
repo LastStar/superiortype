@@ -1,14 +1,14 @@
 (ns superiortype.handlers
-    (:require [re-frame.core :as re-frame :refer [register-handler dispatch subscribe]]
+    (:require [re-frame.core :as re-frame :refer [register-handler dispatch subscribe path trim-v after]]
               [superiortype.utils :refer [no-scroll-body scroll-body scroll-top
                                           scroll-to element get-top]]
               [superiortype.font :as font]
-              [superiortype.db :as db]))
+              [superiortype.db :as db :refer [ls->wish-list wish-list->ls!]]))
 
 (register-handler
  :initialize-db
  (fn  [_ _]
-   db/default-db))
+   (merge db/default-db (ls->wish-list))))
 
 (register-handler
  :page-changed
@@ -116,13 +116,6 @@
     (assoc app-state :show-controlls new-value)))
 
 (register-handler
- :add-to-wishlist
-  (fn [app-state [_ wishing-one package]]
-    (scroll-body)
-    (dispatch [:wishing-canceled])
-    (assoc app-state :wishlist (conj (:wishlist app-state) [wishing-one package]))))
-
-(register-handler
  :address-class-changed
   (fn [app-state [_ new-value]]
     (assoc app-state :address-class new-value)))
@@ -136,3 +129,62 @@
  :custom-deselected
   (fn [app-state [_]]
     (assoc app-state :selected-custom nil)))
+
+(register-handler
+ :show-wish-list
+  (fn [app-state [_]]
+    (no-scroll-body)
+    (assoc app-state :showing-wish-list true)))
+
+(register-handler
+ :hide-wish-list
+  (fn [app-state [_]]
+    (scroll-body)
+    (assoc app-state :showing-wish-list false)))
+
+(def ->ls (after wish-list->ls!))    ;; middleware to store wish-list into local storage
+
+;; middleware for any handler that manipulates wish-list
+(def wish-list-middleware [;check-schema-mw ;; after ever event handler make sure the schema is still valid
+                      (path :wish-list)   ;; 1st param to handler will be value from this path
+                      ->ls            ;; write to localstore each time
+                      trim-v])        ;; remove event id from event vec
+
+(register-handler
+ :add-to-wish-list
+  wish-list-middleware
+  (fn [wish-list [id package]]
+    (scroll-body)
+    (dispatch [:wishing-canceled])
+    (assoc wish-list id {:package package})))
+
+(register-handler
+ :change-package-in-wish-list
+  wish-list-middleware
+  (fn [wish-list [id package]]
+    (assoc wish-list id {:package package})))
+
+(register-handler
+ :change-license-in-wish-list
+  wish-list-middleware
+  (fn [wish-list [id license]]
+    (assoc wish-list id {:license license})))
+
+(register-handler
+ :change-users-in-wish-list
+  wish-list-middleware
+  (fn [wish-list [id users]]
+    (assoc wish-list id {:users users})))
+
+(register-handler
+ :remove-all-from-wishlist
+  wish-list-middleware
+  (fn [_]
+    (dispatch [:hide-wish-list])
+    {}))
+
+(register-handler
+ :remove-from-wishlist
+  wish-list-middleware
+  (fn [wish-list [item]]
+      (assoc wish-list dissoc item)))
