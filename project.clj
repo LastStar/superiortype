@@ -18,7 +18,8 @@
   :garden {:builds [{:id "screen"
                      :source-paths ["src/clj"]
                      :stylesheet superiortype.css/site
-                     :compiler {:output-to "resources/public/css/compiled/site.css"
+                     :compiler {:vendors ["webkit"]
+                                :output-to "resources/public/css/compiled/site.css"
                                 :pretty-print? true}}]}
 
   :figwheel {:css-dirs ["resources/public/css/compiled"]}
