@@ -147,6 +147,7 @@
 (defkeyframes header-slide-up
   [:0% {:height "8rem"}]
   [:60% {:height "7rem"}]
+  [:90% {:height "5.5rem"}]
   [:100% {:height "5em"}])
 
 (defkeyframes slide-right
@@ -621,17 +622,18 @@
            :height "auto"
            :float "right"
            :display "block"
+           :transition "transform 250ms"
            :transform "translateY(4rem)"}
           wish-button-hover]
-          [:&.smaller:hover
-           {:transform "scale(0.8)"
-            :transition "transform 250ms"}]
-          [:&.list:hover
-           {:transform "translateY(0.3rem)"
-            :transition "transform 250ms"}]
-         [:&.bigger:hover
-           {:transform "scale(1.2)"
-            :transition "transform 250ms"}] ]
+         [:&.smaller
+          [:&:hover
+           {:transform "scale(0.8)"}]
+          [:&:active
+           {:transform "scale(1.0)"}]]
+         [:&.list:hover {:transform "translateY(0.3rem)"}]
+         [:&.bigger
+          [:&:hover {:transform "scale(1.2)"}]
+          [:&:active {:transform "scale(1.0)"}]]]
          [:a (font smaller-size) ]
         [:span
          {:display "inline-block"
@@ -658,7 +660,7 @@
        wish-box]
      [:section#styles
       [:ul.styles
-       {:padding-top (rem 8)}]]
+       {:padding-top (rem 11)}]]
      [:section#glyphs
       bigger-margin
       [:select

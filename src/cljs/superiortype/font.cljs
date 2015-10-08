@@ -156,7 +156,7 @@
             {:href (str "#/font/" id "/" sec)
              :class (str sec (when (= sec current-section) " active"))
              :on-click (fn [e]
-                         (smooth-scroll (get-top (element sec)) 2000)
+                         (smooth-scroll (+ 8 (get-top (element sec))) 2000)
                          (.stopPropagation e))}
             (capitalize sec)])
          [:a.specimen {:href (str "/pdf/superior-type-" id ".pdf")} "Specimen"]])
