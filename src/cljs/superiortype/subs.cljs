@@ -112,3 +112,13 @@
   (fn [db [_]]
     (reaction (@db :selected-custom))))
 
+(register-sub
+ :checkout-started
+ (fn [db [_]]
+   (reaction (@db :checkout-started))))
+
+(register-sub
+ :eula-checked
+ (fn [db [_]]
+   (reaction (@db :eula-checked))))
+

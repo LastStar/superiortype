@@ -70,8 +70,9 @@
            :on-click #(scroll-to (get-top (element "fonts")))}] ]))))
 
 (defn page []
-  (let [fonts (subscribe [:fonts])]
-    [:div
+  (let [showing-wist-list (subscribe [:showing-wish-list])
+        fonts (subscribe [:fonts])]
+    [:div {:class (and @showing-wist-list "fade")}
      [show-case-svg]
      [:ul#fonts
        (for [current-font (vals @fonts)]

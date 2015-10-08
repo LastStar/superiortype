@@ -24,6 +24,7 @@
 (def light-yellow "#ffff96")
 (def red "#f00")
 (def violet "#4600a0")
+(def orange "#ff7d64")
 
 (def default-margin
   {:margin (rem 2)})
@@ -48,17 +49,22 @@
 (def wish-button
   (merge
    {:padding "0.35rem 1rem"
-   :color black
-   :background-color "white"
-   :border-radius "1rem"
-   :border (thin-border light-blue)
-   :font-family "VeganSans"
-   :font-weight "normal"}
-   (font default-size)))
+    :cursor "pointer"
+    :color black
+    :background-color "white"
+    :border-radius "1rem"
+    :border (thin-border light-blue)
+    :font-family "VeganSans"
+    :font-weight "normal"}
+    (font default-size)))
+
+(def wish-button-hover
+  [:&:hover
+   {:background-color light-blue}])
 
 (defstyles basic
   [:html
-   (font (u/px 16))]
+   (font (u/px 21))]
   [:h1 :h2 :h3 :h4 :h5 :a :a:hover :select :input
    {:font-family "VeganSans"
     :border "none"
@@ -140,8 +146,8 @@
 ;; FIXME move to its own file animation
 (defkeyframes header-slide-up
   [:0% {:height "8rem"}]
-  [:80% {:height "7rem"}]
-  [:100% {:height "6rem"}])
+  [:60% {:height "7rem"}]
+  [:100% {:height "5em"}])
 
 (defkeyframes slide-right
   [:0% {:transform "translateX(-4rem)" :opacity 0}]
@@ -297,47 +303,114 @@
       :display :flex
       :flex-direction "row"
       :justify-content "space-between"}
-      [:div.menu
-       {:padding "0.25rem 1rem 0.25rem 1rem"
-        :border-radius "1rem"}
-       [:&.opaque {:background-color "rgba(255, 255, 255, 0.9)"}]
-       [:h1
-        {:display "inline-block"
-         :margin 0}
-        (font bigger-size)
-        [:a
-         {:font-weight "bold"}]]
-       [:nav
-        {:animation [[slide-left "2500ms" :ease :forwards]] :display "inline-block"}
-        [:a
-           {:display "inline-block"
-            :padding-left "1rem"}
-           [:&:first-child {:padding-left "3rem"}]]
-        [:&.visible {:animation [[slide-right "250ms" :ease :forwards]]}]]]]
+
+     [:div.menu
+      {:padding "0.25rem 1rem 0.25rem 0"
+       :border-radius "1rem"
+       :width "26rem"}
+      [:&.small
+       {:height "1.5rem"}
+       [:h1 (font default-size)]
+       [:nav (font smaller-size)]]
+      [:&.opaque {:background-color "rgba(255, 255, 255, 0.9)"}]
+      [:h1
+       {:transition-property "font-size"
+        :transition-duration "450ms"
+        :display "inline-block"
+        :margin 0}
+       (font bigger-size)
+       [:a
+        {:font-weight "bold"}]]
+      [:nav
+       {:animation [[slide-left "2500ms" :ease :forwards]] :display "inline-block"}
+       [:a
+          {:display "inline-block"
+           :padding-left "1rem"}
+          [:&:first-child {:padding-left "3rem"}]]
+       [:&.visible {:animation [[slide-right "250ms" :ease :forwards]]}]]]]
     [:section#cart
-     {:margin-top "3rem"}
+     {:margin-top "3rem"
+      :background-color clear
+      :position "absolute"}
      [:button.wish-list-button
        wish-button
-       {:position "fixed"
+       {:transition-property "font-size"
+        :transition-duration "450ms"
+        :position "fixed"
         :right "2rem"
         :top "1rem"
-        :z-index 20}]
+        :z-index 20}
+      wish-button-hover
+      [:&.small (font smaller-size)]]
      [:div.wish-list
       {:background-color lightest-blue
        :box-shadow "rgba(0,0,0,0.4) 0px 0.125rem 1rem -0.5rem"
        :position "fixed"
+       :top 0
        :z-index 20
        :width "100%"}
+      [:&.checking-out
+       {:background-color light-yellow
+        :height "100%"
+        :overflow "scroll"}
+       [:table
+        {:width "45%"
+         :transition-delay "0ms"
+         :float "left"}]
+       [:form
+        {:margin-left "3%"
+         :width "45%"
+         :float "left"}
+        [:.column
+         {:width "50%"
+          :float "left"}
+         [:label
+          {:display "block"}
+          [:&.grey {:color grey}]
+          [:input
+           (font bigger-size)
+           {:display "block"
+            :border-radius "0.5rem"
+            :padding "1rem"
+            :margin-bottom "1rem"}]
+          [:select
+           (font default-size)
+           ^:prefix {:appearance "none"}
+           {:background "url('/img/down-arrow.svg') #fff no-repeat center right 0.5rem"
+            :display "block"
+            :width "90%"
+            :border-radius "0.25rem"
+            :margin-bottom "1rem"
+            :background-color white
+            :padding "1rem 2rem 1rem 1rem"}]]
+         [:div.pay-box
+          {:margin-top "8rem"}
+          [:input
+           ^:prefix {:appearance "none"}
+           {:background "url('/img/check-unchecked.svg') no-repeat center"}
+           [:&:checked {:background "url('/img/check-checked.svg') no-repeat center"}]]
+          [:button
+           (font bigger-size)
+           {:padding "0.25rem 1rem 0.35rem"
+            :color black
+            :border-radius "1rem"
+            :border [["thin solid" orange]]
+            :background-color white
+            :margin "3rem 0"}]]]]]
       [:h2
        {:margin "3rem 3rem 1rem"}]
       [:button.back-button
        wish-button
        {:margin "3rem 2rem"
-        :float "right"}]
+        :float "right"}
+       wish-button-hover]
       [:table
-       {:border-collapse "collapse"
+       {:transition-property "width"
+        :transition-duration "250ms"
+         :transition-delay "50ms"
+        :border-collapse "collapse"
         :margin "2rem 2rem 2rem 3rem"
-        :width "80%"}
+        :width "90%"}
        [:tbody>tr:last-child
         [:th :td {:border-bottom "none"}]]
        [:th :td
@@ -370,7 +443,9 @@
          {:padding "0.5rem 2rem 0.5rem 1rem"
           :background "url('/img/down-arrow.svg') #fff no-repeat center right 0.5rem"}]]]]]
     [:main#app
-     [:&>.fade {:display "none"}]
+     [:&>.fade
+      {:opacity 0.4}
+      [:button {:display "none !important"}]]
      [:svg
       {:width "100vw"
        :height "100vh"}
@@ -410,11 +485,7 @@
         :animation [["rainbow" "4s" :infinite]]}]
       ]
      [:header#font
-      {:transition-property "opacity, background-color"
-       :transition-duration "500ms"
-       :transition-delay "100ms"
-       :opacity "1"
-       :display "flex"
+      {:display "flex"
        :justify-content "space-between"
        :padding "1rem 0 2rem"
        :align-items "flex-end"
@@ -427,33 +498,31 @@
        :background-color "white"
        }
       [:&.small
-       {:box-shadow "none"
-        :background-color clear
-        :opacity "0.2"
-        :animation [[header-slide-up "500ms" :ease :forwards]]
-        :transition-delay "750ms"
-        :transition-duration "500ms"
-        }
+        (font smaller-size)
+       {:padding-bottom "1rem"
+        :animation [[header-slide-up "500ms" :ease :forwards]]}
        [:&:hover :&.hover
-        {:box-shadow "rgba(0,0,0,0.08) 0px 0.125rem 1rem 0px"
-         :opacity "0.99"
-         :transition-delay "100ms"
-        :background-color white}
         [:&.fade
          {:display "none"
           :opacity 0}]]
        [:nav.fonts
-         [:h2 (font larger-size)]
-         [:a {:height "1.5rem"
-              :margin-bottom "0.75rem"}]]
+         [:h2 (font bigger-size)]
+         [:a
+          (font smaller-size)
+          {:height "1rem"
+           :width "0.75rem"
+           :margin-bottom "0.5rem"}]]
        [:button
-        {:background-color clear}]]
+        (font smaller-size)
+        {:margin-bottom 0}]
+       [:nav.sections
+        {:margin-bottom 0}]]
       [:&.fade
        {:display "none"
         :opacity 0}]
       [:nav.fonts
         {:display "flex"
-         :margin-left "2rem"
+         :margin-left "0.25rem"
          :align-items "flex-end"}
         [:h2
          (font huge-size)
@@ -464,7 +533,8 @@
           :margin 0
           :font-family "inherit"}]
          [:a
-          {:transition-property "height, margin-bottom"
+          {:transition-property "width, height, margin-bottom"
+           :transition-duration "450ms"
            :background-position-y "0"
            :background-position-x "50%"
            :background-repeat "no-repeat"
@@ -480,19 +550,20 @@
            :font-size 0}
           [:&.previous
            {:background-image "url(/img/previous.svg)"
-            :margin-right "2rem"
-            :margin-left  "-1rem"}]
+            :margin-left  "0rem"}]
           [:&.next
            {:background-image "url(/img/next.svg)"
-            :margin-left "2rem"}]]]
+            :margin-right "0.25rem"}]]]
       [:nav.sections
-        {:display "flex"
+        {:transition-property "height, margin-bottom"
+         :transition-duration "450ms"
+         :display "flex"
          :align-items "flex-start"
          :justify-content "space-between"
          :margin-bottom "1rem"}
        [:a
         {:font-family "VeganSans"
-         :padding "0.5rem 1rem"
+         :padding "0.33rem 1rem"
          :text-align "center"
          :border-radius "1rem"
          :transition-property "background-color"
@@ -505,7 +576,8 @@
       [:button
        wish-button
        {:margin-bottom "1rem"
-        :margin-right "2rem"}]]
+        :margin-right "2rem"}
+       wish-button-hover]]
      wish-box
      [:&>div>div>.wish-box:last-child
       {:top "9rem"
@@ -549,7 +621,8 @@
            :height "auto"
            :float "right"
            :display "block"
-           :transform "translateY(4rem)"}]
+           :transform "translateY(4rem)"}
+          wish-button-hover]
           [:&.smaller:hover
            {:transform "scale(0.8)"
             :transition "transform 250ms"}]

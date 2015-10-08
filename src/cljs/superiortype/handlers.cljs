@@ -12,10 +12,11 @@
 
 (register-handler
  :page-changed
-  (fn [app-state [_ page]]
-    (when-not (= (deref (subscribe [:current-page])) page)
+  (path :current-page)
+  (fn [current-page [_ page]]
+    (when-not (= current-page page)
       (scroll-top))
-    (assoc app-state :current-page page)))
+    page))
 
 (register-handler
  :menu-visibility-changed
@@ -107,7 +108,7 @@
 (register-handler
  :step-changed
   (fn [app-state [_ new-value max]]
-    (let [new-step (if (>= new-value max) 0 (if (pos? new-value) (- max 1) new-value))]
+    (let [new-step (if (>= new-value max) 0 (if (not (pos? new-value)) (- max 1) new-value))]
       (assoc app-state :step new-step))))
 
 (register-handler
@@ -132,15 +133,18 @@
 
 (register-handler
  :show-wish-list
-  (fn [app-state [_]]
+  (path :showing-wish-list)
+  (fn [_]
     (no-scroll-body)
-    (assoc app-state :showing-wish-list true)))
+    true))
 
 (register-handler
  :hide-wish-list
-  (fn [app-state [_]]
+  (path :showing-wish-list)
+  (fn [_]
     (scroll-body)
-    (assoc app-state :showing-wish-list false)))
+    (dispatch [:checkout-canceled])
+    false))
 
 (def ->ls (after wish-list->ls!))    ;; middleware to store wish-list into local storage
 
@@ -154,9 +158,10 @@
  :add-to-wish-list
   wish-list-middleware
   (fn [wish-list [id package]]
-    (scroll-body)
     (dispatch [:wishing-canceled])
-    (assoc wish-list id {:package package})))
+    (assoc wish-list id {:package package
+                         :license :print
+                         :users :ones})))
 
 (register-handler
  :change-package-in-wish-list
@@ -187,4 +192,22 @@
  :remove-from-wishlist
   wish-list-middleware
   (fn [wish-list [item]]
-      (assoc wish-list dissoc item)))
+    (if (= (count wish-list) 1)
+      (dispatch [:remove-all-from-wishlist])
+      (dissoc wish-list item))))
+
+(register-handler
+ :checkout-started
+  (path :checkout-started)
+  (fn [_] true))
+
+(register-handler
+ :checkout-canceled
+  (path :checkout-started)
+  (fn [_] false))
+
+(register-handler
+ :toggle-eula
+ (path :eula-checked)
+  (fn [checked] (not checked)))
+

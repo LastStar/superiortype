@@ -23,8 +23,9 @@
 
 (defn page []
   (when-not (deref (subscribe [:listening :foundry])) (listen!))
-  (let [address-class (subscribe [:address-class])]
-  [:section#foundry
+  (let [showing-wist-list (subscribe [:showing-wish-list])
+        address-class (subscribe [:address-class])]
+  [:section#foundry {:class (and @showing-wist-list "fade")}
    [:header
     [:h2 "Superior Type is an independent Type Foundry based in Prague, Czech Republic"]]
    [:div.about-address

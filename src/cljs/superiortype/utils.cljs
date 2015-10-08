@@ -1,4 +1,7 @@
-(ns superiortype.utils)
+(ns superiortype.utils
+  (:require-macros [cljs.core.async.macros :refer [go-loop]])
+  (:require
+    [cljs.core.async :refer [timeout]]))
 
 (def modular 1.3333)
 
@@ -21,6 +24,8 @@
        (* (header-bottom) 1.1))
     0))
 
+;; Scrolling
+
 (defn scroll-to [top]
    (.scrollTo js/window 0 top))
 
@@ -36,3 +41,23 @@
 
 (defn scroll-top []
   (scroll-to 0))
+
+(defn- smooth-step [start end point]
+  (let [x (/ (- point start) (- end start))]
+    (* (* x x) (- 3 (* 2 x)))))
+
+(defn smooth-scroll [target duration]
+  (let [start-time (.now js/Date)
+        end-time (+ start-time duration)
+        start-top (.-scrollY js/window)
+        distance (- target start-top)
+        step-function (partial smooth-step start-time end-time)]
+    (.log js/console distance duration)
+    (go-loop []
+      (let [now (.now js/Date)
+            point (step-function now)
+            frame-top (.round js/Math (+ start-top (* distance point)))]
+        (<! (timeout 1))
+        (when (pos? frame-top) (scroll-to frame-top))
+        (when (> end-time now)
+          (recur))))))

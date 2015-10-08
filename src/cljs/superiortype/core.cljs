@@ -21,14 +21,17 @@
 (defmulti current-page #(deref (subscribe [:current-page])))
 
 (defmethod current-page :home []
+  (dispatch [:hide-wish-list])
   (scroll-body)
   [home/page])
 
 (defmethod current-page :foundry []
+  (dispatch [:hide-wish-list])
   (scroll-body)
   [foundry/page])
 
 (defmethod current-page :custom []
+  (dispatch [:hide-wish-list])
   (scroll-body)
   [custom/page])
 

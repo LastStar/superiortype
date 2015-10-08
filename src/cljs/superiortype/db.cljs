@@ -104,5 +104,7 @@
    :charset-position "relative"
    :wish-list {}
    :showing-wish-list false
+   :checkout-started false
+   :eula-checked false
    :customs customs
    :selected-custom nil})

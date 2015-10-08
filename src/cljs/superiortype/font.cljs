@@ -3,7 +3,8 @@
   (:require
     [superiortype.events :refer [scroll-chan-events]]
     [superiortype.utils :refer [element get-bottom get-top header-bottom
-                                section-range scroll-to modular]]
+                                section-range scroll-to modular
+                                smooth-scroll]]
     [re-frame.core :refer [dispatch subscribe]]
     [cljs.core.async :refer [<!]]
     [clojure.string :refer [replace split lower-case capitalize join]]))
@@ -145,8 +146,8 @@
          :class header-class}
         [:nav.fonts {:class id}
          [:a.previous {:href (str "#/font/" previous "/" current-section)} previous]
-         [:h2 name]
-         [:a.next {:href (str "#/font/" next "/" current-section)} next]]
+         [:a.next {:href (str "#/font/" next "/" current-section)} next]
+         [:h2 name]]
       (when-not i-am-wishing
         [:nav.sections
          (for [sec all-sections]
@@ -155,7 +156,7 @@
             {:href (str "#/font/" id "/" sec)
              :class (str sec (when (= sec current-section) " active"))
              :on-click (fn [e]
-                         (scroll-to (get-top (element sec)))
+                         (smooth-scroll (get-top (element sec)) 2000)
                          (.stopPropagation e))}
             (capitalize sec)])
          [:a.specimen {:href (str "/pdf/superior-type-" id ".pdf")} "Specimen"]])
