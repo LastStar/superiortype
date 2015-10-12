@@ -14,8 +14,7 @@
 
 (defn get-top [element]
   (if element
-    (do
-    (- (.-offsetTop element) (header-bottom)))
+    (- (.-offsetTop element) (header-bottom))
     0))
 
 (defn get-bottom [element]
@@ -42,22 +41,29 @@
 (defn scroll-top []
   (scroll-to 0))
 
-(defn- smooth-step [start end point]
-  (let [x (/ (- point start) (- end start))]
-    (* (* x x) (- 3 (* 2 x)))))
+(defn- easing
+  "Modeled after the piecewise quadratic
+   y = (1/2)((2x)^2)               [0, 0.5)
+   y = -(1/2)((2x-1)*(2x-3) - 1)   [0.5, 1]"
+  [start end point]
+  (let [p (/ (- point start) (- end start))]
+    (if (< p 0.5)
+      (* 2 p p)
+      (+ (* 4 p) (* -2 p p) -1))))
 
-(defn smooth-scroll [target duration]
-  (let [start-time (.now js/Date)
+(defn smooth-scroll [element]
+  (let [start-top (.-scrollY js/window)
+        init-distance (- (get-top element) start-top)
+        duration (/ (.abs js/Math init-distance) (if (pos? init-distance) 3 9))
+        start-time (.now js/Date)
         end-time (+ start-time duration)
-        start-top (.-scrollY js/window)
-        distance (- target start-top)
-        step-function (partial smooth-step start-time end-time)]
-    (.log js/console distance duration)
+        step-function (partial easing start-time end-time)]
     (go-loop []
       (let [now (.now js/Date)
             point (step-function now)
+            top (inc (.round js/Math (get-top element)))
+            distance (- top start-top)
             frame-top (.round js/Math (+ start-top (* distance point)))]
         (<! (timeout 1))
         (when (pos? frame-top) (scroll-to frame-top))
-        (when (> end-time now)
-          (recur))))))
+        (when (> end-time now) (recur))))))

@@ -101,7 +101,7 @@
    :step 0
    :show-controlls false
    :address-class "hidden"
-   :charset-position "relative"
+   :charset-visibility "hidden"
    :wish-list {}
    :showing-wish-list false
    :checkout-started false

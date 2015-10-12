@@ -42,7 +42,7 @@
            (when-not (= @header-class "small")
              (dispatch [:header-class-changed "small"])))
          (when-not (= (deref (subscribe [:current-section])) new-section)
-           (dispatch [:section-changed new-section])))
+           (dispatch [:section-scrolled new-section])))
          (recur))))
 
 ;; -------------------------
@@ -52,25 +52,29 @@
    [:div.demo
     {:on-click #(dispatch [:add-to-wish-list wishing-one :demo])}
     [:h5 "Demo"]
-    [:div.price "Free"]]
+    [:div.price
+     [:span "Free"]]]
    [:div.basic
     {:on-click #(dispatch [:add-to-wish-list wishing-one :basic])}
     [:h5 "Basic"]
-    [:div.price "From $30"]
+    [:div.price
+     [:span "From $30"]]
     [:div.description
      [:h6 "Standart font encoding"]
      [:p "Uppercase, Lowercase, Ligatures, Currency, Numerals, Fractions, Mathematical, Punctuations"]]]
    [:div.premium
     {:on-click #(dispatch [:add-to-wish-list wishing-one :premium])}
     [:h5 "Premium"]
-    [:div.price "From $50"]
+    [:div.price
+     [:span "From $50"]]
     [:div.description
      [:h6 "Extended font encoding"]
      [:p "Uppercase, Lowercase, Smallcaps, Extended Ligatures, Superscript, Subscript, Extend Currency, Extended Numerals, Extended Fractions, Mathematical, Punctuations, Arrows"]]]
    [:div.superior
     {:on-click #(dispatch [:add-to-wish-list :superior])}
     [:h5 "Superior"]
-    [:div.price "$1920"]
+    [:div.price
+     [:span "$1920"]]
     [:div.description
      [:p "All three typefaces in the Premium package: Hrot, Kunda Book, Vegan Sans"]
      [:p "+ Our next two released typefaces for free."]]]
@@ -142,7 +146,7 @@
           next (:next @current-font)]
       [:div
        [:header#font
-        {:on-click #(when-not someother-is-wishing (scroll-to (get-top (element "font"))))
+        {:on-click #(when-not someother-is-wishing (smooth-scroll (element "font")))
          :class header-class}
         [:nav.fonts {:class id}
          [:a.previous {:href (str "#/font/" previous "/" current-section)} previous]
@@ -156,7 +160,7 @@
             {:href (str "#/font/" id "/" sec)
              :class (str sec (when (= sec current-section) " active"))
              :on-click (fn [e]
-                         (smooth-scroll (+ 8 (get-top (element sec))) 2000)
+                         ; (smooth-scroll (element sec))
                          (.stopPropagation e))}
             (capitalize sec)])
          [:a.specimen {:href (str "/pdf/superior-type-" id ".pdf")} "Specimen"]])
@@ -192,10 +196,10 @@
             id (:id @current-font)
             charsets (:charsets @current-font)
             selected-charset (deref (subscribe [:selected-charset]))
-            charset-position (subscribe [:charset-position])]
+            charset-visibility (subscribe [:charset-visibility])]
         [:section#glyphs
          [:select
-          {:class @charset-position
+          {:class @charset-visibility
            :defaultValue (and selected-charset (first charsets))
            :on-change #(let [value (-> % .-target .-value)]
                          (dispatch [:charset-selected value]))}

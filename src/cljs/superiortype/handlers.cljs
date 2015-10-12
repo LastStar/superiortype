@@ -1,7 +1,8 @@
 (ns superiortype.handlers
-    (:require [re-frame.core :as re-frame :refer [register-handler dispatch subscribe path trim-v after]]
-              [superiortype.utils :refer [no-scroll-body scroll-body scroll-top
-                                          scroll-to element get-top]]
+    (:require [re-frame.core :as re-frame :refer [register-handler dispatch
+                                                  subscribe path trim-v after]]
+              [superiortype.utils :refer [no-scroll-body scroll-body element
+                                          get-top scroll-top scroll-to smooth-scroll]]
               [superiortype.font :as font]
               [superiortype.db :as db :refer [ls->wish-list wish-list->ls!]]))
 
@@ -14,8 +15,7 @@
  :page-changed
   (path :current-page)
   (fn [current-page [_ page]]
-    (when-not (= current-page page)
-      (scroll-top))
+    (when-not (= current-page page) (scroll-top))
     page))
 
 (register-handler
@@ -29,6 +29,23 @@
     (font/invalidate-sections-ranges)
     (dispatch [:page-changed :font])
     (assoc app-state :font-id new-value)))
+
+(register-handler
+ :section-changed
+  (fn [app-state [_ new-section]]
+    (if (= new-section "glyphs")
+      (dispatch [:charset-visible])
+      (dispatch [:charset-hidden]))
+    (smooth-scroll (element new-section))
+    (assoc app-state :current-section new-section)))
+
+(register-handler
+ :section-scrolled
+  (fn [app-state [_ new-section]]
+    (if (= new-section "glyphs")
+      (dispatch [:charset-visible])
+      (dispatch [:charset-hidden]))
+    (assoc app-state :current-section new-section)))
 
 (register-handler
  :listening
@@ -58,14 +75,6 @@
     (assoc-in app-state [:visible-styles id] visibility)))
 
 (register-handler
- :section-changed
-  (fn [app-state [_ new-section]]
-    (if (= new-section "glyphs")
-      (dispatch [:charset-fixed])
-      (dispatch [:charset-relative]))
-    (assoc app-state :current-section new-section)))
-
-(register-handler
  :add-edited
   (fn [app-state [_ new-edited]]
     (assoc app-state :edited (conj (:edited app-state) new-edited))))
@@ -89,14 +98,14 @@
     (assoc app-state :wishing nil)))
 
 (register-handler
- :charset-fixed
+ :charset-visible
   (fn [app-state [_]]
-    (assoc app-state :charset-position "fixed")))
+    (assoc app-state :charset-position "visible")))
 
 (register-handler
- :charset-relative
+ :charset-hidden
   (fn [app-state [_]]
-    (assoc app-state :charset-position "relative")))
+    (assoc app-state :charset-position "hidden")))
 
 (register-handler
  :charset-selected

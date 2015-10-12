@@ -88,9 +88,9 @@
     (reaction (@db :address-class))))
 
 (register-sub
- :charset-position
+ :charset-visibility
   (fn [db [_]]
-    (reaction (@db :charset-position))))
+    (reaction (@db :charset-visibility))))
 
 (register-sub
  :wish-list

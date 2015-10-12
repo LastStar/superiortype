@@ -29,7 +29,7 @@
 (def default-margin
   {:margin (rem 2)})
 (def bigger-margin
-  {:margin "0 6rem"})
+  {:margin "4rem 6rem 0"})
 (def modular 1.333)
 (def default-size (u/rem 1))
 (def smaller-size (/ default-size modular))
@@ -40,12 +40,16 @@
 (def huge-size (* large-size modular))
 (def epic-size (* huge-size modular))
 (def monster-size (* epic-size modular))
+(def full-width {:width "100%"})
+
 (defn font
   ([] font 1)
   ([size] {:font-size size}))
+
 (defn thin-border
   ([] thin-border black)
   ([color] (str "thin solid " color)))
+
 (def wish-button
   (merge
    {:padding "0.35rem 1rem"
@@ -191,8 +195,15 @@
 (defkeyframes rainbow
   [:0% {:fill dark-blue :transform "translate(3vw, 95vh) scale(1)"}]
   [:40% {:fill red :transform "translate(3vw, 93vh) scale(1.2)"}]
+  [:50% {:transform "translate(3vw, 93vh) scale(1)"}]
+  [:60% {:transform "translate(3vw, 93vh) scale(1.2)"}]
+  [:70% {:transform "translate(3vw, 93vh) scale(1)"}]
   [:80% {:fill yellow :transform "translate(3vw, 93vh) scale(1.4)"}]
   [:100% {:fill white :transform "translate(3vw, 96vh)"}])
+
+(defkeyframes reveal-from-right
+  [:0% {:transform "translateX(45%)" :opacity 0.7}]
+  [:100% {:transform "translateX(0)" :opacity 1}])
 
 (defstyles wish-box
  [:div.wish-box
@@ -219,16 +230,16 @@
      }]
    [:.price
     (font smaller-size)
-    {
-    :font-family "VeganSans"
-    :float "right"
-    :width "32%"
-    :margin "0.25rem 0"
-    :background-color "white"
-    :text-align "center"
-    :border-radius "1rem"
-    :padding "0.25rem 0.5rem"
-     }]
+    {:font-family "VeganSans"
+     :float "right"
+     :width "32%"
+     :margin "0.25rem 0"}
+    [:span
+     {:display "inline-block"
+      :border-radius "1rem"
+      :padding "0.35rem 0.5rem 0.25rem"
+      :background-color "white"
+      :text-align "center"}]]
    [:.description
     {
      :clear "both"
@@ -253,18 +264,18 @@
       :margin "0.3rem 0 0.25rem 0"}]]
    [:&.basic
     {:background-color blue
-     :animation-delay "0.5s"}
+     :animation-delay "250ms"}
      [:h5
       {:font-weight "normal"}]]
    [:&.premium
     {:background-color blue
-     :animation-delay "1.25s"}
+     :animation-delay "750ms"}
      [:.description
       {:margin-bottom "1rem"}]]
    [:&.superior
     {:background-color dark-blue
      :color white
-     :animation-delay "2s"
+     :animation-delay "1s"
      :max-height "20rem"}
      [:h5
       {:font-weight "900"}]
@@ -284,6 +295,7 @@
   bounce-bottom-left
   bounce-bottom-right
   rainbow
+  reveal-from-right
   ;; Partials
   basic
   fonts
@@ -294,8 +306,8 @@
     :margin "auto"
     :line-height 1.5}
     [:header#header
-     {:width "100%"
-      :position "fixed"
+     full-width
+     {:position "fixed"
       :top 0
       :background-color clear
       :z-index 10
@@ -344,24 +356,29 @@
       wish-button-hover
       [:&.small (font smaller-size)]]
      [:div.wish-list
+      full-width
       {:background-color lightest-blue
        :box-shadow "rgba(0,0,0,0.4) 0px 0.125rem 1rem -0.5rem"
        :position "fixed"
        :top 0
-       :z-index 20
-       :width "100%"}
+       :z-index 20}
       [:&.checking-out
        {:background-color light-yellow
         :height "100%"
         :overflow "scroll"}
        [:table
         {:width "45%"
-         :transition-delay "0ms"
-         :float "left"}]
-       [:form
-        {:margin-left "3%"
+         :transition-duration "450ms"
+         }]
+       [:form#checkout
+        {:margin "3rem 0 0 3%"
          :width "45%"
-         :float "left"}
+         :float "left"
+         :transform-origin "center right"
+         :transform "translateX(45%)"
+         :opacity 0
+         :animation-delay "500ms"
+         :animation [[reveal-from-right "450ms" :forwards :ease-out]]}
         [:.column
          {:width "50%"
           :float "left"}
@@ -402,15 +419,15 @@
        {:margin "3rem 3rem 1rem"}]
       [:button.back-button
        wish-button
-       {:margin "3rem 2rem"
+       {:margin "3rem 2rem 0"
         :float "right"}
        wish-button-hover]
       [:table
        {:transition-property "width"
-        :transition-duration "250ms"
-         :transition-delay "50ms"
+        :transition-duration "0ms"
         :border-collapse "collapse"
         :margin "2rem 2rem 2rem 3rem"
+        :float "left"
         :width "90%"}
        [:tbody>tr:last-child
         [:th :td {:border-bottom "none"}]]
@@ -486,6 +503,7 @@
         :animation [["rainbow" "4s" :infinite]]}]
       ]
      [:header#font
+      full-width
       {:display "flex"
        :justify-content "space-between"
        :padding "1rem 0 2rem"
@@ -493,7 +511,6 @@
        :box-shadow "rgba(0,0,0,0.2) 0px 0.125rem 1rem 0px"
        :position "fixed"
        :top 0
-       :width "100%"
        :height (rem 8)
        :z-index 1
        :background-color "white"
@@ -569,6 +586,10 @@
          :border-radius "1rem"
          :transition-property "background-color"
          :transition-duration "250ms"}
+        [:&:active
+         {:transform "scale(0.8)"
+          :transition-property "transform"
+          :transition-duration "250ms"}]
         [:&:hover {:background-color lightest-grey}]
         [:&.active
          {:font-weight 700
@@ -651,8 +672,8 @@
          :font-weight "inherit"
          :font-style "inherit"}]
        [:input
+        full-width
         {:border "none"
-         :width "100%"
          :padding "2rem 0"
          :font-family "inherit"
          :font-weight "inherit"
@@ -678,12 +699,12 @@
          :left "1rem"}
        (font default-size)]]
       [:img
-       {:padding [[(rem 3) 0]]
-        :width "100%"}]]
+       full-width
+       {:padding [[(rem 3) 0]]}]]
      [:section#details
       bigger-margin
       {:float "left"
-       :padding "4rem 0"}
+       :padding "6rem 0"}
       [:.description
        {:float "left"
         :width "73%"
@@ -694,13 +715,15 @@
         :width "17%"
         :padding-left "8%"}]
       [:div.opentype
+       {:margin-top "2rem"
+        :clear "both"}
        [:img
-        {:width "100%"
-         :float "left"}]]]
+        full-width
+        {:float "left"}]]]
      [:section#inuse
+      full-width
       {:overflow "hidden"
-       :float "left"
-       :width "100%"}
+       :float "left"}
       [:nav
        {:transform "translate(2vw, 32vw)"
         :position "absolute"
@@ -727,8 +750,8 @@
        {:transition "transform cubic-bezier(0.4, 0, 0.2, 1) 1s"
         :z-index 1}
        [:figure
+        full-width
         {:margin 0
-         :width "100%"
          :float "left"}
         [:figcaption
          {:transform "translate(3vw, -120%)"
@@ -780,7 +803,7 @@
          :margin-bottom (rem 1)
          :border-radius (rem 2)}
         [:&.visible {:transform "translateX(0rem)"}]
-        [:&.hidden {:transform "translateX(50rem)"}]
+        [:&.hidden {:transform "translateX(70rem)"}]
         [:a
          (font bigger-size)
          {:border-radius (rem 3)
