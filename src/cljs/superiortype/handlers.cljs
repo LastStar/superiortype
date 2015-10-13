@@ -87,9 +87,11 @@
 
 (register-handler
  :wishing-started
-  (fn [app-state [_ wishing]]
+  (path :wishing)
+  (fn [wishing [_ new-wishing element-top]]
+    (scroll-to element-top)
     (no-scroll-body)
-    (assoc app-state :wishing wishing)))
+    new-wishing))
 
 (register-handler
  :wishing-canceled

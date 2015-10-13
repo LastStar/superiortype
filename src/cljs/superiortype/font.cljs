@@ -2,8 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go-loop]])
   (:require
     [superiortype.events :refer [scroll-chan-events]]
-    [superiortype.utils :refer [element get-bottom get-top header-bottom
-                                section-range scroll-to modular
+    [superiortype.utils :refer [element get-top section-range modular
                                 smooth-scroll]]
     [re-frame.core :refer [dispatch subscribe]]
     [cljs.core.async :refer [<!]]
@@ -113,8 +112,7 @@
                [:button.wish
                 ; FIXME move to handler
                 {:on-click #(let [style-top (get-top (-> % .-target .-parentElement .-parentElement))]
-                              (scroll-to style-top)
-                              (dispatch [:wishing-started style-id]))}
+                              (dispatch [:wishing-started style-id style-top]))}
                 "Wish"]))]
           [:div {:style {:font-size (str @size "px")} :class weight}
               [:input
@@ -160,7 +158,6 @@
             {:href (str "#/font/" id "/" sec)
              :class (str sec (when (= sec current-section) " active"))
              :on-click (fn [e]
-                         ; (smooth-scroll (element sec))
                          (.stopPropagation e))}
             (capitalize sec)])
          [:a.specimen {:href (str "/pdf/superior-type-" id ".pdf")} "Specimen"]])
@@ -172,9 +169,8 @@
           "No thank you"]
          (when-not someother-is-wishing
            [:button.wish
-            {:on-click #(do
-                          (scroll-to (get-top (-> % .-target)))
-                          (dispatch [:wishing-started id]))}
+            {:on-click #(let [header-top (get-top (-> % .-target))]
+                          (dispatch [:wishing-started id header-top]))}
             "Wish whole family"]))]
         (when i-am-wishing
            [wish-box id])])))
