@@ -712,8 +712,8 @@
        (font bigger-size)]
       [:.features
        {:float "left"
-        :width "17%"
-        :padding-left "8%"}]
+        :width "20%"
+        :padding-left "5%"}]
       [:div.opentype
        {:margin-top "2rem"
         :clear "both"}
@@ -854,7 +854,7 @@
             :padding "0 1rem 0 0"
             :font-family "inherit"}
            [:&:hover
-            {:transform "scale(1.10) rotateZ(2deg)"
+            {:transform "scale(1.10)"
              :color black}]]]]]
       [:.people
        {:background-color light-green
@@ -880,7 +880,7 @@
         :float "left"}
        [:header
         [:h2
-         (font larger-size)
+         (font large-size)
          {:color violet
           :width "80%"
           :margin "0 10%"
