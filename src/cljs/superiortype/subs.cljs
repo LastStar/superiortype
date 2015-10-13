@@ -122,3 +122,7 @@
  (fn [db [_]]
    (reaction (@db :eula-checked))))
 
+(register-sub
+ :order
+  (fn [db [_]]
+    (reaction (@db :order))))

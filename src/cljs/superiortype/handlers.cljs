@@ -4,12 +4,13 @@
               [superiortype.utils :refer [no-scroll-body scroll-body element
                                           get-top scroll-top scroll-to smooth-scroll]]
               [superiortype.font :as font]
-              [superiortype.db :as db :refer [ls->wish-list wish-list->ls!]]))
+              [superiortype.db :as db :refer [ls->wish-list wish-list->ls!
+                                              ls->order order->ls!]]))
 
 (register-handler
  :initialize-db
  (fn  [_ _]
-   (merge db/default-db (ls->wish-list))))
+   (merge db/default-db (ls->wish-list) (ls->order))))
 
 (register-handler
  :page-changed
@@ -157,12 +158,17 @@
     (dispatch [:checkout-canceled])
     false))
 
-(def ->ls (after wish-list->ls!))    ;; middleware to store wish-list into local storage
+(def ws->ls (after wish-list->ls!))    ;; middleware to store wish-list into local storage
+(def or->ls (after order->ls!))    ;; middleware to store wish-list into local storage
 
-;; middleware for any handler that manipulates wish-list
 (def wish-list-middleware [;check-schema-mw ;; after ever event handler make sure the schema is still valid
                       (path :wish-list)   ;; 1st param to handler will be value from this path
-                      ->ls            ;; write to localstore each time
+                      ws->ls            ;; write to localstore each time
+                      trim-v])        ;; remove event id from event vec
+
+(def order-middleware [;check-schema-mw ;; after ever event handler make sure the schema is still valid
+                      (path :order)   ;; 1st param to handler will be value from this path
+                      or->ls            ;; write to localstore each time
                       trim-v])        ;; remove event id from event vec
 
 (register-handler
@@ -215,10 +221,23 @@
 (register-handler
  :checkout-canceled
   (path :checkout-started)
-  (fn [_] false))
+  (fn [_]
+    (dispatch [:toggle-eula false])
+    false))
 
 (register-handler
  :toggle-eula
- (path :eula-checked)
-  (fn [checked] (not checked)))
+  (path :eula-checked)
+  (fn [checked [_ new-checked]] new-checked))
 
+(register-handler
+ :country-selected
+  order-middleware
+  (fn [order [new-country]]
+   (assoc order :country (keyword new-country))))
+
+(register-handler
+ :order-changed
+  order-middleware
+  (fn [order [key new-value]]
+    (assoc order key new-value)))

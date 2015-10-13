@@ -713,7 +713,9 @@
           showing-wish-list (subscribe [:showing-wish-list])
           checkout-started (deref (subscribe [:checkout-started]))
           eula-checked (deref (subscribe [:eula-checked]))
-          header-class (subscribe [:header-class])]
+          header-class (subscribe [:header-class])
+          order (subscribe [:order])
+          selected-country (@order :country)]
        (when (pos? wish-list-count)
         (if (not @showing-wish-list)
           [:button
@@ -802,48 +804,76 @@
                 "First name"
                 [:input {:required "required"
                          :name "first-name"
+                         :value (:first-name @order)
+                         :on-change #(dispatch [:order-changed :first-name (-> % .-target .-value)])
                          :type "text"}]]
                [:label
                 "Last name"
                 [:input {:required "required"
                          :name "last-name"
+                         :value (:last-name @order)
+                         :on-change #(dispatch [:order-changed :last-name (-> % .-target .-value)])
                          :type "text"}]]
                [:label.grey
                 "Company"
                 [:input {:name "company"
+                         :value (:company @order)
+                         :on-change #(dispatch [:order-changed :company (-> % .-target .-value)])
                          :type "text"}]]
                [:label
                 "Street"
                 [:input {:required "required"
                          :name "street"
+                         :value (:street @order)
+                         :on-change #(dispatch [:order-changed :street (-> % .-target .-value)])
                          :type "text"}]]
                [:label
                 "City"
                 [:input {:required "required"
                          :name "city"
+                         :value (:city @order)
+                         :on-change #(dispatch [:order-changed :city (-> % .-target .-value)])
                          :type "text"}]]
                [:label
                 "Country"
-                [:select {:name "country"}
+                [:select {:name "country"
+                          :defaultValue selected-country
+                          :on-change #(dispatch [:country-selected (-> % .-target .-value)]) }
+                 [:option "–––"]
                  (for [country countries]
+                   ^{:key (first country)}
                    [:option {:value (first country)} (second country)])]]
-              [:label
-                "State"
-                [:select {:name "state"}]]
-              [:label
-               "Zip"
-               [:input {:required "required"
-                        :name "Zip"
-                        :type "text"}]]]
-              [:div.column
+
+               (if-let [states (states selected-country)]
+                 [:label
+                   "State"
+                   [:select {:name "state"}
+                    {:name "state"
+                     :defaultValue (:state order)
+                     :on-change #(dispatch [:state-selected] (-> % .-target .-value))}
+                    (for [state (sort states)]
+                      ^{:key (first state)}
+                      [:option {:value (first state)} (second state)])]])
                [:label
-                "Email"
+                "Zip"
                 [:input {:required "required"
-                         :name "email"
-                         :type "email"}]]
+                         :name "Zip"
+                          :value (:zip @order)
+                          :on-change #(dispatch [:order-changed :zip (-> % .-target .-value)])
+                         :type "text"}]]]
+               [:div.column
+                [:label
+                 "Email"
+                 [:input {:required "required"
+                          :name "email"
+                          :value (:email @order)
+                          :on-change #(dispatch [:order-changed :email (-> % .-target .-value)])
+                          :type "email"}]]
                [:label.grey
                 "Phone"
                 [:input {:name "phone"
+                         :value (:phone @order)
+                         :on-change #(dispatch [:order-changed :phone (-> % .-target .-value)])
                          :type "text"}]]
                [:div.pay-box
                 [:label.eula
@@ -852,7 +882,7 @@
                   {:href "#/eula"}
                   "terms and conditions"]
                  [:input
-                  {:on-change #(dispatch [:toggle-eula])
+                  {:on-change #(dispatch [:toggle-eula (-> % .-target .-checked)])
                    :type "checkbox"
                    :name "eula"}]]
                 (when eula-checked [:button "Confirm"])]]])])))))
