@@ -72,7 +72,7 @@
 
   (defroute "/font/:id/:section" [id section]
     (do
-      (dispatch [:section-changed section])
+      ;(dispatch [:section-changed section])
       (dispatch [:font-changed id])))
 
   (hook-browser-navigation!))

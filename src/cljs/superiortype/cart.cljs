@@ -706,6 +706,39 @@
     :AE "Armed Forces Europe, Canada, Africa, or Middle East"
     :AP "Armed Forces Pacific"}})
 
+(defn wish-box [wishing-one]
+  [:div.wish-box
+   [:div.demo
+    {:on-click #(dispatch [:add-to-wish-list wishing-one :demo])}
+    [:header
+     [:h5 "Demo"]
+     [:div.price "Free"]]]
+   [:div.basic
+    {:on-click #(dispatch [:add-to-wish-list wishing-one :basic])}
+    [:header
+     [:h5 "Basic"]
+     [:div.price "From $30"]]
+    [:div.description
+     [:h6 "Standart font encoding"]
+     [:p "Uppercase, Lowercase, Ligatures, Currency, Numerals, Fractions, Mathematical, Punctuations"]]]
+   [:div.premium
+    {:on-click #(dispatch [:add-to-wish-list wishing-one :premium])}
+    [:header
+     [:h5 "Premium"]
+     [:div.price "From $50"]]
+    [:div.description
+     [:h6 "Extended font encoding"]
+     [:p "Uppercase, Lowercase, Smallcaps, Extended Ligatures, Superscript, Subscript, Extend Currency, Extended Numerals, Extended Fractions, Mathematical, Punctuations, Arrows"]]]
+   [:div.superior
+    {:on-click #(dispatch [:add-to-wish-list :superior])}
+    [:header
+     [:h5 "Superior"]
+     [:div.price "$1920"]]
+    [:div.description
+     [:p "All three typefaces in the Premium package: Hrot, Kunda Book, Vegan Sans"]
+     [:p "+ Our next two released typefaces for free."]]]
+   [:button.help "What?"]])
+
 (defn page []
   (fn []
     (let [wish-list (deref (subscribe [:wish-list]))
@@ -723,167 +756,170 @@
             :on-click #(dispatch [:show-wish-list])}
            (str "You have " wish-list-count " wish" (when (> wish-list-count 1) "es"))]
           [:div {:class (str "wish-list " (and checkout-started "checking-out"))}
-           (if checkout-started
-           [:button.back-button
-            {:on-click #(dispatch [:checkout-canceled])} "Back to wish list"]
-           [:button.back-button
-            {:on-click #(dispatch [:hide-wish-list])} "Back to wishing"])
-           (if checkout-started
-             [:h2 "Your Cart"]
-             [:h2 "Your Wish List"])
-           [:table
-            [:thead
-             [:tr
-              [:th ""]
-              [:th "Package"]
-              [:th "License"]
-              [:th "Users"]
-              [:th.price "Price"]
-              (when-not checkout-started
-                [:th.remove
-                 [:button
-                  {:on-click #(dispatch [:remove-all-from-wishlist])}
-                  "Remove all"]])]]
-            [:tbody
-             (for [item (keys wish-list)]
-               (let [name (join  " " (map capitalize (split item #"-")))
-                     package (get-in wish-list [item :package])
-                     license (get-in wish-list [item :license])
-                     users (get-in wish-list [item :users])]
-                 ^{:key item}
-                 [:tr
-                  [:td.name name]
-                  [:td.package
-                   (if checkout-started
-                     [:span (package-options package)]
-                     [:select
-                      {:defaultValue package
-                       :on-change #(dispatch [:change-package-in-wish-list item (keyword (-> % .-target .-value))])}
-                       (for [package (keys package-options)]
-                         ^{:key package}
-                          [:option {:value package} (package-options package)])])]
-                  [:td.license
-                   (if checkout-started
-                     [:span (license-options license)]
-                     [:select
-                      {:defaultValue license
-                       :on-change #(dispatch [:change-license-in-wish-list item (keyword (-> % .-target .-value))])}
-                       (for [license (keys license-options)]
-                         ^{:key license}
-                          [:option {:value license} (license-options license)])])]
-                  [:td.users
-                   (if checkout-started
-                     [:span (users-options users)]
-                     [:select
-                      {:defaultValue users
-                       :on-change #(dispatch [:change-users-in-wish-list item (keyword (-> % .-target .-value))])}
-                       (for [users (keys users-options)]
-                         ^{:key users}
-                          [:option {:value users} (users-options users)])])]
-                  [:td.price "30"]
-                  (when-not checkout-started
-                    [:td.remove
-                     [:button
-                      {:on-click #(dispatch [:remove-from-wishlist item])}
-                      "Remove"]])]))
-             [:tr
-              [:td]
-              [:td]
-              [:td]
-              [:th.total "Total"]
-              [:th.total (* wish-list-count 30)]
-              (when-not checkout-started
-                [:th.checkout
-                 [:button
-                  {:on-click #(dispatch [:checkout-started])}
-                  "Make wish come true"]])]]]
-           (when checkout-started
-             [:form#checkout
-              [:div.column
-               [:label
-                "First name"
-                [:input {:required "required"
-                         :name "first-name"
-                         :value (:first-name @order)
-                         :on-change #(dispatch [:order-changed :first-name (-> % .-target .-value)])
-                         :type "text"}]]
-               [:label
-                "Last name"
-                [:input {:required "required"
-                         :name "last-name"
-                         :value (:last-name @order)
-                         :on-change #(dispatch [:order-changed :last-name (-> % .-target .-value)])
-                         :type "text"}]]
-               [:label.grey
-                "Company"
-                [:input {:name "company"
-                         :value (:company @order)
-                         :on-change #(dispatch [:order-changed :company (-> % .-target .-value)])
-                         :type "text"}]]
-               [:label
-                "Street"
-                [:input {:required "required"
-                         :name "street"
-                         :value (:street @order)
-                         :on-change #(dispatch [:order-changed :street (-> % .-target .-value)])
-                         :type "text"}]]
-               [:label
-                "City"
-                [:input {:required "required"
-                         :name "city"
-                         :value (:city @order)
-                         :on-change #(dispatch [:order-changed :city (-> % .-target .-value)])
-                         :type "text"}]]
-               [:label
-                "Country"
-                [:select {:name "country"
-                          :defaultValue selected-country
-                          :on-change #(dispatch [:country-selected (-> % .-target .-value)]) }
-                 [:option "–––"]
-                 (for [country countries]
-                   ^{:key (first country)}
-                   [:option {:value (first country)} (second country)])]]
+            (if checkout-started
+              [:header
+               [:h2 "Superior Wish List"]
+               [:button.back-button.wish-list
+                {:on-click #(dispatch [:checkout-canceled])} "Back to wish list"]]
+              [:header
+               [:h2 "Superior Cart"]
+               [:button.back-button.app
+                {:on-click #(dispatch [:hide-wish-list])} "I wish more"]])
+           [:div.content
+            [:table
+             [:thead
+              [:tr
+               [:th ""]
+               [:th "Package"]
+               [:th "License"]
+               [:th "Users"]
+               [:th.price "Price"]
+               (when-not checkout-started
+                 [:th.remove
+                  [:button
+                   {:on-click #(dispatch [:remove-all-from-wishlist])}
+                   "Remove all"]])]]
+             [:tbody
+              (for [item (keys wish-list)]
+                (let [name (join  " " (map capitalize (split item #"-")))
+                      package (get-in wish-list [item :package])
+                      license (get-in wish-list [item :license])
+                      users (get-in wish-list [item :users])]
+                  ^{:key item}
+                  [:tr
+                   [:td.name name]
+                   [:td.package
+                    (if checkout-started
+                      [:span (package-options package)]
+                      [:select
+                       {:defaultValue package
+                        :on-change #(dispatch [:change-package-in-wish-list item (keyword (-> % .-target .-value))])}
+                        (for [package (keys package-options)]
+                          ^{:key package}
+                           [:option {:value package} (package-options package)])])]
+                   [:td.license
+                    (if checkout-started
+                      [:span (license-options license)]
+                      [:select
+                       {:defaultValue license
+                        :on-change #(dispatch [:change-license-in-wish-list item (keyword (-> % .-target .-value))])}
+                        (for [license (keys license-options)]
+                          ^{:key license}
+                           [:option {:value license} (license-options license)])])]
+                   [:td.users
+                    (if checkout-started
+                      [:span (users-options users)]
+                      [:select
+                       {:defaultValue users
+                        :on-change #(dispatch [:change-users-in-wish-list item (keyword (-> % .-target .-value))])}
+                        (for [users (keys users-options)]
+                          ^{:key users}
+                           [:option {:value users} (users-options users)])])]
+                   [:td.price "30"]
+                   (when-not checkout-started
+                     [:td.remove
+                      [:button
+                       {:on-click #(dispatch [:remove-from-wishlist item])}
+                       "Remove"]])]))
+              [:tr
+               [:td]
+               [:td]
+               [:td]
+               [:th.total "Total"]
+               [:th.total (* wish-list-count 30)]
+               [:th.checkout]]]]
 
-               (if-let [states (states selected-country)]
-                 [:label
-                   "State"
-                   [:select {:name "state"}
-                    {:name "state"
-                     :defaultValue (:state order)
-                     :on-change #(dispatch [:state-selected] (-> % .-target .-value))}
-                    (for [state (sort states)]
-                      ^{:key (first state)}
-                      [:option {:value (first state)} (second state)])]])
-               [:label
-                "Zip"
-                [:input {:required "required"
-                         :name "Zip"
-                          :value (:zip @order)
-                          :on-change #(dispatch [:order-changed :zip (-> % .-target .-value)])
-                         :type "text"}]]]
+            (when checkout-started
+              [:form#checkout
                [:div.column
                 [:label
-                 "Email"
+                 "First name"
                  [:input {:required "required"
-                          :name "email"
-                          :value (:email @order)
-                          :on-change #(dispatch [:order-changed :email (-> % .-target .-value)])
-                          :type "email"}]]
-               [:label.grey
-                "Phone"
-                [:input {:name "phone"
-                         :value (:phone @order)
-                         :on-change #(dispatch [:order-changed :phone (-> % .-target .-value)])
-                         :type "text"}]]
-               [:div.pay-box
-                [:label.eula
-                 "I agree with "
-                 [:a
-                  {:href "#/eula"}
-                  "terms and conditions"]
-                 [:input
-                  {:on-change #(dispatch [:toggle-eula (-> % .-target .-checked)])
-                   :type "checkbox"
-                   :name "eula"}]]
-                (when eula-checked [:button "Confirm"])]]])])))))
+                          :name "first-name"
+                          :value (:first-name @order)
+                          :on-change #(dispatch [:order-changed :first-name (-> % .-target .-value)])
+                          :type "text"}]]
+                [:label
+                 "Last name"
+                 [:input {:required "required"
+                          :name "last-name"
+                          :value (:last-name @order)
+                          :on-change #(dispatch [:order-changed :last-name (-> % .-target .-value)])
+                          :type "text"}]]
+                [:label.grey
+                 "Company"
+                 [:input {:name "company"
+                          :value (:company @order)
+                          :on-change #(dispatch [:order-changed :company (-> % .-target .-value)])
+                          :type "text"}]]
+                [:label
+                 "Street"
+                 [:input {:required "required"
+                          :name "street"
+                          :value (:street @order)
+                          :on-change #(dispatch [:order-changed :street (-> % .-target .-value)])
+                          :type "text"}]]
+                [:label
+                 "City"
+                 [:input {:required "required"
+                          :name "city"
+                          :value (:city @order)
+                          :on-change #(dispatch [:order-changed :city (-> % .-target .-value)])
+                          :type "text"}]]
+                [:label
+                 "Country"
+                 [:select {:name "country"
+                           :defaultValue selected-country
+                           :on-change #(dispatch [:country-selected (-> % .-target .-value)]) }
+                  [:option "–––"]
+                  (for [country countries]
+                    ^{:key (first country)}
+                    [:option {:value (first country)} (second country)])]]
+
+                (if-let [states (states selected-country)]
+                  [:label
+                    "State"
+                    [:select {:name "state"}
+                     {:name "state"
+                      :defaultValue (:state order)
+                      :on-change #(dispatch [:state-selected] (-> % .-target .-value))}
+                     (for [state (sort states)]
+                       ^{:key (first state)}
+                       [:option {:value (first state)} (second state)])]])
+                [:label
+                 "Zip"
+                 [:input.zip {:required "required"
+                          :name "Zip"
+                           :value (:zip @order)
+                           :on-change #(dispatch [:order-changed :zip (-> % .-target .-value)])
+                          :type "text"}]]]
+                [:div.column
+                 [:label
+                  "Email"
+                  [:input {:required "required"
+                           :name "email"
+                           :value (:email @order)
+                           :on-change #(dispatch [:order-changed :email (-> % .-target .-value)])
+                           :type "email"}]]
+                [:label.grey
+                 "Phone"
+                 [:input {:name "phone"
+                          :value (:phone @order)
+                          :on-change #(dispatch [:order-changed :phone (-> % .-target .-value)])
+                          :type "text"}]]
+                [:div.pay-box
+                 [:label.eula
+                  "I agree with "
+                  [:a
+                   {:href "#/eula"}
+                   "terms and conditions"]
+                  [:input
+                   {:on-change #(dispatch [:toggle-eula (-> % .-target .-checked)])
+                    :type "checkbox"
+                    :name "eula"}]]
+                 (when eula-checked [:button "Confirm"])]]])]
+            (when-not checkout-started
+             [:button.checkout
+              {:on-click #(dispatch [:checkout-started])}
+              "Make wish come true"])])))))
 

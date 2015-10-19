@@ -6,12 +6,11 @@
 ;; Pages
 (defn header []
   (fn []
-    (let [header-class (subscribe [:header-class])
-          menu-visible (subscribe [:menu-visible])]
+    (let [menu-visible (subscribe [:menu-visible])]
       [:div
        {:on-mouse-enter #(dispatch [:menu-visibility-changed true])
         :on-mouse-leave #(dispatch [:menu-visibility-changed false])
-        :class (str "menu " @header-class (when @menu-visible "opaque"))}
+        :class "menu"}
        [:h1 [:a
              {:href "#/"}
               "Superior Type"]]

@@ -105,6 +105,7 @@
    :header-class "normal"
    :menu-visible false
    :current-section "styles"
+   :down-visible true
    :listening {}
    :wishing false
    :edited []

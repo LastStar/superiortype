@@ -18,6 +18,10 @@
     (reaction (:fonts @db))))
 
 (register-sub
+ :down-visible
+  (fn [db] (reaction (:down-visible @db))))
+
+(register-sub
  :counter
   (fn [db]
     (reaction (:counter @db))))

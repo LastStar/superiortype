@@ -1,6 +1,7 @@
 (ns superiortype.font
   (:require-macros [cljs.core.async.macros :refer [go-loop]])
   (:require
+    [superiortype.cart :as cart]
     [superiortype.events :refer [scroll-chan-events]]
     [superiortype.utils :refer [element get-top section-range modular
                                 smooth-scroll]]
@@ -35,7 +36,7 @@
        (let [new-y (<! chan)
              new-section (section-at new-y)
              header-class (subscribe [:header-class])]
-         (if (< new-y 64)
+         (if (< new-y 38)
            (when-not (= @header-class "normal")
              (dispatch [:header-class-changed "normal"]))
            (when-not (= @header-class "small")
@@ -46,39 +47,6 @@
 
 ;; -------------------------
 ;; Components
-(defn wish-box [wishing-one]
-  [:div.wish-box
-   [:div.demo
-    {:on-click #(dispatch [:add-to-wish-list wishing-one :demo])}
-    [:h5 "Demo"]
-    [:div.price
-     [:span "Free"]]]
-   [:div.basic
-    {:on-click #(dispatch [:add-to-wish-list wishing-one :basic])}
-    [:h5 "Basic"]
-    [:div.price
-     [:span "From $30"]]
-    [:div.description
-     [:h6 "Standart font encoding"]
-     [:p "Uppercase, Lowercase, Ligatures, Currency, Numerals, Fractions, Mathematical, Punctuations"]]]
-   [:div.premium
-    {:on-click #(dispatch [:add-to-wish-list wishing-one :premium])}
-    [:h5 "Premium"]
-    [:div.price
-     [:span "From $50"]]
-    [:div.description
-     [:h6 "Extended font encoding"]
-     [:p "Uppercase, Lowercase, Smallcaps, Extended Ligatures, Superscript, Subscript, Extend Currency, Extended Numerals, Extended Fractions, Mathematical, Punctuations, Arrows"]]]
-   [:div.superior
-    {:on-click #(dispatch [:add-to-wish-list :superior])}
-    [:h5 "Superior"]
-    [:div.price
-     [:span "$1920"]]
-    [:div.description
-     [:p "All three typefaces in the Premium package: Hrot, Kunda Book, Vegan Sans"]
-     [:p "+ Our next two released typefaces for free."]]]
-   [:a.help "What?"]])
-
 (defn style-line [style]
   (let [weight (lower-case style)]
     (fn []
@@ -99,9 +67,9 @@
             (if @wishing-one
              [:span " "]
              [:div
-              [:button.smaller {:on-click  #(dispatch [:size-changed style-id smaller-size])} "smaller"]
-              [:span (str (Math/floor @size) "px")]
-              [:button.bigger {:on-click #(dispatch [:size-changed style-id bigger-size])} "BIGGER"]])
+              [:button.smaller {:on-click  #(dispatch [:size-changed style-id smaller-size])} "Smaller"]
+              [:span (str (Math/floor @size) "pt")]
+              [:button.bigger {:on-click #(dispatch [:size-changed style-id bigger-size])} "Bigger"]])
            (when i-was-edited
              [:span.name (str font-name " " style)])
            (if i-am-wishing
@@ -114,7 +82,7 @@
                 {:on-click #(let [style-top (get-top (-> % .-target .-parentElement .-parentElement))]
                               (dispatch [:wishing-started style-id style-top]))}
                 "Wish"]))]
-          [:div {:style {:font-size (str @size "px")} :class weight}
+          [:div {:style {:font-size (str @size "pt")} :class weight}
               [:input
                {:on-change
                 (fn [e]
@@ -125,7 +93,7 @@
                 :placeholder style-name
                 :style {:font-size @size}}]]
            (when i-am-wishing
-             [wish-box style-id]
+             [cart/wish-box style-id]
             )]))))
 
 (defn font-header []
@@ -147,17 +115,17 @@
         {:on-click #(when-not someother-is-wishing (smooth-scroll (element "font")))
          :class header-class}
         [:nav.fonts {:class id}
-         [:a.previous {:href (str "#/font/" previous "/" current-section)} previous]
-         [:a.next {:href (str "#/font/" next "/" current-section)} next]
+         [:a.previous {:href (str "#/font/" previous)} previous]
+         [:a.next {:href (str "#/font/" next)} next]
          [:h2 name]]
       (when-not i-am-wishing
         [:nav.sections
          (for [sec all-sections]
            ^{:key sec}
            [:a
-            {:href (str "#/font/" id "/" sec)
-             :class (str sec (when (= sec current-section) " active"))
+            {:class (str sec (when (= sec current-section) " active"))
              :on-click (fn [e]
+                         (dispatch [:section-changed sec])
                          (.stopPropagation e))}
             (capitalize sec)])
          [:a.specimen {:href (str "/pdf/superior-type-" id ".pdf")} "Specimen"]])
@@ -173,7 +141,7 @@
                           (dispatch [:wishing-started id header-top]))}
             "Wish whole family"]))]
         (when i-am-wishing
-           [wish-box id])])))
+           [cart/wish-box id])])))
 
 (defn styles-section []
   (fn []
@@ -213,31 +181,32 @@
         styles (count (current-font :styles))
         glyphs (current-font :glyphs)]
     [:section#details
-     [:div.description
-      (for [p details]
-        ^{:key (hash p)}
-        [:p.text p])]
-     [:div.features
-      [:p
-       [:strong "Styles in font family"]
-       [:br]
-       [:span styles]]
-      [:p
-       [:strong "Number of glyphs per font"]
-       [:br]
-       [:span glyphs]]
-      [:p
-       [:strong "Language Support"]
-       [:br]
-       [:span "Latin Std"]]
-      [:p
-       [:strong "Designer"]
-       [:br]
-       [:span "Vojtěch Říha"]]
-      [:p
-       [:strong "Release year"]
-       [:br]
-       [:span "2015"]]]
+     [:div.main
+      [:div.description
+       (for [p details]
+         ^{:key (hash p)}
+         [:p.text p])]
+      [:div.features
+       [:p
+        [:strong "Styles in font family"]
+        [:br]
+        [:span styles]]
+       [:p
+        [:strong "Number of glyphs per font"]
+        [:br]
+        [:span glyphs]]
+       [:p
+        [:strong "Language Support"]
+        [:br]
+        [:span "Latin Std"]]
+       [:p
+        [:strong "Designer"]
+        [:br]
+        [:span "Vojtěch Říha"]]
+       [:p
+        [:strong "Release year"]
+        [:br]
+        [:span "2015"]]]]
      [:div.opentype
       [:h4 "OpenType features"]
       [:img
@@ -254,12 +223,14 @@
        (when show-controlls
         [:nav
          {:on-mouse-enter #(dispatch [:show-controlls-changed true])}
-         [:a.previous
-          {:on-click #(dispatch [:step-changed (dec @step) inuses-count])}
-          "Previous"]
-         [:a.next
-          {:on-click #(dispatch [:step-changed (inc @step) inuses-count])}
-          "Next"]])
+         [:div
+          [:button.previous
+            {:on-click #(dispatch [:step-changed (dec @step) inuses-count])}
+            "Previous"]]
+         [:div
+           [:button.next
+            {:on-click #(dispatch [:step-changed (inc @step) inuses-count])}
+            "Next"]]])
       [:div.figure-wrapper
        {:on-mouse-enter #(dispatch [:show-controlls-changed true])
         :on-mouse-leave #(dispatch [:show-controlls-changed false])
@@ -272,13 +243,13 @@
          [:figure
           {:style
            {:width (str (/ 100 inuses-count) "%")}}
-          [:img {:src (str "/img/" img)}]
           (when show-controlls
            [:figcaption
-            [:ul
              (for [p (split (inuse :text) #"\n")]
                ^{:key (hash p)}
-               [:li p])]])])))]])))
+               [:span p])])
+          [:img {:src (str "/img/" img)}]
+          ])))]])))
 
 (defn page []
   (when-not (deref (subscribe [:listening :font])) (listen!))

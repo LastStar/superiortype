@@ -19,10 +19,21 @@
     (when-not (= current-page page) (scroll-top))
     page))
 
+;; FIXME with two methods
 (register-handler
  :menu-visibility-changed
   (fn [app-state [_ visibility]]
     (assoc app-state :menu-visible visibility)))
+
+(register-handler
+ :down-invisible
+  (path :down-visible)
+  (fn [_]  false))
+
+(register-handler
+ :down-visible
+  (path :down-visible)
+  (fn [_] true))
 
 (register-handler
  :font-changed
@@ -102,13 +113,15 @@
 
 (register-handler
  :charset-visible
-  (fn [app-state [_]]
-    (assoc app-state :charset-position "visible")))
+  (path :charset-visibility)
+  (fn [visibility [_]]
+    "visible"))
 
 (register-handler
  :charset-hidden
-  (fn [app-state [_]]
-    (assoc app-state :charset-position "hidden")))
+  (path :charset-visibility)
+  (fn [visibility [_]]
+    "hidden"))
 
 (register-handler
  :charset-selected
