@@ -160,8 +160,7 @@
   [:.steiner
    {:font-family "Steiner !important"}]
   [:.bigger-font
-   {:font-size "1.618rem"}]
-  )
+   {:font-size "1.618rem"}])
 
 ;; Keyframes
 ;; FIXME move to its own file animation

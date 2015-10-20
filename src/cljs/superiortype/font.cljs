@@ -47,24 +47,21 @@
 
 ;; -------------------------
 ;; Components
-(defn style-line [style]
+(defn style-line [current-font style all-edited wishing-one]
   (let [weight (lower-case style)]
     (fn []
-      (let [current-font (subscribe [:current-font])
-            font-name (:name @current-font)
+      (let [font-name (:name @current-font)
             style-name (str font-name " " style)
             style-id (replace (lower-case style-name) #" " "-")
-            wishing-one (subscribe [:wishing])
             i-am-wishing (= @wishing-one style-id)
             someother-is-wishing (and @wishing-one (not i-am-wishing) "fade")
-            all-edited (subscribe [:edited])
             i-was-edited (some #{style-id} @all-edited)
             size (subscribe [:size-query style-id 123])
             smaller-size (/ @size modular)
             bigger-size (* @size modular)]
         [:li {:class someother-is-wishing}
           [:div.tools
-            (if @wishing-one
+           (if @wishing-one
              [:span " "]
              [:div
               [:button.smaller {:on-click  #(dispatch [:size-changed style-id smaller-size])} "Smaller"]
@@ -78,23 +75,21 @@
               "No thanks"]
              (when-not someother-is-wishing
                [:button.wish
-                ; FIXME move to handler
                 {:on-click #(let [style-top (get-top (-> % .-target .-parentElement .-parentElement))]
                               (dispatch [:wishing-started style-id style-top]))}
                 "Wish"]))]
           [:div {:style {:font-size (str @size "pt")} :class weight}
-              [:input
-               {:on-change
-                (fn [e]
-                  (let [value (-> e .-target .-value)]
-                   (if (= value "")
-                     (dispatch [:remove-edited style-id])
-                     (dispatch [:add-edited style-id]))))
-                :placeholder style-name
-                :style {:font-size @size}}]]
+           [:input
+            {:on-change
+             (fn [e]
+               (let [value (-> e .-target .-value)]
+                (if (= value "")
+                  (dispatch [:remove-edited style-id])
+                  (dispatch [:add-edited style-id]))))
+             :placeholder style-name
+             :style {:font-size @size}}]]
            (when i-am-wishing
-             [cart/wish-box style-id]
-            )]))))
+             [cart/wish-box style-id])]))))
 
 (defn font-header []
   (fn []
@@ -147,12 +142,14 @@
   (fn []
     (let [current-font (subscribe [:current-font])
           styles (:styles @current-font)
-          name (:name @current-font)]
+          name (:name @current-font)
+          wishing-one (subscribe [:wishing])
+          all-edited (subscribe [:edited])]
       [:section#styles {:style {:font-family (replace name #" " "")}}
          [:ul.styles
           (for [style styles]
             ^{:key style}
-            [style-line style])]])))
+            [style-line current-font style all-edited wishing-one])]])))
 
 (defn glyphs-section []
     (fn []
@@ -248,8 +245,7 @@
              (for [p (split (inuse :text) #"\n")]
                ^{:key (hash p)}
                [:span p])])
-          [:img {:src (str "/img/" img)}]
-          ])))]])))
+          [:img {:src (str "/img/" img)}]])))]])))
 
 (defn page []
   (when-not (deref (subscribe [:listening :font])) (listen!))

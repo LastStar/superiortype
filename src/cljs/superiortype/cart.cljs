@@ -828,7 +828,6 @@
                [:th.total "Total"]
                [:th.total (* wish-list-count 30)]
                [:th.checkout]]]]
-
             (when checkout-started
               [:form#checkout
                [:div.column
