@@ -123,5 +123,6 @@
    :eula-checked false
    :selected-country "---"
    :order {}
+   :opened-sections {}
    :customs customs
    :selected-custom nil})

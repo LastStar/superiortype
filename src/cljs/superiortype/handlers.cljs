@@ -254,3 +254,15 @@
   order-middleware
   (fn [order [key new-value]]
     (assoc order key new-value)))
+
+(register-handler
+ :section-opened
+  (path :opened-sections)
+  (fn [opened-sections [_ id]]
+    (assoc opened-sections id true)))
+
+(register-handler
+ :section-closed
+  (path :opened-sections)
+  (fn [opened-sections [_ id]]
+    (assoc opened-sections id false)))

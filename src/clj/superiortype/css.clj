@@ -2,12 +2,15 @@
   (:refer-clojure :exclude [+ - * / rem])
   (:require [garden.def :refer [defstylesheet defstyles defkeyframes]]
             [garden.units :as u :refer [rem]]
+            [garden.selectors :as sel]
             [garden.arithmetic :refer [+ - * /]]
             [garden.stylesheet :refer [at-font-face]]))
 
 
 ;; FIXME with more garden
 (def grey "#b3b3b3")
+(def darkerer-grey "#f0f0f0")
+(def darker-grey "#e6e6e6")
 (def lighter-grey "#F2F2F2")
 (def lightest-grey "#FAFAFA")
 (def dark-grey "#555555")
@@ -21,6 +24,7 @@
 (def dark-blue "#5F00FF")
 (def clear "rgba(0, 0, 0, 0)")
 (def yellow "#fffd38")
+(def dark-yellow "#ffff78")
 (def light-yellow "#ffff96")
 (def red "#f00")
 (def violet "#4600a0")
@@ -28,6 +32,8 @@
 
 (def default-margin
   {:margin (rem 2)})
+(def default-padding
+  {:padding (rem 2)})
 (def modular 1.333)
 (def default-size (u/rem 1))
 (def smaller-size (/ default-size modular))
@@ -48,16 +54,18 @@
   ([] thin-border black)
   ([color] (str "thin solid " color)))
 
+(def button-padding {:padding "0.35rem 1rem"})
+
 (def wish-button
   (merge
-   {:padding "0.35rem 1rem"
-    :cursor "pointer"
+   {:cursor "pointer"
     :color black
     :background-color "white"
     :border-radius "1rem"
     :border (thin-border light-blue)
     :font-family "VeganSans"
     :font-weight "normal"}
+    button-padding
     (font default-size)))
 
 (def wish-button-hover
@@ -66,14 +74,14 @@
 
 (def back-button
   (merge
-   {:padding "0.35rem 1rem"
-    :cursor "pointer"
+   {:cursor "pointer"
     :color black
     :background-color grey
     :border-radius "1rem"
     :border "none"
     :font-family "VeganSans"
     :font-weight "normal"}
+    button-padding
     (font default-size)))
 
 (def back-button-hover
@@ -181,6 +189,14 @@
 (defkeyframes slide-up
   [:0% {:transform "translateY(10rem)"}]
   [:100% {:transform "translateY(0rem)"}])
+
+(defkeyframes slide-down
+  [:0% {:opacity 0
+        :max-height "0rem"}]
+  [:99% {:opacity 0.9
+         :max-height "20rem"}]
+  [:100% {:opacity 1
+          :max-height "20rem"}])
 
 (defkeyframes bounce-top
   [:0% {:transform "translate(50vw, -10vh) scale(0.5)"}]
@@ -295,6 +311,7 @@
   slide-right
   slide-left
   slide-up
+  slide-down
   header-slide-up
   bounce-top
   bounce-bottom-left
@@ -323,7 +340,7 @@
      [:div.menu
       {:padding "0.25rem 1rem 0.25rem 0"
        :border-radius "1rem"
-       :width "26rem"}
+       :width (rem 28)}
       [:h1
        {:transition-property "font-size"
         :transition-duration "450ms"
@@ -455,16 +472,20 @@
           :text-align "left"
           :padding "1rem"
           :border-bottom "thin solid black"}
-         [:&.name (font bigger-size)]
          [:&.price :&.remove
-          {:width "5rem"
+          {:width "7rem"
            :text-align "right"}]
          [:&.total
-          (font bigger-size)
           {:text-align "right"}]
          [:&.checkout
           {:text-align "right"}
-          ]]
+          [:button.checkout
+           button-padding
+           {:border-radius bigger-size
+            :border "none"
+            :background white
+            :float "right"}
+           [:&:hover {:background light-yellow}]]]]
          [:button
           (font default-size)
           {:border "none"
@@ -477,15 +498,7 @@
           {:border-radius bigger-size
            :padding "0.5rem 2rem 0.5rem 1rem"
            :background "url('/img/down-arrow.svg') #fff no-repeat center right 0.5rem"}]]]]
-         [:button.checkout
-           (font bigger-size)
-           {:border-radius bigger-size
-            :border "none"
-            :padding "0.55rem 1rem"
-            :background white
-            :float "right"
-            :margin [[0 (rem 2) (rem 1) 0]]}
-           [:&:hover {:background light-yellow}]]]
+         ]
     [:main#app
      [:&>.fade
       {:opacity 0.4}
@@ -907,61 +920,95 @@
           :padding 0
           :margin 0
           :width "100%"}]]]
-      [:section#custom
-       {:background-color dark-grey
+     [:section#custom
+      {:background-color dark-grey
+       :float "left"}
+      [:header
+       [:h2
+        (font large-size)
+        {:color violet
+         :width "80%"
+         :margin "0 10%"
+         :padding-top (rem 6)
+         :padding-bottom (rem 2)
+         :font-weight "normal"}]]
+      [:div.text
+       {:width "40%"
+        :margin "0 10% 0 10%"
         :float "left"}
-       [:header
+       [:p (font bigger-size)
+        [:span.email
+         {:margin-top "1rem"}
+         [:a
+          {:padding "0.35rem 1rem"
+           :display "inline-block"
+           :color white
+           :border-radius "1rem"
+           :background-color "black"}
+          [:&:hover
+           {:background-color "white !important"
+            :color "black !important"}]]]]]
+      [:ul.advantages
+       {:width "30%"
+        :margin "0 10% 0 0"
+        :float "left"}
+       [:li {:margin "0 0 2rem 0"}
+        [:&:before
+         (font bigger-size)
+         {:content "\"• \""}]
+        [:&.red:before {:color red}]
+        [:&.yellow:before {:color yellow}]]]
+      [:div.cases
+       {:clear "both"
+        :font-family "VeganSans"}
+       [:&>div
+        {:margin-bottom (rem 4)}
+        [:&.fade {:opacity 0.4}]
+        [:h3
+         (font monster-size)
+         {:margin 0
+          :padding 0}]
+        [:div.details
+         {:width "80%"
+          :margin "0 10% 0 10%"
+          :display "flex"
+          :justify-content "space-between"}
+         [:&>div
+          {:margin "2rem 1rem"
+           :font-family "VeganSans"}]]
+        [:img {:width "100%"}]]]]
+      [:section#first-aid
+       default-padding
+       {:display "flex"
+        :background-color darker-grey}
+       [:div.column
+        {:flex 1
+         :margin-right (rem 2)}
         [:h2
-         (font large-size)
-         {:color violet
-          :width "80%"
-          :margin "0 10%"
-          :padding-top (rem 6)
-          :padding-bottom (rem 2)
-          :font-weight "normal"}]]
-       [:div.text
-        {:width "40%"
-         :margin "0 10% 0 10%"
-         :float "left"}
-        [:p (font bigger-size)
-         [:span.email
-          {:margin-top "1rem"}
-          [:a
-           {:padding "0.35rem 1rem"
-            :display "inline-block"
-            :color white
-            :border-radius "1rem"
-            :background-color "black"}
-           [:&:hover
-            {:background-color "white !important"
-             :color "black !important"}]]]]]
-       [:ul.advantages
-        {:width "30%"
-         :margin "0 10% 0 0"
-         :float "left"}
-        [:li {:margin "0 0 2rem 0"}
-         [:&:before
-          (font bigger-size)
-          {:content "\"• \""}]
-         [:&.red:before {:color red}]
-         [:&.yellow:before {:color yellow}]]]
-       [:div.cases
-        {:clear "both"
-         :font-family "VeganSans"}
-        [:&>div
-         {          :margin-bottom "4rem"}
-         [:&.fade {:opacity 0.4}]
-         [:h3
-          (font monster-size)
-          {:margin 0
-           :padding 0}]
-         [:div.details
-          {:width "80%"
-           :margin "0 10% 0 10%"
-           :display "flex"
-           :justify-content "space-between"}
-          [:&>div
-           {:margin "2rem 1rem"
-            :font-family "VeganSans"}]]
-         [:img {:width "100%"}]]]]]])
+         (font default-size)
+         {:font-weight "normal"
+          :margin-bottom (rem 2)
+          :line-height bigger-size}]
+        [:h3
+         (font bigger-size)
+         {:font-weight "normal"
+          :margin-bottom (rem 0.5)}
+         [(sel/& (sel/not (sel/first-child))) {:margin-top (rem 3)}]]
+        [:h4
+         {:margin-bottom (rem 1)}
+         [:button
+          button-padding
+          (font default-size)
+          {:background-color darkerer-grey
+           :border-radius default-size
+           :border "none"}
+          [:&.opened {:background-color dark-yellow}]]]
+        [:&:first-child
+         [:p
+          {:margin-left 0}]]
+        [(sel/& (sel/not (sel/first-child)))
+         [:p
+          (font smaller-size)
+          {:margin [[0 0 (rem 1) (rem 1)]]
+           :animation [[slide-down "550ms" :forwards]]}]]]]]])
 

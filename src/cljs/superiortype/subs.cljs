@@ -130,3 +130,8 @@
  :order
   (fn [db [_]]
     (reaction (@db :order))))
+
+(register-sub
+  :section-opened
+  (fn [db [_ id]]
+    (reaction (get-in @db [:opened-sections id]))))

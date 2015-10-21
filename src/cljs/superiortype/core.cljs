@@ -10,6 +10,7 @@
             [superiortype.cart :as cart]
             [superiortype.foundry :as foundry]
             [superiortype.custom :as custom]
+            [superiortype.first-aid :as first-aid]
             [superiortype.font :as font]
             [superiortype.home :as home]
             [superiortype.handlers]
@@ -34,6 +35,11 @@
   (dispatch [:hide-wish-list])
   (scroll-body)
   [custom/page])
+
+(defmethod current-page :first-aid []
+  (dispatch [:hide-wish-list])
+  (scroll-body)
+  [first-aid/page])
 
 (defmethod current-page :font []
   [font/page])
@@ -65,6 +71,9 @@
 
   (defroute "/custom" []
     (dispatch [:page-changed :custom]))
+
+  (defroute "/first-aid" []
+    (dispatch [:page-changed :first-aid]))
 
   (defroute "/font/:id" [id]
     (do

@@ -827,7 +827,11 @@
                [:td]
                [:th.total "Total"]
                [:th.total (* wish-list-count 30)]
-               [:th.checkout]]]]
+               [:th.checkout
+                (when-not checkout-started
+                  [:button.checkout
+                   {:on-click #(dispatch [:checkout-started])}
+                   "Checkout"])]]]]
             (when checkout-started
               [:form#checkout
                [:div.column
@@ -916,9 +920,5 @@
                    {:on-change #(dispatch [:toggle-eula (-> % .-target .-checked)])
                     :type "checkbox"
                     :name "eula"}]]
-                 (when eula-checked [:button "Confirm"])]]])]
-            (when-not checkout-started
-             [:button.checkout
-              {:on-click #(dispatch [:checkout-started])}
-              "Make wish come true"])])))))
+                 (when eula-checked [:button "Confirm"])]]])] ])))))
 

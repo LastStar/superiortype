@@ -1,6 +1,5 @@
 (ns superiortype.views
-    (:require
-      [re-frame.core :as re-frame :refer [subscribe dispatch]]))
+  (:require [re-frame.core :as re-frame :refer [subscribe dispatch]]))
 
 ;; -------------------------
 ;; Pages
@@ -17,7 +16,8 @@
        [:nav
         {:class (when @menu-visible "visible")}
         [:a {:href "#/custom"} "Custom"]
-        [:a {:href "#/foundry"} "Foundry"]]])))
+        [:a {:href "#/foundry"} "Foundry"]
+        [:a {:href "#/first-aid"} "First Aid"]]])))
 
 (defn error []
   [:div.error
