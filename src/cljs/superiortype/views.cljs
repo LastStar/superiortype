@@ -5,11 +5,12 @@
 ;; Pages
 (defn header []
   (fn []
-    (let [menu-visible (subscribe [:menu-visible])]
+    (let [menu-visible (subscribe [:menu-visible])
+          page (subscribe [:current-page])]
       [:div
        {:on-mouse-enter #(dispatch [:menu-visibility-changed true])
         :on-mouse-leave #(dispatch [:menu-visibility-changed false])
-        :class "menu"}
+        :class (str "menu " (name @page))}
        [:h1 [:a
              {:href "#/"}
               "Superior Type"]]

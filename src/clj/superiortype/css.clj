@@ -190,13 +190,22 @@
   [:0% {:transform "translateY(10rem)"}]
   [:100% {:transform "translateY(0rem)"}])
 
-(defkeyframes slide-down
+(defkeyframes section-slide-down
   [:0% {:opacity 0
-        :max-height "0rem"}]
-  [:99% {:opacity 0.9
-         :max-height "20rem"}]
+        :max-height (rem 0)}]
+  [:99.9% {:opacity 0
+         :max-height (rem 20)
+         :margin-bottom (rem 1)}]
   [:100% {:opacity 1
-          :max-height "20rem"}])
+          :max-height (rem 20)
+          :margin-bottom (rem 1)}])
+
+(defkeyframes section-slide-up
+  [:0% {:opacity 1
+        :margin-bottom (rem 1)
+        :max-height (rem 20)}])
+  [:100% {:opacity 0
+        :max-height (rem 0)}]
 
 (defkeyframes bounce-top
   [:0% {:transform "translate(50vw, -10vh) scale(0.5)"}]
@@ -311,7 +320,8 @@
   slide-right
   slide-left
   slide-up
-  slide-down
+  section-slide-down
+  section-slide-up
   header-slide-up
   bounce-top
   bounce-bottom-left
@@ -330,17 +340,17 @@
     [:header#header
      {:position "relative"
       :top 0
-      :background-color white
+      :background-color clear
       :z-index 10
       :height (rem 2)
-      :padding "1rem 2rem 0"
       :display :flex
       :flex-direction "row"
       :justify-content "space-between"}
      [:div.menu
-      {:padding "0.25rem 1rem 0.25rem 0"
-       :border-radius "1rem"
-       :width (rem 28)}
+      {:margin "0"
+       :width "100%"
+       :padding "1.25rem 1rem 0.25rem 2rem"}
+      [:&.first-aid {:background-color darker-grey}]
       [:h1
        {:transition-property "font-size"
         :transition-duration "450ms"
@@ -408,21 +418,21 @@
             :margin-bottom "1rem"}
            [:&.grey {:color grey}]
            [:input
-            (font bigger-size)
+            (font default-size)
             {:display "block"
              :border-radius "0.5rem"
-             :padding "1rem 2rem 1rem 1rem"
+             :padding "0.5rem"
              :width "75%"}
             [:&.zip {:width "25%"}]]
            [:select
-            (font bigger-size)
+            (font default-size)
             ^:prefix {:appearance "none"}
             {:background "url('/img/down-arrow.svg') #fff no-repeat center right 0.5rem"
              :display "block"
-             :width "90%"
+             :width "80%"
              :border-radius (rem (* modular 0.25))
              :background-color white
-             :padding "1rem 2rem 1rem 1rem"}]]
+             :padding "0.5rem"}]]
           [:div.pay-box
            {:margin-top "8rem"}
            [:a {:text-decoration "underline"}]
@@ -922,7 +932,8 @@
           :width "100%"}]]]
      [:section#custom
       {:background-color dark-grey
-       :float "left"}
+       :position "absolute"
+       :top 0}
       [:header
        [:h2
         (font large-size)
@@ -980,13 +991,16 @@
       [:section#first-aid
        default-padding
        {:display "flex"
-        :background-color darker-grey}
+        :background-color darker-grey
+        :height "100%"}
        [:div.column
         {:flex 1
+         :height "100%"
          :margin-right (rem 2)}
         [:h2
          (font default-size)
          {:font-weight "normal"
+          :width "75%"
           :margin-bottom (rem 2)
           :line-height bigger-size}]
         [:h3
@@ -1001,14 +1015,27 @@
           (font default-size)
           {:background-color darkerer-grey
            :border-radius default-size
+           :cursor "pointer"
+           :position "relative"
+           :z-index "2"
            :border "none"}
           [:&.opened {:background-color dark-yellow}]]]
         [:&:first-child
          [:p
-          {:margin-left 0}]]
+          (font smaller-size)
+          {:width "75%"
+           :margin-bottom (rem 1)}]]
         [(sel/& (sel/not (sel/first-child)))
          [:p
           (font smaller-size)
-          {:margin [[0 0 (rem 1) (rem 1)]]
-           :animation [[slide-down "550ms" :forwards]]}]]]]]])
+          {:margin [[0 (rem 2) 0 (rem 1)]]
+           :width "75%"
+           :max-height "0rem"
+           :position "relative"
+           :z-index "1"
+           :opacity 0}
+          [:&.opened
+           {:animation [[section-slide-down "550ms" :alternate :forwards]]}]
+          [:&.closed
+           {:animation [[section-slide-up "250ms" :alternate :forwards]]}]]]]]]])
 
