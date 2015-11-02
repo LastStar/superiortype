@@ -266,3 +266,9 @@
   (path :opened-sections)
   (fn [opened-sections [_ id]]
     (assoc opened-sections id false)))
+
+(register-handler
+ :new-scroll
+  (path :current-scroll)
+  (fn [current-scroll [_ new-scroll]]
+    new-scroll))

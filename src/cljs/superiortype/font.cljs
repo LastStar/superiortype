@@ -34,13 +34,9 @@
     (dispatch [:listening :font])
     (go-loop []
        (let [new-y (<! chan)
-             new-section (section-at new-y)
-             header-class (subscribe [:header-class])]
-         (if (< new-y 38)
-           (when-not (= @header-class "normal")
-             (dispatch [:header-class-changed "normal"]))
-           (when-not (= @header-class "small")
-             (dispatch [:header-class-changed "small"])))
+             new-section (section-at new-y)]
+         (when (< new-y 140)
+             (dispatch [:new-scroll new-y]))
          (when-not (= (deref (subscribe [:current-section])) new-section)
            (dispatch [:section-scrolled new-section])))
          (recur))))
@@ -103,16 +99,19 @@
           header-class (str (deref (subscribe [:header-class]))
                             " " (or (and i-am-wishing "hover")
                                     (and someother-is-wishing "fade")))
+          current-scroll (subscribe [:current-scroll])
           previous (:previous @current-font)
           next (:next @current-font)]
       [:div
        [:header#font
         {:on-click #(when-not someother-is-wishing (smooth-scroll (element "font")))
-         :class header-class}
+         :style {:height (- 200 @current-scroll)}}
         [:nav.fonts {:class id}
          [:a.previous {:href (str "#/font/" previous)} previous]
          [:a.next {:href (str "#/font/" next)} next]
-         [:h2 name]]
+         [:h2
+          {:style {:font-size (/ (- 200 @current-scroll) 2)}}
+          name]]
       (when-not i-am-wishing
         [:nav.sections
          (for [sec all-sections]

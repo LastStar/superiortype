@@ -135,3 +135,8 @@
   :section-opened
   (fn [db [_ id]]
     (reaction (get-in @db [:opened-sections id]))))
+
+(register-sub
+  :current-scroll
+  (fn [db [_]]
+    (reaction (@db :current-scroll))))
