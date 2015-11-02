@@ -1,8 +1,8 @@
-(defproject superiortype "0.2.0-SNAPSHOT"
+(defproject superiortype "0.3.0-SNAPSHOT"
   :description "Web pages for the Superior Type"
   :url "http://reframed.superiortype.com"
-  :dependencies [[org.clojure/clojure "1.6.0"]
-                 [org.clojure/clojurescript "0.0-3211"]
+  :dependencies [[org.clojure/clojure "1.7.0"]
+                 [org.clojure/clojurescript "1.7.145"]
                  [reagent "0.5.1"]
                  [re-frame "0.4.1"]
                  [secretary "1.2.3"]
