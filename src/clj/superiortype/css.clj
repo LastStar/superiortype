@@ -316,11 +316,11 @@
 
 (defstyles media-queries
   (respond/tablet
-      [:html
-       (font (u/px 14))])
+    [:html
+     (font (u/px 15))])
   (respond/laptop
     [:html
-     (font (u/px 18))])
+     (font (u/px 16))])
   (respond/desktop
     [:html
      (font (u/px 22))])
@@ -349,7 +349,7 @@
   [:body
    (font default-size)
    {:font-family "VeganSans"
-    :min-width (rem 62)
+    :min-width (rem 60)
     :margin "auto"
     :line-height 1.5}
     [:header#header
