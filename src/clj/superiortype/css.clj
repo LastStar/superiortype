@@ -1,10 +1,11 @@
 (ns superiortype.css
   (:refer-clojure :exclude [+ - * / rem])
   (:require [garden.def :refer [defstylesheet defstyles defkeyframes]]
-            [garden.units :as u :refer [rem]]
+            [garden.units :as u :refer [rem px]]
             [garden.selectors :as sel]
             [garden.arithmetic :refer [+ - * /]]
-            [garden.stylesheet :refer [at-font-face]]))
+            [garden.stylesheet :refer [at-font-face at-media]]
+            [gardener.respond :as respond]))
 
 
 ;; FIXME with more garden
@@ -89,8 +90,6 @@
    {:background-color white}])
 
 (defstyles basic
-  [:html
-   (font (u/px 21))]
   [:h1 :h2 :h3 :h4 :h5 :a :a:hover :select :input
    {:font-family "VeganSans"
     :border "none"
@@ -315,6 +314,20 @@
    back-button
    {:margin-bottom (rem 1)}]])
 
+(defstyles media-queries
+  (respond/tablet
+      [:html
+       (font (u/px 14))])
+  (respond/laptop
+    [:html
+     (font (u/px 18))])
+  (respond/desktop
+    [:html
+     (font (u/px 22))])
+  (respond/hd
+    [:html
+     (font (u/px 26))]))
+
 (defstyles site
   ;; Keyframes
   slide-right
@@ -331,6 +344,8 @@
   ;; Partials
   basic
   fonts
+  media-queries
+
   [:body
    (font default-size)
    {:font-family "VeganSans"
