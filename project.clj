@@ -4,7 +4,7 @@
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/clojurescript "1.7.145"]
                  [reagent "0.5.1"]
-                 [re-frame "0.4.1"]
+                 [re-frame "0.5.0"]
                  [secretary "1.2.3"]
                  [facjure/gardener "0.1.0"]
                  [garden "1.2.5"]]
