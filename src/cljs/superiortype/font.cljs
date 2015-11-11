@@ -36,7 +36,7 @@
        (let [new-y (<! chan)
              new-section (section-at new-y)
              header-class (subscribe [:header-class])]
-         (if (< new-y 38)
+         (if (< new-y 42)
            (when-not (= @header-class "normal")
              (dispatch [:header-class-changed "normal"]))
            (when-not (= @header-class "small")
@@ -248,6 +248,7 @@
           [:img {:src (str "/img/" img)}]])))]])))
 
 (defn page []
+  (set! (-> js/document .-body .-className) "")
   (when-not (deref (subscribe [:listening :font])) (listen!))
   (let [showing-wist-list (subscribe [:showing-wish-list])
         wishing-one (subscribe [:wishing])]

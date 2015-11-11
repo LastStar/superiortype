@@ -84,6 +84,7 @@
              :on-click #(smooth-scroll (element "fonts"))}])]))))
 
 (defn page []
+  (set! (-> js/document .-body .-className) "")
   (when-not (deref (subscribe [:listening :home])) (listen!))
   (let [showing-wist-list (subscribe [:showing-wish-list])
         fonts (subscribe [:fonts])]

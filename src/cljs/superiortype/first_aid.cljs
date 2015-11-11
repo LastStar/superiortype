@@ -19,6 +19,7 @@
          paragraph])])))
 
 (defn page []
+  (set! (-> js/document .-body .-className) "first-aid")
   [:section#first-aid
    [:div.column
     [:h2 "Welcome to our client support page. Here you will find all the information about our services and terms of use. We have created a user friendly layout for a quicker and better way to get you acquainted." ]
