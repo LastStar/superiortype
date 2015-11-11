@@ -17,10 +17,12 @@
 
 (def users-options
   {:ones "1-5"
-   :fives "5-20"
-   :tens "21-100"
-   :hundreds "101-1000"
-   :thousands "1001-∞"})
+   :ten "6-10"
+   :twenty "11-20"
+   :fifty "21-50"
+   :seventy-five "51-75"
+   :hundreth "76-100"
+   :more "101 & more"})
 
 (def countries
  [[:CZ "Czech Republic"]
@@ -730,7 +732,7 @@
      [:h6 "Extended font encoding"]
      [:p "Uppercase, Lowercase, Smallcaps, Extended Ligatures, Superscript, Subscript, Extend Currency, Extended Numerals, Extended Fractions, Mathematical, Punctuations, Arrows"]]]
    [:div.superior
-    {:on-click #(dispatch [:add-to-wish-list :superior])}
+    {:on-click #(dispatch [:add-superior-to-wish-list])}
     [:header
      [:h5 "Superior"]
      [:div.price "$1920"]]

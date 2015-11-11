@@ -227,6 +227,17 @@
       (dissoc wish-list item))))
 
 (register-handler
+ :add-superior-to-wish-list
+  wish-list-middleware
+  (fn [wish-list]
+    (dispatch [:wishing-canceled])
+    (dispatch [:show-wish-list])
+    (dispatch [:checkout-started])
+    {:superior {:package :superior
+                :license :print-web
+                :users :ten}}))
+
+(register-handler
  :checkout-started
   (path :checkout-started)
   (fn [_] true))
