@@ -246,7 +246,7 @@
   {:display :flex
    :flex-direction :row
    :align-items "flex-end"
-   :justify-items "space-between"
+   :justify-content "space-between"
    :clear :both
    :overflow :hidden}
   [:&>div
@@ -317,13 +317,13 @@
 (defstyles media-queries
   (respond/tablet
     [:html
-     (font (u/px 15))])
+     (font (u/px 13))])
   (respond/laptop
     [:html
-     (font (u/px 16))])
+     (font (u/px 14))])
   (respond/desktop
     [:html
-     (font (u/px 22))])
+     (font (u/px 20))])
   (respond/hd
     [:html
      (font (u/px 26))]))
@@ -568,8 +568,8 @@
     [:header#font
      full-width
      {:display :flex
-      :justify-content "space-between"
       :padding "1rem 0 2rem"
+      :justify-content :space-between
       :align-items "flex-end"
       :box-shadow "rgba(0,0,0,0.2) 0px 0.125rem 1rem 0px"
       :position :fixed
@@ -578,7 +578,7 @@
       :z-index 3
       :background-color :white}
      [:&.small
-       (font smaller-size)
+      (font smaller-size)
       {:padding-bottom "1.25rem"
        :animation [[header-slide-up "500ms" :ease :forwards]]}
       [:&:hover :&.hover
@@ -589,56 +589,58 @@
         [:h2
          (font bigger-size)]
         [:a
-         (font smaller-size)
-         {:height "1rem"
-          :width "0.75rem"
-          :margin-bottom "0.5rem"}
-         [:&.next {:margin-right (rem 2)}]]]
+         {:margin-bottom "0.5rem"
+          :width (rem 2)
+          :height (rem 1)}]]
       [:button
        (font smaller-size)
-       {:transition "margin-right 250ms"
-        :margin-bottom 0
-        :margin-right (rem 12)}]
+       {:transition-property "margin-bottom, margin-right"
+        :transition-duration "250ms"
+        :margin-bottom 0}
+       [:&.right-spaced {:margin-right (rem 9)}]]
       [:nav.sections
        {:margin-bottom 0}]]
      [:&.fade
       {:display :none
        :opacity 0}]
      [:nav.fonts
+      {:display :flex
+       :margin-left "2rem"
+       :align-items :center}
+      [:div.links
        {:display :flex
-        :margin-left "2rem"
-        :align-items "flex-end"}
-       [:h2
-        (font huge-size)
-        {:transition-property "font-size width"
+        :width (rem 6)}]
+      [:h2
+       (font huge-size)
+       {:transition-property "font-size, width"
+        :transition-duration "450ms"
+        :font-weight :normal
+        :display "inline-block"
+        :margin 0
+        :width (rem 25)
+        :font-family :inherit}]
+       [:a
+        {:transition-property "width, height, margin-bottom"
          :transition-duration "450ms"
-         :font-weight :normal
+         :background-position-y "0"
+         :background-position-x "50%"
+         :background-repeat "no-repeat"
+         :background-color "rgba(0, 0, 0, 0)"
+         :background-size :contain
          :display "inline-block"
-         :margin 0
-         :font-family :inherit}]
-        [:a
-         {:transition-property "width, height, margin-bottom"
-          :transition-duration "450ms"
-          :background-position-y "0"
-          :background-position-x "50%"
-          :background-repeat "no-repeat"
-          :background-color "rgba(0, 0, 0, 0)"
-          :background-size :contain
-          :margin 0
-          :margin-bottom "1.75rem"
-          :display "inline-block"
-          :width "1.25rem"
-          :height "2rem"
-          :border :none
-          :color "rgba(0, 0, 0, 0)"
-          :font-size 0}
-         [:&.previous
-          {:background-image "url(/img/previous.svg)"
-           :margin-left  "0rem"}]
-         [:&.next
-          {:background-image "url(/img/next.svg)"
-           :margin-right (rem 3)
-           :margin-left  (rem 1.5)}]]]
+         :border :none
+         :width (rem 2)
+         :height (rem 2)
+         :color "rgba(0, 0, 0, 0)"}
+        [:&.previous
+         {:background-image "url(/img/previous.svg)"}]
+        [:&.next
+         {:background-image "url(/img/next.svg)"}]]]
+     [:div.buttons
+      {:display :flex
+       :width "55%"
+       :justify-content :space-between
+       :margin-right (rem 2)}]
      [:nav.sections
        {:transition-property "height, margin-bottom"
         :transition-duration "450ms"
@@ -665,8 +667,7 @@
          :transition-duration "250ms"}]]]
      [:button
       wish-button
-      {:margin-bottom "1rem"
-       :margin-right "2rem"}
+      {:margin-bottom "1rem"}
       wish-button-hover]]
     wish-box
     [:&>div>div>.wish-box:last-child

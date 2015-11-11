@@ -36,7 +36,7 @@
        (let [new-y (<! chan)
              new-section (section-at new-y)
              header-class (subscribe [:header-class])]
-         (if (< new-y 42)
+         (if (< new-y 50)
            (when-not (= @header-class "normal")
              (dispatch [:header-class-changed "normal"]))
            (when-not (= @header-class "small")
@@ -91,7 +91,7 @@
            (when i-am-wishing
              [cart/wish-box style-id])]))))
 
-(defn font-header []
+(defn header []
   (fn []
     (let [current-section (deref (subscribe [:current-section]))
           current-font (subscribe [:current-font])
@@ -100,6 +100,7 @@
           wishing-one (subscribe [:wishing])
           i-am-wishing (= @wishing-one id)
           someother-is-wishing (and @wishing-one (not i-am-wishing) "fade")
+          wish-list-empty (zero? (count (deref (subscribe [:wish-list]))))
           header-class (str (deref (subscribe [:header-class]))
                             " " (or (and i-am-wishing "hover")
                                     (and someother-is-wishing "fade")))
@@ -110,10 +111,12 @@
         {:on-click #(when-not someother-is-wishing (smooth-scroll (element "font")))
          :class header-class}
         [:nav.fonts {:class id}
-         [:a.previous {:href (str "#/font/" previous)} previous]
-         [:a.next {:href (str "#/font/" next)} next]
+         [:div.links
+          [:a.previous {:href (str "#/font/" previous)} previous]
+          [:a.next {:href (str "#/font/" next)} next]]
          [:h2 name]]
-      (when-not i-am-wishing
+      [:div.buttons
+       (when-not i-am-wishing
         [:nav.sections
          (for [sec all-sections]
            ^{:key sec}
@@ -124,7 +127,7 @@
                          (.stopPropagation e))}
             (capitalize sec)])
          [:a.specimen {:href (str "/pdf/superior-type-" id ".pdf")} "Specimen"]])
-        (if i-am-wishing
+       (if i-am-wishing
          [:button.wish
           {:on-click #(do
                         (dispatch [:wishing-canceled])
@@ -132,9 +135,10 @@
           "No thank you"]
          (when-not someother-is-wishing
            [:button.wish
-            {:on-click #(let [header-top (get-top (-> % .-target))]
+            {:class (when-not wish-list-empty "right-spaced")
+             :on-click #(let [header-top (get-top (-> % .-target))]
                           (dispatch [:wishing-started id header-top]))}
-            "Wish whole family"]))]
+            "Wish whole family"])) ]]
         (when i-am-wishing
            [cart/wish-box id])])))
 
@@ -175,7 +179,7 @@
   (let [current-font (deref (subscribe [:current-font]))
         id (:id current-font)
         details (split (current-font :details) #"\n")
-        styles (count (current-font :styles))
+        styles-count (current-font :styles-count)
         glyphs (current-font :glyphs)]
     [:section#details
      [:div.main
@@ -187,7 +191,7 @@
        [:p
         [:strong "Styles in font family"]
         [:br]
-        [:span styles]]
+        [:span styles-count]]
        [:p
         [:strong "Number of glyphs per font"]
         [:br]
@@ -253,7 +257,7 @@
   (let [showing-wist-list (subscribe [:showing-wish-list])
         wishing-one (subscribe [:wishing])]
     [:div {:class (and @showing-wist-list "fade")}
-     [font-header]
+     [header]
      [styles-section]
      (when-not @wishing-one
        [:div

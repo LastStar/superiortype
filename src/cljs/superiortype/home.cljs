@@ -24,25 +24,26 @@
     (fn [current-font]
       (let [size (subscribe [:size-query id 123])
             visible-styles (deref (subscribe [:visible-styles-query id]))]
-      [:li
-       {:style
-        {:font-family (replace name #" " "")}}
-       [:div.tools
-        [:button.list {:on-click #(dispatch [:styles-visibility-changed id (not visible-styles)])}
-         "Styles"]
-        [:button.smaller {:on-click #(dispatch [:size-changed id (/ @size modular)])} "Smaller"]
-        [:button.bigger {:on-click #(dispatch [:size-changed id (* @size modular)])} "Bigger"]]
-       [:a {:style {:font-size @size} :href (str "#/font/" id)} name]
-       (if visible-styles
-         [:div {:style {:font-family (replace name #" " "")}}
-           [:a {:href (str "#/font/" id)}
-            [:ul.styles
-             (for [style styles]
-               ^{:key style}
-               [:li
-                 [:div
-                  {:style {:font-size (str @size "pt")} :class (lower-case style)}
-                  style]])]]])]))))
+        (.log js/console name id)
+        [:li
+         {:style
+          {:font-family (replace name #" " "")}}
+         [:div.tools
+          [:button.list {:on-click #(dispatch [:styles-visibility-changed id (not visible-styles)])}
+           "Styles"]
+          [:button.smaller {:on-click #(dispatch [:size-changed id (/ @size modular)])} "Smaller"]
+          [:button.bigger {:on-click #(dispatch [:size-changed id (* @size modular)])} "Bigger"]]
+         [:a {:style {:font-size @size} :href (str "#/font/" id)} name]
+         (if visible-styles
+           [:div {:style {:font-family (replace name #" " "")}}
+             [:a {:href (str "#/font/" id)}
+              [:ul.styles
+               (for [style styles]
+                 ^{:key style}
+                 [:li
+                   [:div
+                    {:style {:font-size (str @size "pt")} :class (lower-case style)}
+                    style]])]]])]))))
 
 (defn show-case-svg []
   (let [content [10 3 8 7 6 5 4 9 2 1 "a" "b" "C" "D" "E" "ff" "gg" "HhH"
@@ -91,6 +92,6 @@
     [:div {:class (and @showing-wist-list "fade")}
      [show-case-svg]
      [:ul#fonts
-       (for [current-font (vals @fonts)]
-         ^{:key (:id current-font)}
-         [font-line current-font])]]))
+      (for [font (vals @fonts)]
+        ^{:key (:id font)}
+        [font-line font])]]))
