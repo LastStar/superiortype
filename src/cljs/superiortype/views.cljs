@@ -2,14 +2,14 @@
   (:require [re-frame.core :as re-frame :refer [subscribe dispatch]]))
 
 ;; -------------------------
-;; Pages
+;; Header
 (defn header []
   (fn []
     (let [menu-visible (subscribe [:menu-visible])
           page (subscribe [:current-page])]
       [:div
-       {:on-mouse-enter #(dispatch [:menu-visibility-changed true])
-        :on-mouse-leave #(dispatch [:menu-visibility-changed false])
+       {:on-mouse-enter #(dispatch [:menu-visible])
+        :on-mouse-leave #(dispatch [:menu-invisible])
         :class (str "menu " (name @page))}
        [:h1 [:a
              {:href "#/"}
@@ -23,5 +23,4 @@
 (defn error []
   [:div.error
    [:h2 "Something went horibly wrong"]])
-
 

@@ -20,11 +20,15 @@
     (when-not (= current-page page) (scroll-top))
     page))
 
-;; FIXME with two methods
 (register-handler
- :menu-visibility-changed
-  (fn [app-state [_ visibility]]
-    (assoc app-state :menu-visible visibility)))
+ :menu-visible
+  (fn [app-state [_]]
+    (assoc app-state :menu-visible true)))
+
+(register-handler
+ :menu-invisible
+  (fn [app-state [_]]
+    (assoc app-state :menu-visible false)))
 
 (register-handler
  :down-invisible

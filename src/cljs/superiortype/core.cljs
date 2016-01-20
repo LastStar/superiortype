@@ -6,7 +6,6 @@
             [goog.events :as events]
             [goog.history.EventType :as EventType]
             [superiortype.utils :refer [scroll-body]]
-            [superiortype.views :refer [header error]]
             [superiortype.cart :as cart]
             [superiortype.foundry :as foundry]
             [superiortype.custom :as custom]
@@ -45,7 +44,7 @@
   [font/page])
 
 (defmethod current-page :error []
-  [error])
+  [views/error])
 
 ;; -------------------------
 ;; History
@@ -90,7 +89,7 @@
 ;; Initialize app
 
 (defn mount-header []
-  (reagent/render [header] (.getElementById js/document "header")))
+  (reagent/render [views/header] (.getElementById js/document "header")))
 
 (defn mount-cart []
   (reagent/render [cart/page] (.getElementById js/document "cart")))
