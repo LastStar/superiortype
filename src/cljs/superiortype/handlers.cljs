@@ -70,9 +70,14 @@
     (assoc-in app-state [:listening page] true)))
 
 (register-handler
- :counter-changed
+ :counter-zeroed
+  (fn [app-state [_]]
+    (assoc app-state :counter 0)))
+
+(register-handler
+ :counter-increased
   (fn [app-state [_ new-value]]
-    (assoc app-state :counter new-value)))
+    (update app-state :counter inc)))
 
 (register-handler
  :size-changed
@@ -179,15 +184,15 @@
 (def ws->ls (after wish-list->ls!))    ;; middleware to store wish-list into local storage
 (def or->ls (after order->ls!))    ;; middleware to store wish-list into local storage
 
-(def wish-list-middleware [;check-schema-mw ;; after ever event handler make sure the schema is still valid
-                      (path :wish-list)   ;; 1st param to handler will be value from this path
-                      ws->ls            ;; write to localstore each time
-                      trim-v])        ;; remove event id from event vec
+(def wish-list-middleware
+  [(path :wish-list)    ;; 1st param to handler will be value from this path
+   ws->ls               ;; write to localstore each time
+   trim-v])             ;; remove event id from event vec
 
-(def order-middleware [;check-schema-mw ;; after ever event handler make sure the schema is still valid
-                      (path :order)   ;; 1st param to handler will be value from this path
-                      or->ls            ;; write to localstore each time
-                      trim-v])        ;; remove event id from event vec
+(def order-middleware
+  [(path :order)        ;; 1st param to handler will be value from this path
+   or->ls               ;; write to localstore each time
+   trim-v])             ;; remove event id from event vec
 
 (register-handler
  :add-to-wish-list

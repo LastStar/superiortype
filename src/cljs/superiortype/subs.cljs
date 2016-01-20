@@ -3,7 +3,6 @@
     (:require [re-frame.core :as re-frame :refer [register-sub]]
               [superiortype.db :as db]))
 
-
 (register-sub
  :current-page
  (fn [db]

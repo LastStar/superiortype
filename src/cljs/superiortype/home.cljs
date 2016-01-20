@@ -57,24 +57,24 @@
             font-size (str (/ 96 (/ @counter 3)) "px")
             current-content (get content @counter "END")
             down-visible (subscribe [:down-visible])]
-        (when (> @counter 42) (dispatch [:counter-changed 0]))
+        (when (> @counter 42) (dispatch [:counter-zeroed]))
         [:svg
          [:g.top
-          {:on-mouse-enter #(dispatch [:counter-changed (inc @counter)])}
+          {:on-mouse-enter #(dispatch [:counter-increased ])}
           [:circle
            {:cx 0 :cy 0 :r (+ 60 (* @counter 3))}]
           [:text {:x -30 :y 30
                   :style {:font-size font-size}}
            current-content]]
          [:g.bottom-left
-          {:on-click #(dispatch [:counter-changed (inc @counter)])}
+          {:on-click #(dispatch [:counter-increased])}
           [:circle
            {:cx 0 :cy 0 :r 37}]
           [:text {:x -24 :y 24
                   :style {:font-size font-size}}
            current-content]]
          [:g.bottom-right
-          {:on-mouse-move #(dispatch [:counter-changed (inc @counter)])}
+          {:on-mouse-move #(dispatch [:counter-increased])}
           [:circle
            {:cx 0 :cy 0 :r 60}]
           [:text {:x -20 :y 20
