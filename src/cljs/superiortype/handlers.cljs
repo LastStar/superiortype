@@ -4,8 +4,9 @@
               [superiortype.utils :refer [no-scroll-body scroll-body element
                                           get-top scroll-top scroll-to smooth-scroll]]
               [superiortype.font :as font]
-              [superiortype.db :as db :refer [ls->wish-list wish-list->ls!
-                                              ls->order order->ls!]]))
+              [superiortype.db :as db]
+              [superiortype.local-storage :refer [ls->wish-list wish-list->ls!
+                                                  ls->order order->ls!]]))
 
 (register-handler
  :initialize-db
