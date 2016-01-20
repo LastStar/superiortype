@@ -1,6 +1,8 @@
 (ns superiortype.subs
     (:require-macros [reagent.ratom :refer [reaction]])
-    (:require [re-frame.core :as re-frame :refer [register-sub]]))
+    (:require [re-frame.core :as re-frame :refer [register-sub]]
+              [superiortype.db :as db]))
+
 
 (register-sub
  :current-page
@@ -11,11 +13,6 @@
  :menu-visible
  (fn [db]
    (reaction (:menu-visible @db))))
-
-(register-sub
- :fonts
-  (fn [db]
-    (reaction (:fonts @db))))
 
 (register-sub
  :down-visible
@@ -39,7 +36,7 @@
 (register-sub
  :current-font
   (fn [db [_]]
-    (reaction (get-in @db [:fonts (keyword (:font-id @db))]))))
+    (reaction (db/fonts (keyword (:font-id @db))))))
 
 (register-sub
  :listening

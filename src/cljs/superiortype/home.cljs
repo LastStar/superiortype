@@ -3,6 +3,7 @@
   (:require
     [superiortype.utils :refer [element get-top smooth-scroll modular]]
     [superiortype.events :refer [scroll-chan-events]]
+    [superiortype.db :as db]
     [re-frame.core :refer [dispatch subscribe]]
     [clojure.string :refer [replace lower-case]]))
 
@@ -88,10 +89,10 @@
   (set! (-> js/document .-body .-className) "")
   (when-not (deref (subscribe [:listening :home])) (listen!))
   (let [showing-wist-list (subscribe [:showing-wish-list])
-        fonts (subscribe [:fonts])]
+        fonts db/fonts]
     [:div {:class (and @showing-wist-list "fade")}
      [show-case-svg]
      [:ul#fonts
-      (for [font (vals @fonts)]
+      (for [font (vals fonts)]
         ^{:key (:id font)}
         [font-line font])]]))

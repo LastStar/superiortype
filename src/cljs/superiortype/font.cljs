@@ -57,6 +57,8 @@
             someother-is-wishing (and @wishing-one (not i-am-wishing) "fade")
             i-was-edited (some #{style-id} @all-edited)
             size (subscribe [:size-query style-id 123])
+            wish-list (deref (subscribe [:wish-list]))
+            wishing-superior (= (first (keys wish-list)) :superior)
             smaller-size (/ @size modular)
             bigger-size (* @size modular)]
         [:li {:class someother-is-wishing}
@@ -73,7 +75,7 @@
              [:button.wish
               {:on-click #(dispatch [:wishing-canceled])}
               "No thanks"]
-             (when-not someother-is-wishing
+             (when-not (or someother-is-wishing wishing-superior)
                [:button.wish
                 {:on-click #(let [style-top (get-top (-> % .-target .-parentElement .-parentElement))]
                               (dispatch [:wishing-started style-id style-top]))}
@@ -100,7 +102,9 @@
           wishing-one (subscribe [:wishing])
           i-am-wishing (= @wishing-one id)
           someother-is-wishing (and @wishing-one (not i-am-wishing) "fade")
-          wish-list-empty (zero? (count (deref (subscribe [:wish-list]))))
+          wish-list (deref (subscribe [:wish-list]))
+          wishing-superior (= (first (keys wish-list)) :superior)
+          wish-list-empty (zero? (count wish-list))
           header-class (str (deref (subscribe [:header-class]))
                             " " (or (and i-am-wishing "hover")
                                     (and someother-is-wishing "fade")))
@@ -133,7 +137,7 @@
                         (dispatch [:wishing-canceled])
                         (.preventDefault %))}
           "No thank you"]
-         (when-not someother-is-wishing
+         (when-not (or someother-is-wishing wishing-superior)
            [:button.wish
             {:class (when-not wish-list-empty "right-spaced")
              :on-click #(let [header-top (get-top (-> % .-target))]

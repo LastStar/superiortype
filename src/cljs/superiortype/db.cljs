@@ -102,8 +102,7 @@
   (.setItem js/localStorage lsk-or (str order)))
 
 (def default-db
-  {:fonts fonts
-   :font-id nil
+  {:font-id nil
    :current-page :home
    :header-class "normal"
    :menu-visible false

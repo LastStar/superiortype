@@ -22,7 +22,7 @@
 (def green "#00ffa0")
 (def light-green "#00ffa0")
 (def blue "#0ff")
-(def dark-blue "#5F00FF")
+(def dark-blue "#5F3BFF")
 (def clear "rgba(0, 0, 0, 0)")
 (def yellow "#fffd38")
 (def dark-yellow "#ffff78")
@@ -411,12 +411,27 @@
       {:background-color light-yellow
        :height "100%"
        :overflow :scroll}
+      [:&.superior
+       {:background-color dark-blue}
+       [:h2
+        {:font-weight 800
+         :font-style :italic}]
+       [:table
+        {:color white}
+        [:td :th {:border-color white}]]]
       [:div.content
        [:table
         {:width "45%"
          :transition-duration "450ms"}
         [:th :td (font smaller-size)]
-        [:td.name :th.total (font default-size)]]
+        [:td.name :th.total (font default-size)]
+        [:tr.superior-list
+         [:td
+          [:&>div
+           {:display :flex
+            :justify-content :space-between}
+           [:h2
+            {:margin-bottom (rem 1)}]]]]]
        [:form#checkout
         {:margin "3rem 0 0 3%"
          :width "45%"
@@ -454,8 +469,14 @@
           [:a {:text-decoration :underline}]
           [:input
            ^:prefix {:appearance :none}
-           {:background "url('/img/check-unchecked.svg') no-repeat 0"}
-           [:&:checked {:background "url('/img/check-checked.svg') no-repeat 0"}]]
+           {:background-image "url('/img/check-unchecked.svg')"
+            :background-repeat :no-repeat
+            :background-origin 0
+            :background-size :cover
+            :margin-top (rem 1)
+            :width "2rem"
+            :height "2rem"}
+           [:&:checked {:background-image "url('/img/check-checked.svg')"}]]
           [:button
            (font bigger-size)
            {:padding "0.5rem 1rem"
