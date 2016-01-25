@@ -5,36 +5,18 @@
             [garden.selectors :as sel]
             [garden.arithmetic :refer [+ - * /]]
             [garden.stylesheet :refer [at-font-face at-media]]
-            [gardener.respond :as respond]))
+            [gardener.respond :as respond]
+            [superiortype.colors :as c]))
 
-
-;; FIXME with more garden
-(def grey "#b3b3b3")
-(def darkerer-grey "#f0f0f0")
-(def darker-grey "#e6e6e6")
-(def lighter-grey "#F2F2F2")
-(def lightest-grey "#FAFAFA")
-(def dark-grey "#555555")
-(def black "#000")
-(def white "#fff")
-(def light-blue "#00ffff")
-(def lightest-blue "#dcffff")
-(def green "#00ffa0")
-(def light-green "#00ffa0")
-(def blue "#0ff")
-(def dark-blue "#5F3BFF")
-(def clear "rgba(0, 0, 0, 0)")
-(def yellow "#fffd38")
-(def dark-yellow "#ffff78")
-(def light-yellow "#ffff96")
-(def red "#f00")
-(def violet "#4600a0")
-(def orange "#ff7d64")
+(defn important
+  "Adds !important css directive"
+  [thing]
+  (str thing " !important"))
 
 (def default-margin
-  {:margin (rem 2)})
+  {:margin (u/rem 2)})
 (def default-padding
-  {:padding (rem 2)})
+  {:padding (u/rem 2)})
 (def modular 1.333)
 (def default-size (u/rem 1))
 (def smaller-size (/ default-size modular))
@@ -52,18 +34,18 @@
   ([size] {:font-size size}))
 
 (defn thin-border
-  ([] thin-border black)
+  ([] thin-border c/black)
   ([color] (str "thin solid " color)))
 
-(def button-padding {:padding "0.35rem 1rem"})
+(def button-padding {:padding [[(u/rem 0.35) (u/rem 1)]]})
 
 (def wish-button
   (merge
    {:cursor :pointer
-    :color black
+    :color c/black
     :background-color :white
-    :border-radius "1rem"
-    :border (thin-border light-blue)
+    :border-radius default-size
+    :border (thin-border c/cyan)
     :font-family :VeganSans
     :font-weight :normal}
     button-padding
@@ -71,14 +53,14 @@
 
 (def wish-button-hover
   [:&:hover
-   {:background-color light-blue}])
+   {:background-color c/cyan}])
 
 (def back-button
   (merge
    {:cursor :pointer
-    :color black
-    :background-color grey
-    :border-radius "1rem"
+    :color c/black
+    :background-color c/nobel
+    :border-radius default-size
     :border :none
     :font-family :VeganSans
     :font-weight :normal}
@@ -87,7 +69,7 @@
 
 (def back-button-hover
   [:&:hover
-   {:background-color white}])
+   {:background-color c/white}])
 
 (defstyles basic
   [:h1 :h2 :h3 :h4 :h5 :a :a:hover :select :input
@@ -107,10 +89,10 @@
    (font default-size)
    {:font-family :VeganSans}]
   [:input:focus :button:focus :select:focus {:outline :none}]
-  ["::-webkit-input-placeholder" {:color black}]
-  ["::-moz-placeholder" {:color black}]
-  [":-ms-input-placeholder" {:color black}]
-  [:input:-moz-placeholder {:color black}]
+  ["::-webkit-input-placeholder" {:color c/black}]
+  ["::-moz-placeholder" {:color c/black}]
+  [":-ms-input-placeholder" {:color c/black}]
+  [:input:-moz-placeholder {:color c/black}]
   [:p {:margin 0}])
 
 (defstyles fonts
@@ -153,19 +135,19 @@
   [:.negramot
    {:font-family :Negramot}]
   [:.dres
-   {:font-family "Dres !important"}]
+   {:font-family (important "Dres")}]
   [:.kakao
-   {:font-family "Kakao !important"}]
+   {:font-family (important "Kakao")}]
   [:.motel-sans
-   {:font-family "MotelSans !important"}]
+   {:font-family (important "MotelSans")}]
   [:.motel-slab
-   {:font-family "MotelSlab !important"}]
+   {:font-family (important "MotelSlab")}]
   [:.pramen-sans
-   {:font-family "PramenSans !important"}]
+   {:font-family (important "PramenSans")}]
   [:.pramen-slab
-   {:font-family "PramenSlab !important"}]
+   {:font-family (important "PramenSlab")}]
   [:.steiner
-   {:font-family "Steiner !important"}]
+   {:font-family (important "Steiner")}]
   [:.bigger-font
    {:font-size "1.618rem"}])
 
@@ -191,20 +173,20 @@
 
 (defkeyframes section-slide-down
   [:0% {:opacity 0
-        :max-height (rem 0)}]
+        :max-height (u/rem 0)}]
   [:99.9% {:opacity 0
-         :max-height (rem 20)
-         :margin-bottom (rem 1)}]
+         :max-height (u/rem 20)
+         :margin-bottom default-size}]
   [:100% {:opacity 1
-          :max-height (rem 20)
-          :margin-bottom (rem 1)}])
+          :max-height (u/rem 20)
+          :margin-bottom default-size}])
 
 (defkeyframes section-slide-up
   [:0% {:opacity 1
-        :margin-bottom (rem 1)
-        :max-height (rem 20)}])
+        :margin-bottom default-size
+        :max-height (u/rem 20)}])
   [:100% {:opacity 0
-        :max-height (rem 0)}]
+        :max-height (u/rem 0)}]
 
 (defkeyframes bounce-top
   [:0% {:transform "translate(50vw, -10vh) scale(0.5)"}]
@@ -223,19 +205,19 @@
 (defkeyframes bounce-bottom-right
   [:0% {:transform "translate(110vw, 110vh) scale(2.5)"}]
   [:93% {:transform "translate(50vw, 40vh) scale(2.9)"
-         :fill white}]
+         :fill c/white}]
   [:97% {:transform "translate(50vw, 40vh) scale(3)"}]
   [:100% {:transform "translate(50vw, 40vh) scale(3)"
-          :fill white}])
+          :fill c/white}])
 
 (defkeyframes rainbow
-  [:0% {:fill dark-blue :transform "translate(2rem, 92vh) scale(1)"}]
-  [:40% {:fill red :transform "translate(2rem, 88vh) scale(1.2)"}]
+  [:0% {:fill c/electric-violet :transform "translate(2rem, 92vh) scale(1)"}]
+  [:40% {:fill c/red :transform "translate(2rem, 88vh) scale(1.2)"}]
   [:50% {:transform "translate(2rem, 88vh) scale(1)"}]
   [:60% {:transform "translate(2rem, 88vh) scale(1.2)"}]
   [:70% {:transform "translate(2rem, 88vh) scale(1)"}]
-  [:80% {:fill yellow :transform "translate(2rem, 88vh) scale(1.4)"}]
-  [:100% {:fill white :transform "translate(2rem, 93vh)"}])
+  [:80% {:fill c/golden-fizz :transform "translate(2rem, 88vh) scale(1.4)"}]
+  [:100% {:fill c/white :transform "translate(2rem, 93vh)"}])
 
 (defkeyframes reveal-from-right
   [:0% {:transform "translateX(45%)" :opacity 0.7}]
@@ -252,9 +234,9 @@
   [:&>div
    {:font-family :VeganSans
     :width "23%"
-    :margin "1rem"
-    :padding "1rem"
-    :border-radius "1rem"
+    :margin default-size
+    :padding default-size
+    :border-radius default-size
     :cursor :pointer
     :transform "translateY(30rem)"
     :animation [["slide-up" "750ms" :forwards :ease-out]]}
@@ -269,7 +251,7 @@
       (font smaller-size)
       {:font-family :VeganSans
        :display "inline-block"
-       :border-radius "1rem"
+       :border-radius default-size
        :padding "0.35rem 0.5rem 0.25rem"
        :background-color :white
        :text-align :center}]]
@@ -285,7 +267,7 @@
    [:&:hover
     [:.description {:opacity 1}]]
    [:&.demo
-    {:background-color lighter-grey}
+    {:background-color c/concrete}
     [:header
      [:h5
        {:margin "0"
@@ -293,26 +275,26 @@
        :font-weight "300"}]
      [:.price {:margin "0.3rem 0 0.25rem 0"}]]]
    [:&.basic
-    {:background-color lightest-blue
+    {:background-color c/baby-blue
      :animation-delay "250ms"}
      [:h5 {:font-weight :normal}]]
    [:&.premium
-    {:background-color blue
+    {:background-color c/cyan
      :animation-delay "750ms"}]
    [:&.superior
-    {:background-color dark-blue
-     :color white
+    {:background-color c/electric-violet
+     :color c/white
      :animation-delay "1s"
      :max-height "20rem"}
      [:h5
       {:font-weight "900"}]
      [:.price
-      {:color black}]
+      {:color c/black}]
      [:.description
       {:margin "10rem 0 0 0"}]]]
   [:button
    back-button
-   {:margin-bottom (rem 1)}]])
+   {:margin-bottom default-size}]])
 
 (defstyles media-queries
   (respond/tablet
@@ -349,17 +331,17 @@
   [:body
    (font default-size)
    {:font-family :VeganSans
-    :min-width (rem 60)
+    :min-width (u/rem 60)
     :margin :auto
     :line-height 1.5}
-   [:&.first-aid {:background-color darker-grey }]
-   [:&.custom {:background-color dark-grey}]
+   [:&.first-aid {:background-color c/mercury }]
+   [:&.custom {:background-color c/emperor}]
    [:header#header
     {:position :relative
      :top 0
-     :background-color clear
+     :background-color c/clear
      :z-index 10
-     :height (rem 2)
+     :height (u/rem 2)
      :display :flex
      :flex-direction :row
      :justify-content "space-between"}
@@ -385,40 +367,40 @@
       [:&.visible {:animation [[slide-right "250ms" :ease :forwards]]}]]]]
    [:section#cart
     {:margin-top "3rem"
-     :background-color clear
+     :background-color c/clear
      :position :absolute}
     [:button.wish-list-button
       wish-button
-      {:background-color light-blue
+      {:background-color c/cyan
        :transition-property "font-size"
        :transition-duration "450ms"
        :position :fixed
        :right "2rem"
-       :top "1rem"
+       :top default-size
        :z-index 20}
      wish-button-hover
      [:&.small
       (font smaller-size)
-      {:top (rem 1.2)}]]
+      {:top (u/rem 1.2)}]]
     [:div.wish-list
      full-width
-     {:background-color lightest-blue
+     {:background-color c/baby-blue
       :box-shadow "rgba(0,0,0,0.4) 0px 0.125rem 1rem -0.5rem"
       :position :fixed
       :top 0
       :z-index 20}
      [:&.checking-out
-      {:background-color light-yellow
+      {:background-color c/pale-canary
        :height "100%"
        :overflow :scroll}
       [:&.superior
-       {:background-color dark-blue}
+       {:background-color c/electric-violet}
        [:h2
         {:font-weight 800
          :font-style :italic}]
        [:table
-        {:color white}
-        [:td :th {:border-color white}]]]
+        {:color c/white}
+        [:td :th {:border-color c/white}]]]
       [:div.content
        [:table
         {:width "45%"
@@ -431,7 +413,7 @@
            {:display :flex
             :justify-content :space-between}
            [:h2
-            {:margin-bottom (rem 1)}]]]]]
+            {:margin-bottom default-size}]]]]]
        [:form#checkout
         {:margin "3rem 0 0 3%"
          :width "45%"
@@ -446,8 +428,8 @@
           :float :left}
          [:label
           {:display :block
-           :margin-bottom "1rem"}
-          [:&.grey {:color grey}]
+           :margin-bottom default-size}
+          [:&.grey {:color c/nobel}]
           [:input
            (font default-size)
            {:display :block
@@ -461,8 +443,8 @@
            {:background "url('/img/down-arrow.svg') #fff no-repeat center right 0.5rem"
             :display :block
             :width "80%"
-            :border-radius (rem (* modular 0.25))
-            :background-color white
+            :border-radius (u/rem (* modular 0.25))
+            :background-color c/white
             :padding "0.5rem"}]]
          [:div.pay-box
           {:margin-top "8rem"}
@@ -473,21 +455,21 @@
             :background-repeat :no-repeat
             :background-origin 0
             :background-size :cover
-            :margin-top (rem 1)
+            :margin-top default-size
             :width "2rem"
             :height "2rem"}
            [:&:checked {:background-image "url('/img/check-checked.svg')"}]]
           [:button
            (font bigger-size)
            {:padding "0.5rem 1rem"
-            :color black
+            :color c/black
             :border-radius big-size
             :border :none
-            :background-color white
+            :background-color c/white
             :margin "3rem 0"
             :cursor :pointer}
            [:&:hover
-            {:background-color orange}]]]]]]]
+            {:background-color c/salmon}]]]]]]]
      [:header
       {:display :flex
        :justify-content "space-between"
@@ -501,9 +483,9 @@
        {:margin "3rem 2rem 0"}
        back-button-hover
        [:&.wish-list
-        {:background-color white}
+        {:background-color c/white}
         [:&:hover
-         {:background-color lightest-blue}]]] ]
+         {:background-color c/baby-blue}]]] ]
      [:div.content
       {:display :flex}
       [:table
@@ -517,8 +499,8 @@
        [:th :td
         {:font-weight :normal
          :text-align :left
-         :padding "1rem"
-         :border-bottom "thin solid black"}
+         :padding default-size
+         :border-bottom "thin solid c/black"}
         [:&.price :&.remove
          {:width "7rem"
           :text-align :right}]
@@ -530,9 +512,9 @@
           button-padding
           {:border-radius bigger-size
            :border :none
-           :background white
+           :background c/white
            :float :right}
-          [:&:hover {:background light-yellow}]]]]
+          [:&:hover {:background c/pale-canary}]]]]
         [:button
          (font default-size)
          {:border :none
@@ -549,7 +531,7 @@
    [:main#app
     [:&>.fade
      {:opacity 0.4}
-     [:button {:display "none !important"}]]
+     [:button {:display (important "none")}]]
     [:svg
      {:width "100vw"
       :height "95vh"}
@@ -561,9 +543,9 @@
       [:text
        {:font-family :VeganSans
         :font-weight 600
-        :fill yellow}]
+        :fill c/golden-fizz}]
       [:circle
-       {:stroke yellow
+       {:stroke c/golden-fizz
         :stroke-width "24"
        :fill :none}]]
      [:g.bottom-right
@@ -573,15 +555,15 @@
         :font-style :Italic}]
       [:circle
        {:stroke :none
-       :fill red}]]
+       :fill c/red}]]
      [:g.bottom-left
       {:animation [[bounce-bottom-left "1.44s" :infinite]]}
       [:text
        {:font-family :Hrot
         :font-weight 200
-        :fill dark-blue}]
+        :fill c/electric-violet}]
       [:circle
-       {:stroke dark-blue
+       {:stroke c/electric-violet
        :fill :white}]]
      [:circle.down
       {:animation [[:rainbow "4s" :infinite]]
@@ -595,7 +577,7 @@
       :box-shadow "rgba(0,0,0,0.2) 0px 0.125rem 1rem 0px"
       :position :fixed
       :top 0
-      :height (rem 8)
+      :height (u/rem 8)
       :z-index 3
       :background-color :white}
      [:&.small
@@ -611,14 +593,14 @@
          (font bigger-size)]
         [:a
          {:margin-bottom "0.5rem"
-          :width (rem 2)
-          :height (rem 1)}]]
+          :width (u/rem 2)
+          :height default-size}]]
       [:button
        (font smaller-size)
        {:transition-property "margin-bottom, margin-right"
         :transition-duration "250ms"
         :margin-bottom 0}
-       [:&.right-spaced {:margin-right (rem 9)}]]
+       [:&.right-spaced {:margin-right (u/rem 9)}]]
       [:nav.sections
        {:margin-bottom 0}]]
      [:&.fade
@@ -630,7 +612,7 @@
        :align-items :center}
       [:div.links
        {:display :flex
-        :width (rem 6)}]
+        :width (u/rem 6)}]
       [:h2
        (font huge-size)
        {:transition-property "font-size, width"
@@ -638,7 +620,7 @@
         :font-weight :normal
         :display "inline-block"
         :margin 0
-        :width (rem 25)
+        :width (u/rem 25)
         :font-family :inherit}]
        [:a
         {:transition-property "width, height, margin-bottom"
@@ -650,8 +632,8 @@
          :background-size :contain
          :display "inline-block"
          :border :none
-         :width (rem 2)
-         :height (rem 2)
+         :width (u/rem 2)
+         :height (u/rem 2)
          :color "rgba(0, 0, 0, 0)"}
         [:&.previous
          {:background-image "url(/img/previous.svg)"}]
@@ -661,19 +643,19 @@
       {:display :flex
        :width "55%"
        :justify-content :space-between
-       :margin-right (rem 2)}]
+       :margin-right (u/rem 2)}]
      [:nav.sections
        {:transition-property "height, margin-bottom"
         :transition-duration "450ms"
         :display :flex
         :align-items "flex-start"
         :justify-content "space-between"
-        :margin-bottom "1rem"}
+        :margin-bottom default-size}
       [:a
        {:font-family :VeganSans
         :padding "0.33rem 1rem"
         :text-align :center
-        :border-radius "1rem"
+        :border-radius default-size
         :transition-property "background-color"
         :transition-duration "250ms"
         :cursor :pointer}
@@ -681,14 +663,14 @@
         {:transform "scale(0.8)"
          :transition-property :transform
          :transition-duration "250ms"}]
-       [:&:hover {:background-color lightest-grey}]
+       [:&:hover {:background-color c/alabaster}]
        [:&.active
         {:font-weight 700
-         :background-color grey
+         :background-color c/nobel
          :transition-duration "250ms"}]]]
      [:button
       wish-button
-      {:margin-bottom "1rem"}
+      {:margin-bottom default-size}
       wish-button-hover]]
     wish-box
     [:&>div>div>.wish-box:last-child
@@ -696,7 +678,7 @@
       :padding-top "4rem"
       :position :fixed
       :z-index 2
-      :background-color white
+      :background-color c/white
       :padding "3rem"
       :overflow :hidden
       :margin 0}]
@@ -709,12 +691,12 @@
      {:padding 0
       :margin "0 2rem"}
      [:li
-      {:border-bottom (thin-border grey)
-       :padding-top "1rem"}
+      {:border-bottom (thin-border c/nobel)
+       :padding-top default-size}
       [:&.fade {:opacity "0.1"}]
       [:&.false {:background-color "#fffffe"}]
       [:div.tools
-       {:font-family "VeganSans !important"}
+       {:font-family (important "VeganSans")}
        [:&>div {:float :left}]
        [:button
         (font smaller-size)
@@ -758,7 +740,7 @@
          (font smaller-size)
          {:width "20rem"
           :text-align :left
-          :padding-left "1rem"}]]]
+          :padding-left default-size}]]]
       [:a
        {:display :block
         :padding "2rem 0"
@@ -776,26 +758,26 @@
       wish-box]
     [:section#styles
      [:ul.styles
-      {:padding-top (rem 9)}]]
+      {:padding-top (u/rem 9)}]]
     [:section#glyphs
      {:margin "6rem 6rem 0"}
      [:select
       ^:prefix {:appearance :none}
       {:top "8rem"
        :position :fixed
-       :border-radius (rem 1)
+       :border-radius default-size
        :padding "0.75rem 1rem"
-       :margin [[(rem 2) 0]]
+       :margin [[(u/rem 2) 0]]
        :left "-30rem"
        :z-index 10
        :opacity 0}
       [:&.visible
        {:opacity 0.9
-        :left "1rem"}
+        :left default-size}
       (font default-size)]]
      [:img
       full-width
-      {:padding [[(rem 3) 0]]}]]
+      {:padding [[(u/rem 3) 0]]}]]
     [:section#details
      {:margin "0 6rem"
       :padding "6rem 0"}
@@ -814,7 +796,7 @@
        full-width]]]
     [:section#inuse
      full-width
-     {:margin-top (rem 6)
+     {:margin-top (u/rem 6)
       :overflow :hidden
       :float :left}
      [:nav
@@ -830,13 +812,13 @@
       [:button
          {:display "inline-block"
           :background-repeat "no-repeat"
-          :background-color white
+          :background-color c/white
           :opacity 0.8
           :padding "0.35rem 1rem"
           :margin 0
           :padding-bottom "0.5rem"
           :border :none
-          :border-radius (rem 1)
+          :border-radius default-size
           :cursor :pointer}]]]
      [:div.figure-wrapper
       {:transition "transform cubic-bezier(0.4, 0, 0.2, 1) 1s"
@@ -847,8 +829,8 @@
         :float :left}
        [:figcaption
         {:transform "translate(2rem, 2rem)"
-         :background-color white
-         :border-radius (rem 2)
+         :background-color c/white
+         :border-radius (u/rem 2)
          :padding "0.25rem 1rem"
          :opacity "0.8"
          :position :absolute}
@@ -868,17 +850,17 @@
        (font larger-size)
        {:width "48%"
         :margin "0 10%"
-        :padding-top (rem 6)
-        :padding-bottom (rem 2)
+        :padding-top (u/rem 6)
+        :padding-bottom (u/rem 2)
         :font-weight :normal}]]
      [:div.about-address
-      {:background-color green
+      {:background-color c/spring-green
        :display :flex}
       [:div.text
        (font bigger-size)
        {:flex 6
         :margin-left "10%"
-        :padding-top (rem 4)}]]
+        :padding-top (u/rem 4)}]]
      [:div.contact
       {:flex 8
        :overflow :visible}
@@ -889,29 +871,29 @@
         :transition-timing-function "cubic-bezier(0.18, 0.89, 0.32, 1.28)"
         :margin-left "10%"
         :width "70%"
-        :padding (rem 3)
+        :padding (u/rem 3)
         :font-style :normal
-        :background-color grey
-        :margin-top (rem 3)
-        :margin-bottom (rem 1)
-        :border-radius (rem 2)}
+        :background-color c/nobel
+        :margin-top (u/rem 3)
+        :margin-bottom default-size
+        :border-radius (u/rem 2)}
        [:&.visible {:transform "translateX(0rem)"}]
        [:&.hidden {:transform "translateX(70rem)"}]
        [:a
         (font bigger-size)
-        {:border-radius (rem 3)
+        {:border-radius (u/rem 3)
          :padding "0.5rem 1rem"}
         [:&:hover
-           {:background-color "white !important"
-            :color "black !important"}]]
+           {:background-color (important c/white)
+            :color (important c/black)}]]
        [:div.email
-         {:margin-top (rem 1)}
+         {:margin-top default-size}
         [:a
          (font bigger-size)
          {:color :white
-          :background-color dark-grey}]]
+          :background-color c/emperor}]]
        [:nav.social
-        {:margin-top (rem 3)
+        {:margin-top (u/rem 3)
          :line-height 1
          :display :flex
          :justify-content "space-between"}
@@ -924,7 +906,7 @@
          [:&.instagram
           {:background-color "#a04aff"}]]]]]
      [:.lost
-      {:background-color green
+      {:background-color c/spring-green
        :width "100%"}
       [:p
        (font bigger-size)
@@ -943,14 +925,14 @@
            :transition-property :transform
            :transition-duration "250ms"
            :font-size "6vw"
-           :color white
+           :color c/white
            :padding "0 1rem 0 0"
            :font-family :inherit}
           [:&:hover
            {:transform "scale(1.10)"
-            :color black}]]]]]
+            :color c/black}]]]]]
      [:.people
-      {:background-color light-green
+      {:background-color c/spring-green
        :display :flex}
       [:.person
          {:width "48%"
@@ -976,11 +958,11 @@
      [:header
       [:h2
        (font large-size)
-       {:color violet
+       {:color c/purple
         :width "80%"
         :margin "0 10%"
-        :padding-top (rem 6)
-        :padding-bottom (rem 2)
+        :padding-top (u/rem 6)
+        :padding-bottom (u/rem 2)
         :font-weight :normal}]]
      [:div.text
       {:width "40%"
@@ -988,16 +970,16 @@
        :float :left}
       [:p (font bigger-size)
        [:span.email
-        {:margin-top "1rem"}
+        {:margin-top default-size}
         [:a
          {:padding "0.35rem 1rem"
           :display "inline-block"
-          :color white
-          :border-radius "1rem"
+          :color c/white
+          :border-radius default-size
           :background-color :black}
          [:&:hover
-          {:background-color "white !important"
-           :color "black !important"}]]]]]
+          {:background-color (important c/white)
+           :color (important c/black)}]]]]]
      [:ul.advantages
       {:width "30%"
        :margin "0 10% 0 0"
@@ -1006,13 +988,13 @@
        [:&:before
         (font bigger-size)
          {:content "\"• \""}]
-       [:&.red:before {:color red}]
-       [:&.yellow:before {:color yellow}]]]
+       [:&.red:before {:color c/red}]
+       [:&.yellow:before {:color c/golden-fizz}]]]
      [:div.cases
       {:clear :both
        :font-family :VeganSans}
       [:&>div
-       {:margin-bottom (rem 4)}
+       {:margin-bottom (u/rem 4)}
        [:&.fade {:opacity 0.4}]
        [:h3
         (font monster-size)
@@ -1033,39 +1015,39 @@
       [:div.column
        {:flex 1
         :height "100%"
-        :margin-right (rem 2)}
+        :margin-right (u/rem 2)}
        [:h2
         (font default-size)
         {:font-weight :normal
          :width "75%"
-         :margin-bottom (rem 2)
+         :margin-bottom (u/rem 2)
          :line-height bigger-size}]
        [:h3
         (font bigger-size)
         {:font-weight :normal
-         :margin-bottom (rem 0.5)}
-        [(sel/& (sel/not (sel/first-child))) {:margin-top (rem 3)}]]
+         :margin-bottom (u/rem 0.5)}
+        [(sel/& (sel/not (sel/first-child))) {:margin-top (u/rem 3)}]]
        [:h4
-        {:margin-bottom (rem 1)}
+        {:margin-bottom default-size}
         [:button
          button-padding
          (font default-size)
-         {:background-color darkerer-grey
+         {:background-color c/gallery
           :border-radius default-size
           :cursor :pointer
           :position :relative
           :z-index "2"
           :border :none}
-         [:&.opened {:background-color dark-yellow}]]]
+         [:&.opened {:background-color c/paris-daisy}]]]
        [:&:first-child
         [:p
          (font smaller-size)
          {:width "75%"
-          :margin-bottom (rem 1)}]]
+          :margin-bottom default-size}]]
        [(sel/& (sel/not (sel/first-child)))
         [:p
          (font smaller-size)
-         {:margin [[0 (rem 2) 0 (rem 1)]]
+         {:margin [[0 (u/rem 2) 0 default-size]]
           :width "75%"
           :max-height "0rem"
           :position :relative

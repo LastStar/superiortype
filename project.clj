@@ -19,7 +19,7 @@
                                     "resources/public/css/compiled/site.css"]
 
   :garden {:builds [{:id "screen"
-                     :source-paths ["src/clj"]
+                     :source-paths ["src/clj" "src/cljc"]
                      :stylesheet superiortype.css/site
                      :compiler {:vendors ["webkit"]
                                 :output-to "resources/public/css/compiled/site.css"
@@ -28,7 +28,7 @@
   :figwheel {:css-dirs ["resources/public/css/compiled"]}
 
   :cljsbuild {:builds [{:id "dev"
-                        :source-paths ["src/cljs"]
+                        :source-paths ["src/cljs" "src/cljc"]
 
                         :figwheel {:on-jsload "superiortype.core/mount-root"}
 
@@ -39,7 +39,7 @@
                                    :source-map-timestamp true}}
 
                        {:id "min"
-                        :source-paths ["src/cljs"]
+                        :source-paths ["src/cljs" "src/cljc"]
                         :compiler {:main superiortype.core
                                    :output-to "resources/public/js/compiled/app.js"
                                    :optimizations :advanced
