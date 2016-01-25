@@ -14,11 +14,14 @@
   (str thing " !important"))
 
 (def default-margin
-  {:margin (u/rem 2)})
+  {:margin double-size})
 (def default-padding
-  {:padding (u/rem 2)})
+  {:padding double-size})
 (def modular 1.333)
 (def default-size (u/rem 1))
+(def double-size (u/rem 2))
+(def triple-size (u/rem 3))
+(def quadruple-size (u/rem 4))
 (def smaller-size (/ default-size modular))
 (def bigger-size (* default-size modular))
 (def big-size (* bigger-size modular))
@@ -28,6 +31,9 @@
 (def epic-size (* huge-size modular))
 (def monster-size (* epic-size modular))
 (def full-width {:width "100%"})
+(def short-duration (u/ms 250))
+(def default-duration (u/ms 450))
+(def long-duration (u/ms 750))
 
 (defn font
   ([] font 1)
@@ -35,9 +41,9 @@
 
 (defn thin-border
   ([] thin-border c/black)
-  ([color] (str "thin solid " color)))
+  ([color] [[:thin :solid color]]))
 
-(def button-padding {:padding [[(u/rem 0.35) (u/rem 1)]]})
+(def button-padding {:padding [[(u/rem 0.35) default-size]]})
 
 (def wish-button
   (merge
@@ -154,7 +160,7 @@
 ;; Keyframes
 ;; FIXME move to its own file animation
 (defkeyframes header-slide-up
-  [:0% {:height "8rem"}]
+  [:0% {:height (u/rem 8)}]
   [:100% {:height "2.5em"}])
 
 (defkeyframes slide-right
@@ -239,7 +245,7 @@
     :border-radius default-size
     :cursor :pointer
     :transform "translateY(30rem)"
-    :animation [["slide-up" "750ms" :forwards :ease-out]]}
+    :animation [[:slide-up long-duration :forwards :ease-out]]}
    [:&:first-child {:margin-left 0}]
    [:header
     {:display :flex
@@ -258,11 +264,11 @@
    [:.description
     {:clear :both
      :transition-property :opacity
-     :transition-duration "250ms"
+     :transition-duration short-duration
      :opacity 0}
    [:h6
     (font default-size)
-    {:margin "2rem 0 0"}]
+    {:margin [[double-size 0 0]]}]
    [:p {:margin "0"}]]
    [:&:hover
     [:.description {:opacity 1}]]
@@ -276,16 +282,16 @@
      [:.price {:margin "0.3rem 0 0.25rem 0"}]]]
    [:&.basic
     {:background-color c/baby-blue
-     :animation-delay "250ms"}
+     :animation-delay short-duration}
      [:h5 {:font-weight :normal}]]
    [:&.premium
     {:background-color c/cyan
-     :animation-delay "750ms"}]
+     :animation-delay long-duration}]
    [:&.superior
     {:background-color c/electric-violet
      :color c/white
      :animation-delay "1s"
-     :max-height "20rem"}
+     :max-height (u/rem 20)}
      [:h5
       {:font-weight "900"}]
      [:.price
@@ -341,7 +347,7 @@
      :top 0
      :background-color c/clear
      :z-index 10
-     :height (u/rem 2)
+     :height double-size
      :display :flex
      :flex-direction :row
      :justify-content "space-between"}
@@ -351,7 +357,7 @@
       :padding "1.25rem 1rem 0.25rem 2rem"}
      [:h1
       {:transition-property "font-size"
-       :transition-duration "450ms"
+       :transition-duration default-duration
        :display "inline-block"
        :margin 0}
       (font bigger-size)
@@ -362,20 +368,20 @@
        :display "inline-block"}
       [:a
          {:display "inline-block"
-          :padding-left "2rem"}
-         [:&:first-child {:padding-left "3rem"}]]
-      [:&.visible {:animation [[slide-right "250ms" :ease :forwards]]}]]]]
+          :padding-left double-size}
+         [:&:first-child {:padding-left triple-size}]]
+      [:&.visible {:animation [[slide-right short-duration :ease :forwards]]}]]]]
    [:section#cart
-    {:margin-top "3rem"
+    {:margin-top triple-size
      :background-color c/clear
      :position :absolute}
     [:button.wish-list-button
       wish-button
       {:background-color c/cyan
        :transition-property "font-size"
-       :transition-duration "450ms"
+       :transition-duration default-duration
        :position :fixed
-       :right "2rem"
+       :right double-size
        :top default-size
        :z-index 20}
      wish-button-hover
@@ -404,7 +410,7 @@
       [:div.content
        [:table
         {:width "45%"
-         :transition-duration "450ms"}
+         :transition-duration default-duration}
         [:th :td (font smaller-size)]
         [:td.name :th.total (font default-size)]
         [:tr.superior-list
@@ -422,7 +428,7 @@
          :transform "translateX(45%)"
          :opacity 0
          :animation-delay "500ms"
-         :animation [[reveal-from-right "450ms" :forwards :ease-out]]}
+         :animation [[reveal-from-right default-duration :forwards :ease-out]]}
         [:.column
          {:width "50%"
           :float :left}
@@ -447,7 +453,7 @@
             :background-color c/white
             :padding "0.5rem"}]]
          [:div.pay-box
-          {:margin-top "8rem"}
+          {:margin-top (u/rem 8)}
           [:a {:text-decoration :underline}]
           [:input
            ^:prefix {:appearance :none}
@@ -456,8 +462,8 @@
             :background-origin 0
             :background-size :cover
             :margin-top default-size
-            :width "2rem"
-            :height "2rem"}
+            :width double-size
+            :height double-size}
            [:&:checked {:background-image "url('/img/check-checked.svg')"}]]
           [:button
            (font bigger-size)
@@ -502,7 +508,7 @@
          :padding default-size
          :border-bottom "thin solid c/black"}
         [:&.price :&.remove
-         {:width "7rem"
+         {:width (u/rem 7)
           :text-align :right}]
         [:&.total
          {:text-align :right}]
@@ -593,12 +599,12 @@
          (font bigger-size)]
         [:a
          {:margin-bottom "0.5rem"
-          :width (u/rem 2)
+          :width double-size
           :height default-size}]]
       [:button
        (font smaller-size)
        {:transition-property "margin-bottom, margin-right"
-        :transition-duration "250ms"
+        :transition-duration short-duration
         :margin-bottom 0}
        [:&.right-spaced {:margin-right (u/rem 9)}]]
       [:nav.sections
@@ -608,7 +614,7 @@
        :opacity 0}]
      [:nav.fonts
       {:display :flex
-       :margin-left "2rem"
+       :margin-left double-size
        :align-items :center}
       [:div.links
        {:display :flex
@@ -616,7 +622,7 @@
       [:h2
        (font huge-size)
        {:transition-property "font-size, width"
-        :transition-duration "450ms"
+        :transition-duration default-duration
         :font-weight :normal
         :display "inline-block"
         :margin 0
@@ -624,7 +630,7 @@
         :font-family :inherit}]
        [:a
         {:transition-property "width, height, margin-bottom"
-         :transition-duration "450ms"
+         :transition-duration default-duration
          :background-position-y "0"
          :background-position-x "50%"
          :background-repeat "no-repeat"
@@ -632,8 +638,8 @@
          :background-size :contain
          :display "inline-block"
          :border :none
-         :width (u/rem 2)
-         :height (u/rem 2)
+         :width double-size
+         :height double-size
          :color "rgba(0, 0, 0, 0)"}
         [:&.previous
          {:background-image "url(/img/previous.svg)"}]
@@ -643,10 +649,10 @@
       {:display :flex
        :width "55%"
        :justify-content :space-between
-       :margin-right (u/rem 2)}]
+       :margin-right double-size}]
      [:nav.sections
        {:transition-property "height, margin-bottom"
-        :transition-duration "450ms"
+        :transition-duration default-duration
         :display :flex
         :align-items "flex-start"
         :justify-content "space-between"
@@ -657,29 +663,29 @@
         :text-align :center
         :border-radius default-size
         :transition-property "background-color"
-        :transition-duration "250ms"
+        :transition-duration short-duration
         :cursor :pointer}
        [:&:active
         {:transform "scale(0.8)"
          :transition-property :transform
-         :transition-duration "250ms"}]
+         :transition-duration short-duration}]
        [:&:hover {:background-color c/alabaster}]
        [:&.active
         {:font-weight 700
          :background-color c/nobel
-         :transition-duration "250ms"}]]]
+         :transition-duration short-duration}]]]
      [:button
       wish-button
       {:margin-bottom default-size}
       wish-button-hover]]
     wish-box
     [:&>div>div>.wish-box:last-child
-     {:top "9rem"
-      :padding-top "4rem"
+     {:top (u/rem 9)
+      :padding-top quadruple-size
       :position :fixed
       :z-index 2
       :background-color c/white
-      :padding "3rem"
+      :padding triple-size
       :overflow :hidden
       :margin 0}]
     [:ul#fonts
@@ -735,10 +741,10 @@
        [:span
         {:display "inline-block"
          :text-align :center
-         :width "4rem"}
+         :width quadruple-size}
         [:&.name
          (font smaller-size)
-         {:width "20rem"
+         {:width (u/rem 20)
           :text-align :left
           :padding-left default-size}]]]
       [:a
@@ -763,11 +769,11 @@
      {:margin "6rem 6rem 0"}
      [:select
       ^:prefix {:appearance :none}
-      {:top "8rem"
+      {:top (u/rem 8)
        :position :fixed
        :border-radius default-size
        :padding "0.75rem 1rem"
-       :margin [[(u/rem 2) 0]]
+       :margin [[double-size 0]]
        :left "-30rem"
        :z-index 10
        :opacity 0}
@@ -777,7 +783,7 @@
       (font default-size)]]
      [:img
       full-width
-      {:padding [[(u/rem 3) 0]]}]]
+      {:padding [[triple-size 0]]}]]
     [:section#details
      {:margin "0 6rem"
       :padding "6rem 0"}
@@ -790,7 +796,7 @@
        {:width "20%"
         :padding-left "5%"}]]
      [:div.opentype
-      {:margin-top "2rem"
+      {:margin-top double-size
        :clear :both}
       [:img
        full-width]]]
@@ -806,20 +812,20 @@
        :z-index 2}
       [:div
        {:width "50%"
-        :height "2rem"
+        :height double-size
         :float :left}
        [:&:last-child {:text-align :right}]
-      [:button
-         {:display "inline-block"
-          :background-repeat "no-repeat"
-          :background-color c/white
-          :opacity 0.8
-          :padding "0.35rem 1rem"
-          :margin 0
-          :padding-bottom "0.5rem"
-          :border :none
-          :border-radius default-size
-          :cursor :pointer}]]]
+       [:button
+        button-padding
+        {:display "inline-block"
+         :background-repeat "no-repeat"
+         :background-color c/white
+         :opacity 0.8
+         :margin 0
+         :padding-bottom "0.5rem"
+         :border :none
+         :border-radius default-size
+         :cursor :pointer}]]]
      [:div.figure-wrapper
       {:transition "transform cubic-bezier(0.4, 0, 0.2, 1) 1s"
        :z-index 1}
@@ -830,7 +836,7 @@
        [:figcaption
         {:transform "translate(2rem, 2rem)"
          :background-color c/white
-         :border-radius (u/rem 2)
+         :border-radius double-size
          :padding "0.25rem 1rem"
          :opacity "0.8"
          :position :absolute}
@@ -851,7 +857,7 @@
        {:width "48%"
         :margin "0 10%"
         :padding-top (u/rem 6)
-        :padding-bottom (u/rem 2)
+        :padding-bottom double-size
         :font-weight :normal}]]
      [:div.about-address
       {:background-color c/spring-green
@@ -860,7 +866,7 @@
        (font bigger-size)
        {:flex 6
         :margin-left "10%"
-        :padding-top (u/rem 4)}]]
+        :padding-top quadruple-size}]]
      [:div.contact
       {:flex 8
        :overflow :visible}
@@ -871,17 +877,17 @@
         :transition-timing-function "cubic-bezier(0.18, 0.89, 0.32, 1.28)"
         :margin-left "10%"
         :width "70%"
-        :padding (u/rem 3)
+        :padding triple-size
         :font-style :normal
         :background-color c/nobel
-        :margin-top (u/rem 3)
+        :margin-top triple-size
         :margin-bottom default-size
-        :border-radius (u/rem 2)}
+        :border-radius double-size}
        [:&.visible {:transform "translateX(0rem)"}]
        [:&.hidden {:transform "translateX(70rem)"}]
        [:a
         (font bigger-size)
-        {:border-radius (u/rem 3)
+        {:border-radius triple-size
          :padding "0.5rem 1rem"}
         [:&:hover
            {:background-color (important c/white)
@@ -893,7 +899,7 @@
          {:color :white
           :background-color c/emperor}]]
        [:nav.social
-        {:margin-top (u/rem 3)
+        {:margin-top triple-size
          :line-height 1
          :display :flex
          :justify-content "space-between"}
@@ -923,7 +929,7 @@
          [:a
           {:display "inline-block"
            :transition-property :transform
-           :transition-duration "250ms"
+           :transition-duration short-duration
            :font-size "6vw"
            :color c/white
            :padding "0 1rem 0 0"
@@ -936,8 +942,8 @@
        :display :flex}
       [:.person
          {:width "48%"
-          :margin-top "3rem"
-          :padding "2rem"}
+          :margin-top triple-size
+          :padding double-size}
        [:.photo
         [:img
          {:border-radius "50%"
@@ -962,7 +968,7 @@
         :width "80%"
         :margin "0 10%"
         :padding-top (u/rem 6)
-        :padding-bottom (u/rem 2)
+        :padding-bottom double-size
         :font-weight :normal}]]
      [:div.text
       {:width "40%"
@@ -972,8 +978,8 @@
        [:span.email
         {:margin-top default-size}
         [:a
-         {:padding "0.35rem 1rem"
-          :display "inline-block"
+         button-padding
+         {:display "inline-block"
           :color c/white
           :border-radius default-size
           :background-color :black}
@@ -994,7 +1000,7 @@
       {:clear :both
        :font-family :VeganSans}
       [:&>div
-       {:margin-bottom (u/rem 4)}
+       {:margin-bottom quadruple-size}
        [:&.fade {:opacity 0.4}]
        [:h3
         (font monster-size)
@@ -1015,18 +1021,18 @@
       [:div.column
        {:flex 1
         :height "100%"
-        :margin-right (u/rem 2)}
+        :margin-right double-size}
        [:h2
         (font default-size)
         {:font-weight :normal
          :width "75%"
-         :margin-bottom (u/rem 2)
+         :margin-bottom double-size
          :line-height bigger-size}]
        [:h3
         (font bigger-size)
         {:font-weight :normal
          :margin-bottom (u/rem 0.5)}
-        [(sel/& (sel/not (sel/first-child))) {:margin-top (u/rem 3)}]]
+        [(sel/& (sel/not (sel/first-child))) {:margin-top triple-size}]]
        [:h4
         {:margin-bottom default-size}
         [:button
@@ -1047,14 +1053,14 @@
        [(sel/& (sel/not (sel/first-child)))
         [:p
          (font smaller-size)
-         {:margin [[0 (u/rem 2) 0 default-size]]
+         {:margin [[0 double-size 0 default-size]]
           :width "75%"
-          :max-height "0rem"
+          :max-height (u/rem 0)
           :position :relative
           :z-index "1"
           :opacity 0}
          [:&.opened
-          {:animation [[section-slide-down "550ms" :alternate :forwards]]}]
+          {:animation [[section-slide-down default-duration :alternate :forwards]]}]
          [:&.closed
-          {:animation [[section-slide-up "250ms" :alternate :forwards]]}]]]]]]])
+          {:animation [[section-slide-up short-duration :alternate :forwards]]}]]]]]]])
 
