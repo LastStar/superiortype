@@ -22,8 +22,8 @@
   (set! (-> js/document .-body .-className) "first-aid")
   [:section#first-aid
    [:div.column
-    [:h2 "Welcome to our client support page. Here you will find all the information about our services and terms of use. We have created a user friendly layout for a quicker and better way to get you acquainted." ]
-    [:p "Type design is a work of great diligence and meticulous pondering over all the curve combinations leading to a perfect harmony of each and every character. All the ligatures, words, phrases and sentences form a balanced whole. For us it is not only work that we are enthusiastic about but a business that we take seriously. Therefore we pay special attention to customer care as well as license observance." ]
+    [:h2 "Welcome to our client support page. Here you will find all the information about our services and terms of use. We have created a user friendly layout for a quicker and better way to get you acquainted."]
+    [:p "Type design is a work of great diligence and meticulous pondering over all the curve combinations leading to a perfect harmony of each and every character. All the ligatures, words, phrases and sentences form a balanced whole. For us it is not only work that we are enthusiastic about but a business that we take seriously. Therefore we pay special attention to customer care as well as license observance."]
     [:p "Please read carefully the license agreement and terms of use."]
     [:p "Feel free to contact us about any further questions."]]
    [:div.column
@@ -75,4 +75,5 @@
     [subsection :language-support "Language support"
      "All our fonts contain characters of the following languages: Afrikaans, Albanian, Basque, Belorussian (Latin), Bosnian, Breton, Catalan, Chamorro, Chichewa, Cornish, Crimean Tatar (Latin), Croatian, Czech, Danish, Dutch, Esperanto, Estonian, Faroese, Finnish, French, Frisian, Galician, German, Greenlandic, Hawaiian, Hungarian, Icelandic, Indonesian, Italian, Kashubian, Kurdish, Latvian, Lithuanian, Luxembourgian, Maltese, Maori, Moldavian (Latin), Norwegian, Occitan, Polish, Portuguese, Rhaeto-Romance, Romanian, Serbian (Latin), Scots Gaelic, Slovak, Slovenian, Spanish, Swedish, Tswana, Turkish, Turkmen, Welsh, Waloon, Wolof"]
     [subsection :mail "Mail"
-     [:span "In case of any questions or technical issues with purchased fonts contact us on " [:a {:href "mailto:mail@superiortype.com"} "mail@superiortype.com"]]]]])
+     [:span "In case of any questions or technical issues with purchased fonts contact us on "
+      [:a {:href "mailto:mail@superiortype.com"} "mail@superiortype.com"]]]]])
