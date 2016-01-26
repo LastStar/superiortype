@@ -8,59 +8,8 @@
             [gardener.respond :as respond]
             [superiortype.colors :as c]
             [superiortype.css.settings :as s]
+            [superiortype.css.mixins :as m]
             [superiortype.css.animations :as an]))
-
-(defn important
-  "Adds !important css directive to the content"
-  [content]
-  [[content "!important"]])
-
-(def default-margin
-  {:margin s/double-size})
-(def default-padding
-  {:padding s/double-size})
-(def button-padding {:padding [[(u/rem 0.35) s/default-size]]})
-(def full-width {:width (u/percent 100)})
-
-(defn font
-  ([] font 1)
-  ([size] {:font-size size}))
-
-(defn thin-border
-  ([] thin-border c/black)
-  ([color] [[:thin :solid color]]))
-
-(def wish-button
-  (merge
-   {:cursor :pointer
-    :color c/black
-    :background-color c/white
-    :border-radius s/default-size
-    :border (thin-border c/cyan)
-    :font-family :VeganSans
-    :font-weight :normal
-    button-padding
-    (font s/default-size)}))
-
-(def wish-button-hover
-  [:&:hover
-   {:background-color c/cyan}])
-
-(def back-button
-  (merge
-    {:cursor :pointer
-     :color c/black
-     :background-color c/nobel
-     :border-radius s/default-size
-     :border :none
-     :font-family :VeganSans
-     :font-weight :normal
-     button-padding
-     (font s/default-size)}))
-
-(def back-button-hover
-  [:&:hover
-   {:background-color c/white}])
 
 (defstyles basic
   [:h1 :h2 :h3 :h4 :h5 :a :a:hover :select :input
@@ -77,7 +26,7 @@
    {:list-style-type :none
     :-webkit-padding-start 0}]
   [:button
-   (font s/default-size)
+   (m/font s/default-size)
    {:font-family :VeganSans}]
   [:input:focus :button:focus :select:focus {:outline :none}]
   ["::-webkit-input-placeholder" {:color c/black}]
@@ -87,7 +36,7 @@
   [:p {:margin 0}])
 
 (defstyles fonts
-  ;; FIXME dynamic font styles for all like this
+  ;; FIXME dynamic m/font styles for all like this
   (at-font-face
     {:font-family :Hrot
      :font-style :normal
@@ -126,19 +75,19 @@
   [:.negramot
    {:font-family :Negramot}]
   [:.dres
-   {:font-family (important "Dres")}]
+   {:font-family (m/important "Dres")}]
   [:.kakao
-   {:font-family (important "Kakao")}]
+   {:font-family (m/important "Kakao")}]
   [:.motel-sans
-   {:font-family (important "MotelSans")}]
+   {:font-family (m/important "MotelSans")}]
   [:.motel-slab
-   {:font-family (important "MotelSlab")}]
+   {:font-family (m/important "MotelSlab")}]
   [:.pramen-sans
-   {:font-family (important "PramenSans")}]
+   {:font-family (m/important "PramenSans")}]
   [:.pramen-slab
-   {:font-family (important "PramenSlab")}]
+   {:font-family (m/important "PramenSlab")}]
   [:.steiner
-   {:font-family (important "Steiner")}])
+   {:font-family (m/important "Steiner")}])
 
 (defstyles wish-box
  [:div.wish-box
@@ -163,9 +112,9 @@
      :justify-content :space-between
      :align-items :center}
     [:h5
-     (font s/bigger-size)]
+     (m/font s/bigger-size)]
     [:.price
-     (font s/smaller-size)
+     (m/font s/smaller-size)
      {:font-family :VeganSans
       :display :inline-block
       :border-radius s/default-size
@@ -178,7 +127,7 @@
      :transition-duration s/short-duration
      :opacity 0}
     [:h6
-     (font s/default-size)
+     (m/font s/default-size)
      {:margin [[s/double-size 0 0]]}]
     [:p {:margin 0}]]
    [:&:hover
@@ -210,22 +159,22 @@
     [:.description
      {:margin "10rem 0 0 0"}]]]
   [:button
-   back-button
+   m/back-button
    {:margin-bottom s/default-size}]])
 
 (defstyles media-queries
   (respond/tablet
     [:html
-     (font (u/px 13))])
+     (m/font (u/px 13))])
   (respond/laptop
     [:html
-     (font (u/px 14))])
+     (m/font (u/px 14))])
   (respond/desktop
     [:html
-     (font (u/px 20))])
+     (m/font (u/px 20))])
   (respond/hd
     [:html
-     (font (u/px 26))]))
+     (m/font (u/px 26))]))
 
 (defstyles site
   ;; Keyframes
@@ -245,7 +194,7 @@
   fonts
   media-queries
   [:body
-   (font s/default-size)
+   (m/font s/default-size)
    {:font-family :VeganSans
     :min-width (u/rem 60)
     :margin :auto
@@ -262,7 +211,7 @@
      :flex-direction :row
      :justify-content :space-between}
     [:div.menu
-     full-width
+     m/full-width
      {:margin 0
       :padding [[(u/rem 1.25) s/default-size (u/rem 0.25) s/double-size]]}
      [:h1
@@ -270,7 +219,7 @@
        :transition-duration s/default-duration
        :display :inline-block
        :margin 0}
-      (font s/bigger-size)
+      (m/font s/bigger-size)
       [:a
        {:font-weight :bold}]]
      [:nav
@@ -286,7 +235,7 @@
      :background-color c/clear
      :position :absolute}
     [:button.wish-list-button
-     wish-button
+     m/wish-button
      {:background-color c/cyan
       :transition-property :font-size
       :transition-duration s/default-duration
@@ -294,12 +243,12 @@
       :right s/double-size
       :top s/default-size
       :z-index 20}
-     wish-button-hover
+     m/wish-button-hover
      [:&.small
-      (font s/smaller-size)
+      (m/font s/smaller-size)
       {:top (u/rem 1.2)}]]
     [:div.wish-list
-     full-width
+     m/full-width
      {:background-color c/baby-blue
       :box-shadow "rgba(0,0,0,0.4) 0px 0.125rem 1rem -0.5rem"
       :position :fixed
@@ -321,8 +270,8 @@
        [:table
         {:width (u/percent 45)
          :transition-duration s/default-duration}
-        [:th :td (font s/smaller-size)]
-        [:td.name :th.total (font s/default-size)]
+        [:th :td (m/font s/smaller-size)]
+        [:td.name :th.total (m/font s/default-size)]
         [:tr.superior-list
          [:td
           [:&>div
@@ -347,14 +296,14 @@
            :margin-bottom s/default-size}
           [:&.grey {:color c/nobel}]
           [:input
-           (font s/default-size)
+           (m/font s/default-size)
            {:display :block
             :border-radius "0.5rem"
             :padding "0.5rem"
             :width (u/percent 75)}
            [:&.zip {:width (u/percent 25)}]]
           [:select
-           (font s/default-size)
+           (m/font s/default-size)
            ^:prefix {:appearance :none}
            {:background "url('/img/down-arrow.svg') #fff no-repeat center right 0.5rem"
             :display :block
@@ -376,7 +325,7 @@
             :height s/double-size}
            [:&:checked {:background-image "url('/img/check-checked.svg')"}]]
           [:button
-           (font s/bigger-size)
+           (m/font s/bigger-size)
            {:padding "0.5rem 1rem"
             :color c/black
             :border-radius s/big-size
@@ -391,13 +340,13 @@
        :justify-content :space-between
        :align-items "flex-start"}
       [:h2
-       (font s/larger-size)
+       (m/font s/larger-size)
        {:margin "3rem 3rem 1rem"
         :font-weight 600}]
       [:button.back-button
-       back-button
+       m/back-button
        {:margin "3rem 2rem 0"}
-       back-button-hover
+       m/back-button-hover
        [:&.wish-list
         {:background-color c/white}
         [:&:hover
@@ -425,34 +374,34 @@
        [:&.checkout
         {:text-align :right}
         [:button.checkout
-         button-padding
+         m/button-padding
          {:border-radius s/bigger-size
           :border :none
           :background c/white
           :float :right}
          [:&:hover {:background c/pale-canary}]]]]
       [:button
-       (font s/default-size)
+       (m/font s/default-size)
        {:border :none
         :background :none
         :cursor :pointer
         :font-family :VeganSans}]
       [:select
        ^:prefix {:appearance :none}
-       (font s/default-size)
+       (m/font s/default-size)
        {:border-radius s/bigger-size
         :padding "0.5rem 2rem 0.5rem 1rem"
         :background "url('/img/down-arrow.svg') #fff no-repeat center right 0.5rem"}]]]]
    [:main#app
     [:&>.fade
      {:opacity 0.4}
-     [:button {:display (important "none")}]]
+     [:button {:display (m/important "none")}]]
     [:svg
      {:width "100vw"
       :height "95vh"}
      [:g
       [:text
-       (font s/huge-size)]]
+       (m/font s/huge-size)]]
      [:g.top
       {:animation [[an/bounce-top "3s" :infinite :alternate :ease]]}
       [:text
@@ -483,8 +432,8 @@
      [:circle.down
       {:animation [[an/rainbow "4s" :infinite]]
        :cursor :pointer}]]
-    [:header#font
-     full-width
+    [:header#m/font
+     m/full-width
      {:display :flex
       :padding "1rem 0 2rem"
       :justify-content :space-between
@@ -496,7 +445,7 @@
       :z-index 3
       :background-color c/white}
      [:&.small
-      (font s/smaller-size)
+      (m/font s/smaller-size)
       {:padding-bottom "1.25rem"
        :animation [[an/header-slide-up "500ms" :ease :forwards]]}
       [:&:hover :&.hover
@@ -505,13 +454,13 @@
          :opacity 0}]]
       [:nav.fonts
        [:h2
-        (font s/bigger-size)]
+        (m/font s/bigger-size)]
        [:a
         {:margin-bottom "0.5rem"
          :width s/double-size
          :height s/default-size}]]
       [:button
-       (font s/smaller-size)
+       (m/font s/smaller-size)
        {:transition-property "margin-bottom, margin-right"
         :transition-duration s/short-duration
         :margin-bottom 0}
@@ -529,7 +478,7 @@
        {:display :flex
         :width (u/rem 6)}]
       [:h2
-       (font s/huge-size)
+       (m/font s/huge-size)
        {:transition-property "font-size, width"
         :transition-duration s/default-duration
         :font-weight :normal
@@ -584,9 +533,9 @@
          :background-color c/nobel
          :transition-duration s/short-duration}]]]
      [:button
-      wish-button
+      m/wish-button
       {:margin-bottom s/default-size}
-      wish-button-hover]
+      m/wish-button-hover]
      wish-box]
     [:&>div>div>.wish-box:last-child
      {:top (u/rem 9)
@@ -606,15 +555,15 @@
      {:padding 0
       :margin "0 2rem"}
      [:li
-      {:border-bottom (thin-border c/nobel)
+      {:border-bottom (m/thin-border c/nobel)
        :padding-top s/default-size}
       [:&.fade {:opacity "0.1"}]
       [:&.false {:background-color "#fffffe"}]
       [:div.tools
-       {:font-family (important "VeganSans")}
+       {:font-family (m/important "VeganSans")}
        [:&>div {:float :left}]
        [:button
-        (font s/smaller-size)
+        (m/font s/smaller-size)
         {:background-position-x 0
          :background-position-y (u/percent 50)
          :background-repeat "no-repeat"
@@ -626,8 +575,8 @@
         [:&:first-child {:padding-right "0.5rem"}]
         [:&:last-child {:padding-left "0.5rem"}]
         [:&.wish
-         (font s/bigger-size)
-         wish-button
+         (m/font s/bigger-size)
+         m/wish-button
          {:width :auto
           :height :auto
           :float :right
@@ -636,7 +585,7 @@
           :transform "translateY(4rem)"
           :position :relative
           :z-index 2}
-         wish-button-hover]
+         m/wish-button-hover]
         [:&.smaller
          [:&:hover
           {:transform "scale(0.8)"}]
@@ -646,13 +595,13 @@
         [:&.bigger
          [:&:hover {:transform "scale(1.2)"}]
          [:&:active {:transform "scale(1.0)"}]]]
-       [:a (font s/smaller-size)]
+       [:a (m/font s/smaller-size)]
        [:span
         {:display :inline-block
          :text-align :center
          :width s/quadruple-size}
         [:&.name
-         (font s/smaller-size)
+         (m/font s/smaller-size)
          {:width (u/rem 20)
           :text-align :left
           :padding-left s/default-size}]]]
@@ -689,9 +638,9 @@
       [:&.visible
        {:opacity 0.9
         :left s/default-size}
-       (font s/default-size)]]
+       (m/font s/default-size)]]
      [:img
-      full-width
+      m/full-width
       {:padding [[s/triple-size 0]]}]]
     [:section#details
      {:margin "0 6rem"
@@ -700,7 +649,7 @@
       [:.description
        {:width (u/percent 73)
         :margin-right (u/percent 2)}
-       (font s/bigger-size)]
+       (m/font s/bigger-size)]
       [:.features
        {:width (u/percent 20)
         :padding-left (u/percent 5)}]]
@@ -708,9 +657,9 @@
       {:margin-top s/double-size
        :clear :both}
       [:img
-       full-width]]]
+       m/full-width]]]
     [:section#inuse
-     full-width
+     m/full-width
      {:margin-top (u/rem 6)
       :overflow :hidden
       :float :left}
@@ -725,7 +674,7 @@
         :float :left}
        [:&:last-child {:text-align :right}]
        [:button
-        button-padding
+        m/button-padding
         {:display :inline-block
          :background-repeat "no-repeat"
          :background-color c/white
@@ -739,7 +688,7 @@
       {:transition "transform cubic-bezier(0.4, 0, 0.2, 1) 1s"
        :z-index 1}
       [:figure
-       full-width
+       m/full-width
        {:margin 0
         :float :left}
        [:figcaption
@@ -756,13 +705,13 @@
          [:&:first-child
           {:font-weight :bold}]]]
        [:img
-        {:width (u/percent 100)
-         :max-height "100vw"
+        m/full-width
+        {:max-height "100vw"
          :float :left}]]]]
     [:section#foundry
      [:header
       [:h2
-       (font s/larger-size)
+       (m/font s/larger-size)
        {:width (u/percent 48)
         :margin "0 10%"
         :padding-top (u/rem 6)
@@ -772,7 +721,7 @@
       {:background-color c/spring-green
        :display :flex}
       [:div.text
-       (font s/bigger-size)
+       (m/font s/bigger-size)
        {:flex 6
         :margin-left (u/percent 10)
         :padding-top s/quadruple-size}]]
@@ -780,7 +729,7 @@
       {:flex 8
        :overflow :visible}
       [:address
-       (font s/larger-size)
+       (m/font s/larger-size)
        {:transition-property :transform
         :transition-duration "1750ms"
         :transition-timing-function "cubic-bezier(0.18, 0.89, 0.32, 1.28)"
@@ -795,16 +744,16 @@
        [:&.visible {:transform "translateX(0rem)"}]
        [:&.hidden {:transform "translateX(70rem)"}]
        [:a
-        (font s/bigger-size)
+        (m/font s/bigger-size)
         {:border-radius s/triple-size
          :padding "0.5rem 1rem"}
         [:&:hover
-         {:background-color (important c/white)
-          :color (important c/black)}]]
+         {:background-color (m/important c/white)
+          :color (m/important c/black)}]]
        [:div.email
         {:margin-top s/default-size}
         [:a
-         (font s/bigger-size)
+         (m/font s/bigger-size)
          {:color c/white
           :background-color c/emperor}]]
        [:nav.social
@@ -821,10 +770,10 @@
          [:&.instagram
           {:background-color "#a04aff"}]]]]]
      [:.lost
-      {:background-color c/spring-green
-       :width (u/percent 100)}
+      m/full-width
+      {:background-color c/spring-green}
       [:p
-       (font s/bigger-size)
+       (m/font s/bigger-size)
        {:margin-left (u/percent 10)
         :padding-top s/large-size
         :width (u/percent 40)}]
@@ -855,10 +804,10 @@
         :padding s/double-size}
        [:.photo
         [:img
-         {:border-radius (u/percent 50)
-          :width (u/percent 100)}
+         m/full-width
+         {:border-radius (u/percent 50)}
          [:p
-          (font s/bigger-size)]]]]]
+          (m/font s/bigger-size)]]]]]
      [:.studio
       [:img
        {:border :none
@@ -871,7 +820,7 @@
       :top 0}
      [:header
       [:h2
-       (font s/large-size)
+       (m/font s/large-size)
        {:color c/purple
         :width (u/percent 80)
         :margin "0 10%"
@@ -882,25 +831,25 @@
       {:width (u/percent 40)
        :margin "0 10% 0 10%"
        :float :left}
-      [:p (font s/bigger-size)
+      [:p (m/font s/bigger-size)
        [:span.email
         {:margin-top s/default-size}
         [:a
-         button-padding
+         m/button-padding
          {:display :inline-block
           :color c/white
           :border-radius s/default-size
           :background-color c/black}
          [:&:hover
-          {:background-color (important c/white)
-           :color (important c/black)}]]]]]
+          {:background-color (m/important c/white)
+           :color (m/important c/black)}]]]]]
      [:ul.advantages
       {:width (u/percent 30)
        :margin "0 10% 0 0"
        :float :left}
       [:li {:margin "0 0 2rem 0"}
        [:&:before
-        (font s/bigger-size)
+        (m/font s/bigger-size)
         {:content "\"• \""}]
        [:&.red:before {:color c/red}]
        [:&.yellow:before {:color c/golden-fizz}]]]
@@ -911,7 +860,7 @@
        {:margin-bottom s/quadruple-size}
        [:&.fade {:opacity 0.4}]
        [:h3
-        (font s/monster-size)
+        (m/font s/monster-size)
         {:margin 0
          :padding 0}]
        [:div.details
@@ -924,28 +873,28 @@
           :font-family :VeganSans}]]
        [:img {:width (u/percent 100)}]]]]
     [:section#first-aid
-     default-padding
-     {:display :flex}
+     {:display :flex
+      :padding s/double-size}
      [:div.column
       {:flex 1
        :height (u/percent 100)
        :margin-right s/double-size}
       [:h2
-       (font s/default-size)
+       (m/font s/default-size)
        {:font-weight :normal
         :width (u/percent 75)
         :margin-bottom s/double-size
         :line-height s/bigger-size}]
       [:h3
-       (font s/bigger-size)
+       (m/font s/bigger-size)
        {:font-weight :normal
         :margin-bottom (u/rem 0.5)}
        [(sel/& (sel/not (sel/first-child))) {:margin-top s/triple-size}]]
       [:h4
        {:margin-bottom s/default-size}
        [:button
-        button-padding
-        (font s/default-size)
+        m/button-padding
+        (m/font s/default-size)
         {:background-color c/gallery
          :border-radius s/default-size
          :cursor :pointer
@@ -955,12 +904,12 @@
         [:&.opened {:background-color c/paris-daisy}]]]
       [:&:first-child
        [:p
-        (font s/smaller-size)
+        (m/font s/smaller-size)
         {:width (u/percent 75)
          :margin-bottom s/default-size}]]
       [(sel/& (sel/not (sel/first-child)))
        [:p
-        (font s/smaller-size)
+        (m/font s/smaller-size)
         {:margin [[0 s/double-size 0 s/default-size]]
          :width (u/percent 75)
          :max-height (u/rem 0)
