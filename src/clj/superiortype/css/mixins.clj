@@ -28,9 +28,9 @@
     :border-radius set/default-size
     :border (thin-border c/cyan)
     :font-family :VeganSans
-    :font-weight :normal
+    :font-weight :normal}
     button-padding
-    (font set/default-size)}))
+    (font set/default-size)))
 
 (def wish-button-hover
   [:&:hover
@@ -44,9 +44,9 @@
      :border-radius set/default-size
      :border :none
      :font-family :VeganSans
-     :font-weight :normal
+     :font-weight :normal}
      button-padding
-     (font set/default-size)}))
+     (font set/default-size)))
 
 (def back-button-hover
   [:&:hover

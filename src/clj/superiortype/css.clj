@@ -267,7 +267,7 @@
      [:circle.down
       {:animation [[anm/rainbow "4s" :infinite]]
        :cursor :pointer}]]
-    [:header#mix/font
+    [:header#font
      mix/full-width
      {:display :flex
       :padding "1rem 0 2rem"
@@ -395,7 +395,7 @@
       [:&.fade {:opacity "0.1"}]
       [:&.false {:background-color "#fffffe"}]
       [:div.tools
-       {:font-family (mix/important "VeganSans")}
+       {:font-family (mix/important :VeganSans)}
        [:&>div {:float :left}]
        [:button
         (mix/font set/smaller-size)
