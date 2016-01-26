@@ -67,15 +67,15 @@
 
 (def back-button
   (merge
-   {:cursor :pointer
-    :color c/black
-    :background-color c/nobel
-    :border-radius default-size
-    :border :none
-    :font-family :VeganSans
-    :font-weight :normal}
-    button-padding
-    (font default-size)))
+    {:cursor :pointer
+     :color c/black
+     :background-color c/nobel
+     :border-radius default-size
+     :border :none
+     :font-family :VeganSans
+     :font-weight :normal}
+     button-padding
+     (font default-size)))
 
 (def back-button-hover
   [:&:hover
@@ -157,9 +157,7 @@
   [:.pramen-slab
    {:font-family (important "PramenSlab")}]
   [:.steiner
-   {:font-family (important "Steiner")}]
-  [:.bigger-font
-   {:font-size "1.618rem"}])
+   {:font-family (important "Steiner")}])
 
 ;; Keyframes
 ;; FIXME move to its own file animation
