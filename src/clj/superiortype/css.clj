@@ -495,47 +495,47 @@
         {:background-color c/white}
         [:&:hover
          {:background-color c/baby-blue}]]]]
-[:div.content
- {:display :flex}
- [:table
-  {:transition-property :width
-   :transition-duration "0ms"
-   :border-collapse :collapse
-   :margin "2rem 2rem 2rem 3rem"
-   :width "calc(100vw - 5rem)"}
-  [:tbody>tr:last-child
-   [:th :td {:border-bottom :none}]]
-  [:th :td
-   {:font-weight :normal
-    :text-align :left
-    :padding default-size
-    :border-bottom "thin solid c/black"}
-   [:&.price :&.remove
-    {:width (u/rem 7)
-     :text-align :right}]
-   [:&.total
-    {:text-align :right}]
-   [:&.checkout
-    {:text-align :right}
-    [:button.checkout
-     button-padding
-     {:border-radius bigger-size
-      :border :none
-      :background c/white
-      :float :right}
-     [:&:hover {:background c/pale-canary}]]]]
-  [:button
-   (font default-size)
-   {:border :none
-    :background :none
-    :cursor :pointer
-    :font-family :VeganSans}]
-  [:select
-   ^:prefix {:appearance :none}
-   (font default-size)
-   {:border-radius bigger-size
-    :padding "0.5rem 2rem 0.5rem 1rem"
-    :background "url('/img/down-arrow.svg') #fff no-repeat center right 0.5rem"}]]]]]
+    [:div.content
+     {:display :flex}
+     [:table
+      {:transition-property :width
+       :transition-duration "0ms"
+       :border-collapse :collapse
+       :margin "2rem 2rem 2rem 3rem"
+       :width "calc(100vw - 5rem)"}
+      [:tbody>tr:last-child
+       [:th :td {:border-bottom :none}]]
+      [:th :td
+       {:font-weight :normal
+        :text-align :left
+        :padding default-size
+        :border-bottom "thin solid c/black"}
+       [:&.price :&.remove
+        {:width (u/rem 7)
+         :text-align :right}]
+       [:&.total
+        {:text-align :right}]
+       [:&.checkout
+        {:text-align :right}
+        [:button.checkout
+         button-padding
+         {:border-radius bigger-size
+          :border :none
+          :background c/white
+          :float :right}
+         [:&:hover {:background c/pale-canary}]]]]
+      [:button
+       (font default-size)
+       {:border :none
+        :background :none
+        :cursor :pointer
+        :font-family :VeganSans}]
+      [:select
+       ^:prefix {:appearance :none}
+       (font default-size)
+       {:border-radius bigger-size
+        :padding "0.5rem 2rem 0.5rem 1rem"
+        :background "url('/img/down-arrow.svg') #fff no-repeat center right 0.5rem"}]]]]]
 [:main#app
  [:&>.fade
   {:opacity 0.4}
