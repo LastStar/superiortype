@@ -53,7 +53,7 @@
   (merge
    {:cursor :pointer
     :color c/black
-    :background-color :white
+    :background-color c/white
     :border-radius default-size
     :border (thin-border c/cyan)
     :font-family :VeganSans
@@ -89,7 +89,7 @@
     :margin 0
     :line-height 1.2}]
   [:a
-   {:color :black
+   {:color c/black
     :text-decoration :none
     :font-weight :normal}]
   [:ul
@@ -900,7 +900,7 @@
          {:margin-top default-size}
         [:a
          (font bigger-size)
-         {:color :white
+         {:color c/white
           :background-color c/emperor}]]
        [:nav.social
         {:margin-top triple-size
@@ -908,7 +908,7 @@
          :display :flex
          :justify-content "space-between"}
         [:a
-         {:color :white}
+         {:color c/white}
          [:&.facebook
           {:background-color "#0060ff"}]
          [:&.twitter
