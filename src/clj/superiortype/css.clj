@@ -163,7 +163,7 @@
 ;; FIXME move to its own file animation
 (defkeyframes header-slide-up
   [:0% {:height (u/rem 8)}]
-  [:100% {:height "2.5em"}])
+  [:100% {:height (u/rem 2.5)}])
 
 (defkeyframes slide-right
   [:0% {:transform "translateX(-40rem)" :opacity 0}]
@@ -235,13 +235,13 @@
  [:div.wish-box
   {:display :flex
    :flex-direction :row
-   :align-items "flex-end"
-   :justify-content "space-between"
+   :align-items :flex-end
+   :justify-content :space-between
    :clear :both
    :overflow :hidden}
   [:&>div
    {:font-family :VeganSans
-    :width "23%"
+    :width (u/percent 23)
     :margin default-size
     :padding default-size
     :border-radius default-size
@@ -251,7 +251,7 @@
    [:&:first-child {:margin-left 0}]
    [:header
     {:display :flex
-     :justify-content "space-between"
+     :justify-content :space-between
      :align-items :center}
     [:h5
       (font bigger-size)]
@@ -292,7 +292,7 @@
    [:&.superior
     {:background-color c/electric-violet
      :color c/white
-     :animation-delay "1s"
+     :animation-delay longest-duration
      :max-height (u/rem 20)}
      [:h5
       {:font-weight "900"}]
@@ -342,7 +342,7 @@
     :min-width (u/rem 60)
     :margin :auto
     :line-height 1.5}
-   [:&.first-aid {:background-color c/mercury }]
+   [:&.first-aid {:background-color c/mercury}]
    [:&.custom {:background-color c/emperor}]
    [:header#header
     {:position :relative
@@ -352,24 +352,24 @@
      :height double-size
      :display :flex
      :flex-direction :row
-     :justify-content "space-between"}
+     :justify-content :space-between}
     [:div.menu
      {:margin "0"
       :width "100%"
       :padding "1.25rem 1rem 0.25rem 2rem"}
      [:h1
-      {:transition-property "font-size"
+      {:transition-property :font-size
        :transition-duration default-duration
-       :display "inline-block"
+       :display :inline-block
        :margin 0}
       (font bigger-size)
       [:a
        {:font-weight :bold}]]
      [:nav
       {:animation [[slide-left "2500ms" :ease :forwards]]
-       :display "inline-block"}
+       :display :inline-block}
       [:a
-         {:display "inline-block"
+         {:display :inline-block
           :padding-left double-size}
          [:&:first-child {:padding-left triple-size}]]
       [:&.visible {:animation [[slide-right short-duration :ease :forwards]]}]]]]
@@ -399,7 +399,7 @@
       :z-index 20}
      [:&.checking-out
       {:background-color c/pale-canary
-       :height "100%"
+       :height (u/percent 100)
        :overflow :scroll}
       [:&.superior
        {:background-color c/electric-violet}
@@ -411,7 +411,7 @@
         [:td :th {:border-color c/white}]]]
       [:div.content
        [:table
-        {:width "45%"
+        {:width (u/percent 45)
          :transition-duration default-duration}
         [:th :td (font smaller-size)]
         [:td.name :th.total (font default-size)]
@@ -424,7 +424,7 @@
             {:margin-bottom default-size}]]]]]
        [:form#checkout
         {:margin "3rem 0 0 3%"
-         :width "45%"
+         :width (u/percent 45)
          :float :left
          :transform-origin "center right"
          :transform "translateX(45%)"
@@ -432,7 +432,7 @@
          :animation-delay "500ms"
          :animation [[reveal-from-right default-duration :forwards :ease-out]]}
         [:.column
-         {:width "50%"
+         {:width (u/percent 50)
           :float :left}
          [:label
           {:display :block
@@ -443,14 +443,14 @@
            {:display :block
             :border-radius "0.5rem"
             :padding "0.5rem"
-            :width "75%"}
-           [:&.zip {:width "25%"}]]
+            :width (u/percent 75)}
+           [:&.zip {:width (u/percent 25)}]]
           [:select
            (font default-size)
            ^:prefix {:appearance :none}
            {:background "url('/img/down-arrow.svg') #fff no-repeat center right 0.5rem"
             :display :block
-            :width "80%"
+            :width (u/percent 80)
             :border-radius (u/rem (* modular 0.25))
             :background-color c/white
             :padding "0.5rem"}]]
@@ -480,12 +480,12 @@
             {:background-color c/salmon}]]]]]]]
      [:header
       {:display :flex
-       :justify-content "space-between"
+       :justify-content :space-between
        :align-items "flex-start"}
       [:h2
         (font larger-size)
         {:margin "3rem 3rem 1rem"
-         :font-weight "600"}]
+         :font-weight 600}]
       [:button.back-button
        back-button
        {:margin "3rem 2rem 0"}
@@ -554,8 +554,8 @@
         :fill c/golden-fizz}]
       [:circle
        {:stroke c/golden-fizz
-        :stroke-width "24"
-       :fill :none}]]
+        :stroke-width 24
+        :fill c/clear}]]
      [:g.bottom-right
       {:animation [[bounce-bottom-right "2s" :infinite :alternate :ease-out]]}
       [:text
@@ -563,7 +563,7 @@
         :font-style :Italic}]
       [:circle
        {:stroke :none
-       :fill c/red}]]
+        :fill c/red}]]
      [:g.bottom-left
       {:animation [[bounce-bottom-left "1.44s" :infinite]]}
       [:text
@@ -572,7 +572,7 @@
         :fill c/electric-violet}]
       [:circle
        {:stroke c/electric-violet
-       :fill :white}]]
+        :fill c/white}]]
      [:circle.down
       {:animation [[:rainbow "4s" :infinite]]
        :cursor :pointer}]]
@@ -581,13 +581,13 @@
      {:display :flex
       :padding "1rem 0 2rem"
       :justify-content :space-between
-      :align-items "flex-end"
+      :align-items :flex-end
       :box-shadow "rgba(0,0,0,0.2) 0px 0.125rem 1rem 0px"
       :position :fixed
       :top 0
       :height (u/rem 8)
       :z-index 3
-      :background-color :white}
+      :background-color c/white}
      [:&.small
       (font smaller-size)
       {:padding-bottom "1.25rem"
@@ -626,19 +626,19 @@
        {:transition-property "font-size, width"
         :transition-duration default-duration
         :font-weight :normal
-        :display "inline-block"
+        :display :inline-block
         :margin 0
         :width (u/rem 25)
         :font-family :inherit}]
        [:a
         {:transition-property "width, height, margin-bottom"
          :transition-duration default-duration
-         :background-position-y "0"
-         :background-position-x "50%"
+         :background-position-y 0
+         :background-position-x (u/percent 50)
          :background-repeat "no-repeat"
          :background-color "rgba(0, 0, 0, 0)"
          :background-size :contain
-         :display "inline-block"
+         :display :inline-block
          :border :none
          :width double-size
          :height double-size
@@ -649,7 +649,7 @@
          {:background-image "url(/img/next.svg)"}]]]
      [:div.buttons
       {:display :flex
-       :width "55%"
+       :width (u/percent 55)
        :justify-content :space-between
        :margin-right double-size}]
      [:nav.sections
@@ -657,7 +657,7 @@
         :transition-duration default-duration
         :display :flex
         :align-items "flex-start"
-        :justify-content "space-between"
+        :justify-content :space-between
         :margin-bottom default-size}
       [:a
        {:font-family :VeganSans
@@ -708,11 +708,11 @@
        [:&>div {:float :left}]
        [:button
         (font smaller-size)
-        {:background-position-x "0"
-         :background-position-y "50%"
+        {:background-position-x 0
+         :background-position-y (u/percent 50)
          :background-repeat "no-repeat"
          :background-color "rgba(0, 0, 0, 0)"
-         :display "inline-block"
+         :display :inline-block
          :margin 0
          :border :none
          :cursor :pointer}
@@ -741,7 +741,7 @@
          [:&:active {:transform "scale(1.0)"}]]]
         [:a (font smaller-size)]
        [:span
-        {:display "inline-block"
+        {:display :inline-block
          :text-align :center
          :width quadruple-size}
         [:&.name
@@ -791,12 +791,12 @@
       :padding "6rem 0"}
      [:.main {:display :flex}
       [:.description
-       {:width "73%"
-        :margin-right "2%"}
+       {:width (u/percent 73)
+        :margin-right (u/percent 2)}
        (font bigger-size)]
       [:.features
-       {:width "20%"
-        :padding-left "5%"}]]
+       {:width (u/percent 20)
+        :padding-left (u/percent 5)}]]
      [:div.opentype
       {:margin-top double-size
        :clear :both}
@@ -813,13 +813,13 @@
        :width "96vw"
        :z-index 2}
       [:div
-       {:width "50%"
+       {:width (u/percent 50)
         :height double-size
         :float :left}
        [:&:last-child {:text-align :right}]
        [:button
         button-padding
-        {:display "inline-block"
+        {:display :inline-block
          :background-repeat "no-repeat"
          :background-color c/white
          :opacity 0.8
@@ -849,14 +849,14 @@
           [:&:first-child
           {:font-weight :bold}]]]
        [:img
-        {:width "100%"
+        {:width (u/percent 100)
          :max-height "100vw"
          :float :left}]]]]
     [:section#foundry
      [:header
       [:h2
        (font larger-size)
-       {:width "48%"
+       {:width (u/percent 48)
         :margin "0 10%"
         :padding-top (u/rem 6)
         :padding-bottom double-size
@@ -867,7 +867,7 @@
       [:div.text
        (font bigger-size)
        {:flex 6
-        :margin-left "10%"
+        :margin-left (u/percent 10)
         :padding-top quadruple-size}]]
      [:div.contact
       {:flex 8
@@ -877,8 +877,8 @@
        {:transition-property :transform
         :transition-duration "1750ms"
         :transition-timing-function "cubic-bezier(0.18, 0.89, 0.32, 1.28)"
-        :margin-left "10%"
-        :width "70%"
+        :margin-left (u/percent 10)
+        :width (u/percent 70)
         :padding triple-size
         :font-style :normal
         :background-color c/nobel
@@ -904,7 +904,7 @@
         {:margin-top triple-size
          :line-height 1
          :display :flex
-         :justify-content "space-between"}
+         :justify-content :space-between}
         [:a
          {:color c/white}
          [:&.facebook
@@ -915,18 +915,18 @@
           {:background-color "#a04aff"}]]]]]
      [:.lost
       {:background-color c/spring-green
-       :width "100%"}
+       :width (u/percent 100)}
       [:p
        (font bigger-size)
-       {:margin-left "10%"
+       {:margin-left (u/percent 10)
         :padding-top large-size
-        :width "40%"}]
+        :width (u/percent 40)}]
       [:.fonts
-       {:width "90%"
-        :margin-left "10%"}
+       {:width (u/percent 90)
+        :margin-left (u/percent 10)}
        [:span
         {:padding "0 2rem 0 0"
-         :display "inline-block"
+         :display :inline-block
          :line-height 1.5}
          [:a
           {:display "inline-block"
@@ -960,20 +960,19 @@
          :vertical-align :middle
          :width "100%"}]]]
     [:section#custom
-     {
-      :position :absolute
+     {:position :absolute
       :top 0}
      [:header
       [:h2
        (font large-size)
        {:color c/purple
-        :width "80%"
+        :width (u/percent 80)
         :margin "0 10%"
         :padding-top (u/rem 6)
         :padding-bottom double-size
         :font-weight :normal}]]
      [:div.text
-      {:width "40%"
+      {:width (u/percent 40)
        :margin "0 10% 0 10%"
        :float :left}
       [:p (font bigger-size)
@@ -981,15 +980,15 @@
         {:margin-top default-size}
         [:a
          button-padding
-         {:display "inline-block"
+         {:display :inline-block
           :color c/white
           :border-radius default-size
-          :background-color :black}
+          :background-color c/black}
          [:&:hover
           {:background-color (important c/white)
            :color (important c/black)}]]]]]
      [:ul.advantages
-      {:width "30%"
+      {:width (u/percent 30)
        :margin "0 10% 0 0"
        :float :left}
       [:li {:margin "0 0 2rem 0"}
@@ -1009,10 +1008,10 @@
         {:margin 0
          :padding 0}]
        [:div.details
-        {:width "80%"
+        {:width (u/percent 80)
          :margin "0 10% 0 10%"
          :display :flex
-         :justify-content "space-between"}
+         :justify-content :space-between}
         [:&>div
          {:margin "2rem 1rem"
           :font-family :VeganSans}]]
