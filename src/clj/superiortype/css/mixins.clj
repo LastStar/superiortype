@@ -1,8 +1,7 @@
 (ns superiortype.css.mixins
-  (:require [garden.def :refer [defkeyframes]]
-            [garden.units :as u]
+  (:require [garden.units :as u]
             [superiortype.colors :as c]
-            [superiortype.css.settings :as s]))
+            [superiortype.css.settings :as set]))
 
 (defn important
   "Adds !important css directive to the content"
@@ -17,7 +16,7 @@
   ([] thin-border c/black)
   ([color] [[:thin :solid color]]))
 
-(def button-padding {:padding [[(u/rem 0.35) s/default-size]]})
+(def button-padding {:padding [[(u/rem 0.35) set/default-size]]})
 
 (def full-width {:width (u/percent 100)})
 
@@ -26,12 +25,12 @@
    {:cursor :pointer
     :color c/black
     :background-color c/white
-    :border-radius s/default-size
+    :border-radius set/default-size
     :border (thin-border c/cyan)
     :font-family :VeganSans
     :font-weight :normal
     button-padding
-    (font s/default-size)}))
+    (font set/default-size)}))
 
 (def wish-button-hover
   [:&:hover
@@ -42,12 +41,12 @@
     {:cursor :pointer
      :color c/black
      :background-color c/nobel
-     :border-radius s/default-size
+     :border-radius set/default-size
      :border :none
      :font-family :VeganSans
      :font-weight :normal
      button-padding
-     (font s/default-size)}))
+     (font set/default-size)}))
 
 (def back-button-hover
   [:&:hover
