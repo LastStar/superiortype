@@ -3,6 +3,7 @@
   :url "http://reframed.superiortype.com"
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.7.228"]
+                 [org.clojure/core.async "0.2.374"]
                  [reagent "0.6.0-alpha"]
                  [re-frame "0.7.0-alpha"]
                  [secretary "1.2.3"]
