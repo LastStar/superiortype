@@ -3,10 +3,11 @@
             [garden.units :as u]
             [garden.stylesheet :refer [at-font-face at-media]]
             [gardener.respond :as respond]
-            [superiortype.css.animations :as anm]
             [superiortype.colors :as col]
+            [superiortype.css.animations :as anm]
             [superiortype.css.mixins :as mix]
-            [superiortype.css.settings :as set]))
+            [superiortype.css.settings :as set]
+            [superiortype.css.fonts :as font]))
 
 (defstyles basic
   [:h1 :h2 :h3 :h4 :h5 :a :a:hover :select :input
@@ -23,7 +24,7 @@
    {:list-style-type :none
     :-webkit-padding-start 0}]
   [:button
-   (mix/font set/default-size)
+   (mix/font (:default font/size))
    {:font-family :VeganSans}]
   [:input:focus :button:focus :select:focus {:outline :none}]
   ["::-webkit-input-placeholder" {:color col/black}]
@@ -31,60 +32,6 @@
   [":-ms-input-placeholder" {:color col/black}]
   [:input:-moz-placeholder {:color col/black}]
   [:p {:margin 0}])
-
-(defstyles fonts
-  ;; FIXME dynamic mix/font styles for all like this
-  (at-font-face
-    {:font-family :Hrot
-     :font-style :normal
-     :font-weight 100
-     :src "url(\"/fonts/Hrot_Hair.woff\") format(\"woff\")"})
-  [:.hair
-    {:font-weight 100}]
-  [:.thin
-    {:font-weight 200}]
-  [:.light
-    {:font-weight 300}]
-  [:.regular
-    {:font-weight :normal}]
-  [:.medium
-    {:font-weight 500}]
-  [:.bold
-    {:font-weight :bold}]
-  [:.semibold
-    {:font-weight 600}]
-  [:.italic
-    {:font-style :italic}]
-  [:.black
-    {:font-weight 800}]
-  [:.vegan-sans
-   {:font-family :VeganSans}]
-  [:.kunda-book
-   {:font-family :KundaBook}]
-  [:.hrot
-   {:font-family :Hrot}]
-  [:.kendo
-   {:font-family :Kendo}]
-  [:.signer
-   {:font-family :Signer}]
-  [:.tungsten
-   {:font-family :Tungsten}]
-  [:.negramot
-   {:font-family :Negramot}]
-  [:.dres
-   {:font-family (mix/important "Dres")}]
-  [:.kakao
-   {:font-family (mix/important "Kakao")}]
-  [:.motel-sans
-   {:font-family (mix/important "MotelSans")}]
-  [:.motel-slab
-   {:font-family (mix/important "MotelSlab")}]
-  [:.pramen-sans
-   {:font-family (mix/important "PramenSans")}]
-  [:.pramen-slab
-   {:font-family (mix/important "PramenSlab")}]
-  [:.steiner
-   {:font-family (mix/important "Steiner")}])
 
 (defstyles wish-box
  [:div.wish-box
@@ -97,9 +44,9 @@
   [:&>div
    {:font-family :VeganSans
     :width (u/percent 23)
-    :margin set/default-size
-    :padding set/default-size
-    :border-radius set/default-size
+    :margin set/default-space
+    :padding set/default-space
+    :border-radius set/default-space
     :cursor :pointer
     :transform "translateY(30rem)"
     :animation [[anm/slide-up set/long-duration :forwards :ease-out]]}
@@ -109,12 +56,12 @@
      :justify-content :space-between
      :align-items :center}
     [:h5
-     (mix/font set/bigger-size)]
+     (mix/font (:bigger font/size))]
     [:.price
-     (mix/font set/smaller-size)
+     (mix/font (:smaller font/size))
      {:font-family :VeganSans
       :display :inline-block
-      :border-radius set/default-size
+      :border-radius set/default-space
       :padding [[(u/rem 0.35) (u/rem 0.5) (u/rem 0.25)]]
       :background-color col/white
       :text-align :center}]]
@@ -124,8 +71,8 @@
      :transition-duration set/short-duration
      :opacity 0}
     [:h6
-     (mix/font set/default-size)
-     {:margin [[set/double-size 0 0]]}]
+     (mix/font (:default font/size))
+     {:margin [[set/double-space 0 0]]}]
     [:p {:margin 0}]]
    [:&:hover
     [:.description {:opacity 1}]]
@@ -157,7 +104,7 @@
      {:margin "10rem 0 0 0"}]]]
   [:button
    mix/back-button
-   {:margin-bottom set/default-size}]])
+   {:margin-bottom set/default-space}]])
 
 (defstyles media-queries
   (respond/tablet
@@ -172,5 +119,4 @@
   (respond/hd
     [:html
      (mix/font (u/px 26))]))
-
 
