@@ -25,7 +25,6 @@
     (fn [current-font]
       (let [size (subscribe [:size-query id 123])
             visible-styles (deref (subscribe [:visible-styles-query id]))]
-        (.log js/console name id)
         [:li
          {:style
           {:font-family (replace name #" " "")}}
