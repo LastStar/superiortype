@@ -9,7 +9,6 @@
   [[content "!important"]])
 
 (defn font
-  ([] font 1)
   ([size] {:font-size size}))
 
 (defn thin-border
@@ -20,17 +19,19 @@
 
 (def full-width {:width (u/percent 100)})
 
+(def full-display-width {:width (u/vw 100)})
+
 (def wish-button
   (merge
+   button-padding
+   (font set/default-size)
    {:cursor :pointer
     :color c/black
     :background-color c/white
     :border-radius set/default-size
     :border (thin-border c/cyan)
     :font-family :VeganSans
-    :font-weight :normal}
-    button-padding
-    (font set/default-size)))
+    :font-weight :normal}))
 
 (def wish-button-hover
   [:&:hover
@@ -38,15 +39,15 @@
 
 (def back-button
   (merge
+    button-padding
+    (font set/default-size)
     {:cursor :pointer
      :color c/black
      :background-color c/nobel
      :border-radius set/default-size
      :border :none
      :font-family :VeganSans
-     :font-weight :normal}
-     button-padding
-     (font set/default-size)))
+     :font-weight :normal}))
 
 (def back-button-hover
   [:&:hover
