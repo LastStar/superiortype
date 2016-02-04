@@ -4,8 +4,9 @@
               [superiortype.utils :refer [no-scroll-body scroll-body element
                                           get-top scroll-top scroll-to smooth-scroll]]
               [superiortype.font :as font]
-              [superiortype.db :as db :refer [ls->wish-list wish-list->ls!
-                                              ls->order order->ls!]]))
+              [superiortype.db :as db]
+              [superiortype.local-storage :refer [ls->wish-list wish-list->ls!
+                                                  ls->order order->ls!]]))
 
 (register-handler
  :initialize-db
@@ -19,11 +20,15 @@
     (when-not (= current-page page) (scroll-top))
     page))
 
-;; FIXME with two methods
 (register-handler
- :menu-visibility-changed
-  (fn [app-state [_ visibility]]
-    (assoc app-state :menu-visible visibility)))
+ :menu-visible
+  (fn [app-state [_]]
+    (assoc app-state :menu-visible true)))
+
+(register-handler
+ :menu-invisible
+  (fn [app-state [_]]
+    (assoc app-state :menu-visible false)))
 
 (register-handler
  :down-invisible
@@ -65,9 +70,14 @@
     (assoc-in app-state [:listening page] true)))
 
 (register-handler
- :counter-changed
+ :counter-zeroed
+  (fn [app-state [_]]
+    (assoc app-state :counter 0)))
+
+(register-handler
+ :counter-increased
   (fn [app-state [_ new-value]]
-    (assoc app-state :counter new-value)))
+    (update app-state :counter inc)))
 
 (register-handler
  :size-changed
@@ -174,15 +184,15 @@
 (def ws->ls (after wish-list->ls!))    ;; middleware to store wish-list into local storage
 (def or->ls (after order->ls!))    ;; middleware to store wish-list into local storage
 
-(def wish-list-middleware [;check-schema-mw ;; after ever event handler make sure the schema is still valid
-                      (path :wish-list)   ;; 1st param to handler will be value from this path
-                      ws->ls            ;; write to localstore each time
-                      trim-v])        ;; remove event id from event vec
+(def wish-list-middleware
+  [(path :wish-list)    ;; 1st param to handler will be value from this path
+   ws->ls               ;; write to localstore each time
+   trim-v])             ;; remove event id from event vec
 
-(def order-middleware [;check-schema-mw ;; after ever event handler make sure the schema is still valid
-                      (path :order)   ;; 1st param to handler will be value from this path
-                      or->ls            ;; write to localstore each time
-                      trim-v])        ;; remove event id from event vec
+(def order-middleware
+  [(path :order)        ;; 1st param to handler will be value from this path
+   or->ls               ;; write to localstore each time
+   trim-v])             ;; remove event id from event vec
 
 (register-handler
  :add-to-wish-list
@@ -225,6 +235,17 @@
     (if (= (count wish-list) 1)
       (dispatch [:remove-all-from-wishlist])
       (dissoc wish-list item))))
+
+(register-handler
+ :add-superior-to-wish-list
+  wish-list-middleware
+  (fn [wish-list]
+    (dispatch [:wishing-canceled])
+    (dispatch [:show-wish-list])
+    (dispatch [:checkout-started])
+    {:superior {:package :superior
+                :license :print-web
+                :users :ten}}))
 
 (register-handler
  :checkout-started

@@ -2,6 +2,7 @@
   (:require [re-frame.core :refer [dispatch subscribe]]))
 
 (defn page []
+  (set! (-> js/document .-body .-className) "custom")
   (fn []
     (let [customs (vals (deref (subscribe [:customs])))
           selected-custom (deref (subscribe [:selected-custom]))]

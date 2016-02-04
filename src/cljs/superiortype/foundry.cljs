@@ -22,6 +22,7 @@
          (recur))))
 
 (defn page []
+  (set! (-> js/document .-body .-className) "")
   (when-not (deref (subscribe [:listening :foundry])) (listen!))
   (let [showing-wist-list (subscribe [:showing-wish-list])
         address-class (subscribe [:address-class])]

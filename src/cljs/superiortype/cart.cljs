@@ -1,6 +1,7 @@
 (ns superiortype.cart
     (:require
       [clojure.string :refer [join split capitalize]]
+      [superiortype.db :as db]
       [re-frame.core :as re-frame :refer [subscribe dispatch]]))
 
 (def package-options
@@ -17,10 +18,12 @@
 
 (def users-options
   {:ones "1-5"
-   :fives "5-20"
-   :tens "21-100"
-   :hundreds "101-1000"
-   :thousands "1001-∞"})
+   :ten "6-10"
+   :twenty "11-20"
+   :fifty "21-50"
+   :seventy-five "51-75"
+   :hundreth "76-100"
+   :more "101 & more"})
 
 (def countries
  [[:CZ "Czech Republic"]
@@ -730,7 +733,7 @@
      [:h6 "Extended font encoding"]
      [:p "Uppercase, Lowercase, Smallcaps, Extended Ligatures, Superscript, Subscript, Extend Currency, Extended Numerals, Extended Fractions, Mathematical, Punctuations, Arrows"]]]
    [:div.superior
-    {:on-click #(dispatch [:add-to-wish-list :superior])}
+    {:on-click #(dispatch [:add-superior-to-wish-list])}
     [:header
      [:h5 "Superior"]
      [:div.price "$1920"]]
@@ -739,12 +742,30 @@
      [:p "+ Our next two released typefaces for free."]]]
    [:button.help "What?"]])
 
+(defn superior-list []
+  (let [fonts db/fonts]
+    [:tr.superior-list
+     [:td
+      {:col-span 5}
+       [:div
+        (for [font (vals fonts)]
+          (let [name (:name font)
+                styles (:styles font)]
+            ^{:key name}
+            [:div
+             [:h2 name]
+             (for [style styles]
+               ^{:key style}
+               [:div (str name style)])]))]]]))
+
 (defn page []
   (fn []
     (let [wish-list (deref (subscribe [:wish-list]))
           wish-list-count (count wish-list)
           showing-wish-list (subscribe [:showing-wish-list])
           checkout-started (deref (subscribe [:checkout-started]))
+          wishing-superior (= (first (keys wish-list)) :superior)
+          what-wish (if wishing-superior "Superior" wish-list-count)
           eula-checked (deref (subscribe [:eula-checked]))
           header-class (subscribe [:header-class])
           order (subscribe [:order])
@@ -753,26 +774,37 @@
         (if (not @showing-wish-list)
           [:button
            {:class (str "wish-list-button " @header-class)
-            :on-click #(dispatch [:show-wish-list])}
-           (str "You have " wish-list-count " wish" (when (> wish-list-count 1) "es"))]
-          [:div {:class (str "wish-list " (and checkout-started "checking-out"))}
-            (if checkout-started
+            :on-click (fn []
+                        (when wishing-superior (dispatch [:checkout-started]))
+                        (dispatch [:show-wish-list]))}
+           (str "You have " what-wish " wish" (when (> wish-list-count 1) "es"))]
+          [:div
+           {:class (str "wish-list " (when checkout-started " checking-out") (when wishing-superior " superior"))}
+            (if (and checkout-started (not wishing-superior))
               [:header
                [:h2 "Superior Wish List"]
                [:button.back-button.wish-list
                 {:on-click #(dispatch [:checkout-canceled])} "Back to wish list"]]
               [:header
-               [:h2 "Superior Cart"]
-               [:button.back-button.app
-                {:on-click #(dispatch [:hide-wish-list])} "I wish more"]])
+               (if wishing-superior
+                 [:h2 "Superior choice!"]
+                 [:h2 "Superior Cart"]
+                 )
+               [:div
+                (when wishing-superior
+                  [:button.back-button.app
+                   {:on-click #(dispatch [:remove-all-from-wishlist])} "Remove Superior"])
+                [:button.back-button.app
+                 {:on-click #(dispatch [:hide-wish-list])} "I wish more"] ]])
            [:div.content
             [:table
              [:thead
               [:tr
-               [:th ""]
+               (when-not wishing-superior [:th ""])
                [:th "Package"]
                [:th "License"]
                [:th "Users"]
+               (when wishing-superior [:th "Styles"])
                [:th.price "Price"]
                (when-not checkout-started
                  [:th.remove
@@ -787,7 +819,7 @@
                       users (get-in wish-list [item :users])]
                   ^{:key item}
                   [:tr
-                   [:td.name name]
+                   (when-not wishing-superior [:td.name name] )
                    [:td.package
                     (if checkout-started
                       [:span (package-options package)]
@@ -815,14 +847,17 @@
                         (for [users (keys users-options)]
                           ^{:key users}
                            [:option {:value users} (users-options users)])])]
+                   (when wishing-superior [:td "36"])
                    [:td.price "30"]
                    (when-not checkout-started
                      [:td.remove
                       [:button
                        {:on-click #(dispatch [:remove-from-wishlist item])}
                        "Remove"]])]))
+              (when wishing-superior
+                [superior-list])
               [:tr
-               [:td]
+               (when-not wishing-superior [:td])
                [:td]
                [:td]
                [:th.total "Total"]

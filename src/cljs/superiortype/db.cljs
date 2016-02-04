@@ -7,17 +7,19 @@
    {:id "hrot"
     :name "Hrot"
     :styles ["Hair" "Hair Italic" "Thin" "Thin Italic" "Light" "Light Italic" "Regular" "Italic" "Medium" "Medium Italic" "Semibold" "Semibold Italic" "Bold" "Bold Italic" "Black" "Black Italic" ]
+    :styles-count 16
     :charsets ["uppercase" "lowercase" "ligatures" "numerals-fractions" "mathematical-punctuation" "arrows"]
     :next "kunda-book"
     :previous "vegan-sans"
-    :inuse [{:text " XYZ project\nDesign: Marek Šilpoch\n2015"
-             :img "hrot-xyz.jpg"}]
     :glyphs "850"
-    :details "The font type Hrot was inspired by the visual typographic aesthetic of the advertisements and signs in the seventies of the twentieth century namely in the German or Italian environment. The design of the font is character istically and pleasingly wide. Thanks to sharp cropped lines the characters appear almost as sharpened knives especially in bold faces. This design principle is more of an unconventional impression than a mere cold structure. The letter s are drawn from the ultra thin face Hair to the extremely thick bold face Black. The family encompasses a total of sixteen faces. Thanks to this Hrot is very well suited for setting striking captions and non-conformist web pages."}
+    :details "The font type Hrot was inspired by the visual typographic aesthetic of the advertisements and signs in the seventies of the twentieth century namely in the German or Italian environment. The design of the font is character istically and pleasingly wide. Thanks to sharp cropped lines the characters appear almost as sharpened knives especially in bold faces. This design principle is more of an unconventional impression than a mere cold structure. The letter s are drawn from the ultra thin face Hair to the extremely thick bold face Black. The family encompasses a total of sixteen faces. Thanks to this Hrot is very well suited for setting striking captions and non-conformist web pages."
+    :inuse [{:text " XYZ project\nDesign: Marek Šilpoch\n2015"
+             :img "hrot-xyz.jpg"}]}
    :kunda-book
    {:id "kunda-book"
     :name "Kunda Book"
     :styles ["Regular" "Italic" "Medium" "Medium Italic" "Semibold" "Semibold Italic" "Bold" "Bold Italic"]
+    :styles-count 8
     :charsets ["uppercase" "lowercase" "smallcaps" "ligatures" "superscript-subscript" "currency" "numerals-fractions" "mathematical-punctuation" "arrows"]
     :next "vegan-sans"
     :previous "hrot"
@@ -35,6 +37,7 @@
    {:id "vegan-sans"
     :name "Vegan Sans"
     :styles ["Light" "Light Italic" "Regular" "Italic" "Medium" "Medium Italic" "Semibold" "Semibold Italic" "Bold" "Bold Italic" "Black" "Black Italic"]
+    :styles-count 12
     :charsets ["uppercase" "lowercase" "smallcaps" "ligatures" "superscript-subscript" "currency" "numerals-fractions" "mathematical-punctuation" "arrows"]
     :next "hrot"
     :previous "kunda-book"
@@ -71,36 +74,8 @@
      :release "2014"
      :description ""}})
 
-(def lsk-wl "superior-wish-list")
-(def lsk-or "superior-order")
-
-(defn ls->wish-list
-  "Read in wish list from LS, and process into a map we can merge into app-db."
-  []
-  (some->> (.getItem js/localStorage lsk-wl)
-           (cljs.reader/read-string)
-           (hash-map :wish-list)))
-
-(defn wish-list->ls!
-  "Puts wish list into localStorage"
-  [wish-list]
-  (.setItem js/localStorage lsk-wl (str wish-list)))
-
-(defn ls->order
-  "Read in order from LS, and process into a map we can merge into app-db."
-  []
-  (some->> (.getItem js/localStorage lsk-or)
-           (cljs.reader/read-string)
-           (hash-map :order)))
-
-(defn order->ls!
-  "Puts order into localStorage"
-  [order]
-  (.setItem js/localStorage lsk-or (str order)))
-
 (def default-db
-  {:fonts fonts
-   :font-id nil
+  {:font-id nil
    :current-page :home
    :header-class "normal"
    :menu-visible false
