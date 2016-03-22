@@ -12,7 +12,7 @@
 ;; -------------------------
 ;; Scrolling
 ;; FIXME name
-(def all-sections ["styles", "glyphs", "details", "inuse"])
+(def all-sections ["details", "styles", "glyphs", "inuse"])
 
 (defn update-sections-ranges []
   (def sections-ranges (mapv section-range all-sections)))
@@ -262,9 +262,10 @@
         wishing-one (subscribe [:wishing])]
     [:div {:class (and @showing-wist-list "fade")}
      [header]
+     (when-not @wishing-one
+      [details-section])
      [styles-section]
      (when-not @wishing-one
        [:div
          [glyphs-section]
-         [details-section]
          [inuse-section]])]))

@@ -39,8 +39,8 @@
   [:0% {:opacity 1
         :margin-bottom s/default-size
         :max-height (u/rem 20)}]
-  [:100% {:opacity 0}
-        :max-height (u/rem 0)])
+  [:100% {:opacity 0
+        :max-height (u/rem 0)}])
 
 (defkeyframes bounce-top
   [:0% {:transform "translate(50vw, -10vh) scale(0.5)"}]
