@@ -84,7 +84,7 @@
     mix/wish-button-hover
     [:&.small
      (mix/font (:smaller font/size))
-     {:top (u/rem 1.2)}]]
+     {:top (u/rem 1.9)}]]
    [:div.wish-list
     mix/full-width
     {:background-color col/baby-blue
@@ -458,9 +458,6 @@
       :font-weight :inherit
       :font-style :inherit}]]
    prt/wish-box]
-  [:section#styles
-   [:ul.styles
-    {:padding-top (u/rem 9)}]]
   [:section#glyphs
    {:margin "6rem 6rem 0"}
    [:select
@@ -482,7 +479,7 @@
     {:padding [[set/triple-space 0]]}]]
   [:section#details
    {:margin "0 6rem"
-    :padding "6rem 0"}
+    :padding "12rem 0 3rem"}
    [:.main {:display :flex}
     [:.description
      {:width (u/percent 73)

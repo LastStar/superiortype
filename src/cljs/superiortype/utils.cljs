@@ -1,7 +1,7 @@
 (ns superiortype.utils
   (:require-macros [cljs.core.async.macros :refer [go-loop]])
   (:require
-    [cljs.core.async :refer [timeout]]))
+   [cljs.core.async :refer [timeout]]))
 
 (def modular 1.3333)
 
@@ -10,7 +10,7 @@
 
 (defn header-bottom []
   (if-let [header (element "font")]
-     (-> header .getBoundingClientRect .-bottom) 0))
+    (-> header .getBoundingClientRect .-bottom) 0))
 
 (defn get-top [element]
   (if element
@@ -24,9 +24,8 @@
     0))
 
 ;; Scrolling
-
 (defn scroll-to [top]
-   (.scrollTo js/window 0 top))
+  (.scrollTo js/window 0 top))
 
 (defn- section-range [sec]
   (let [element (element sec)]

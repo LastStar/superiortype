@@ -147,11 +147,12 @@
    {:font-family (mix/important "Steiner")}])
 
 (defn- modular [power]
-  (let [f (if (neg? power) / *)]
-    (reduce (fn [s _] (apply f [s set/modular])) set/default-size (range 1 power))))
+  (let [f (if (neg? power) / *)
+        pow (if (neg? power) (- power) power)]
+    (reduce (fn [s _] (apply f [s set/modular])) set/default-size (range 1 pow))))
 
 (def size
-  {:smaller (modular -1)
+  {:smaller (modular -2)
    :default (modular 1)
    :bigger (modular 2)
    :big (modular 3)
